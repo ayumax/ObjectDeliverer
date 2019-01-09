@@ -1,0 +1,13 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-CommNet.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\Kaminosono\source\repos\CommNet\Intermediate\Build\Win64\CommNetTestEditor\Development\Engine\SharedPCH.Engine.h.obj"
+"C:\Users\Kaminosono\source\repos\CommNet\Plugins\ayumax\CommNet\Intermediate\Build\Win64\UE4Editor\Development\CommNet\Module.CommNet.cpp.obj"
+"C:\Users\Kaminosono\source\repos\CommNet\Plugins\ayumax\CommNet\Intermediate\Build\Win64\UE4Editor\Development\CommNet\Module.CommNet.gen.cpp.obj"
+"C:\Users\Kaminosono\source\repos\CommNet\Plugins\ayumax\CommNet\Intermediate\Build\Win64\UE4Editor\Development\CommNet\PCLaunch.rc.res"
+/OUT:"C:\Users\Kaminosono\source\repos\CommNet\Plugins\ayumax\CommNet\Intermediate\Build\Win64\UE4Editor\Development\CommNet\UE4Editor-CommNet.lib"
