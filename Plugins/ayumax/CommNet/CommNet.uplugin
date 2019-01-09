@@ -1,0 +1,24 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "0.0.1",
+  "FriendlyName": "CommNet",
+  "Description": "Socket communication library for Unreal Engine.",
+  "Category": "Programming",
+  "CreatedBy": "ayumax",
+  "CreatedByURL": "https://github.com/ayumax",
+  "DocsURL": "",
+  "MarketplaceURL": "",
+  "SupportURL": "https://github.com/ayumax/CommNet",
+  "EnabledByDefault": false,
+  "CanContainContent": false,
+  "IsBetaVersion": false,
+  "Installed": false,
+  "Modules": [
+    {
+      "Name": "CommNet",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ]
+}

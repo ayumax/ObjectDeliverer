@@ -1,14 +1,20 @@
 {
-	"FileVersion": 3,
-	"EngineAssociation": "4.21",
-	"Category": "",
-	"Description": "",
-	"Enterprise": true,
-	"Modules": [
-		{
-			"Name": "CommNetTest",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		}
-	]
+  "FileVersion": 3,
+  "EngineAssociation": "4.21",
+  "Category": "",
+  "Description": "",
+  "Enterprise": true,
+  "Modules": [
+    {
+      "Name": "CommNetTest",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "CommNet",
+      "Enabled": true
+    }
+  ]
 }
