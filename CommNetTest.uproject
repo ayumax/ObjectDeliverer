@@ -3,7 +3,7 @@
   "EngineAssociation": "4.21",
   "Category": "",
   "Description": "",
-  "Enterprise": true,
+  "Enterprise": false,
   "Modules": [
     {
       "Name": "CommNetTest",

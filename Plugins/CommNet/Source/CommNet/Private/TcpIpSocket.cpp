@@ -46,7 +46,7 @@ void UTcpIpSocket::StartPollilng()
 	ReceiveMode = EReceiveMode::Size;
 	ReceiveBuffer.Reset(1024);
 
-	PollingThread = new FWorkerThread([this] { ReceivedData(); });
+	auto PollingThread = new FWorkerThread([this] { ReceivedData(); });
 	CurrentThread = FRunnableThread::Create(PollingThread, TEXT("CommNet TcpIpSocket PollingThread"));
 
 }
