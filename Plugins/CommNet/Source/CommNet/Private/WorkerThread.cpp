@@ -1,19 +1,19 @@
-#include "SocketPollingThread.h"
+#include "WorkerThread.h"
 #include "Runtime/Core/Public/HAL/PlatformProcess.h"
 
-FSocketPollingThread::FSocketPollingThread(TFunction<void()> InWork)
+FWorkerThread::FWorkerThread(TFunction<void()> InWork)
 	: Work(InWork)
 	, ContinueRun(true)
 {
 
 }
 
-FSocketPollingThread::~FSocketPollingThread()
+FWorkerThread::~FWorkerThread()
 {
 
 }
 
-uint32 FSocketPollingThread::Run()
+uint32 FWorkerThread::Run()
 {
 	while (ContinueRun)
 	{
@@ -28,13 +28,13 @@ uint32 FSocketPollingThread::Run()
 	return 0;
 }
 
-void FSocketPollingThread::Stop()
+void FWorkerThread::Stop()
 {
 	ContinueRun = false;
 
 }
 
-void FSocketPollingThread::Exit()
+void FWorkerThread::Exit()
 {
 
 }
