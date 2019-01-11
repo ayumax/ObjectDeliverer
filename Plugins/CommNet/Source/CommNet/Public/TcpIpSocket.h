@@ -4,11 +4,11 @@
 
 #include "TcpIpSocket.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTcpIpSocketConnected);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTcpIpSocketDisconnected);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTcpIpSocketReceiveData, const TArray<uint8>&, Buffer, int32, Size);
 
 
+class FSocket;
 
 UCLASS(BlueprintType, Blueprintable)
 class COMMNET_API UTcpIpSocket : public UObject
@@ -20,25 +20,22 @@ public:
 	~UTcpIpSocket();
 
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-		bool Connect(const FString& IpAddress, int32 Port);
-
-	UFUNCTION(BlueprintCallable, Category = "CommNet")
-		void Close();
+		void Close(bool Wait = true);
 
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
 		void Send(const TArray<uint8>& DataBuffer);
 
-private:
-	bool FormatIP4ToNumber(const FString& IpAddress, uint8(&Out)[4]);
+protected:
+	void OnConnected(FSocket* ConnectionSocket);
 	void StartPollilng();
 	void ReceivedData();
 	uint32 WantSize();
 	void OnReceivedSize();
 	void OnReceivedBody();
 
-private:
-	class FSocket* ConnectedSocket = nullptr;
-	class FSocketPollingThread* PollingThread = nullptr;
+protected:
+	FSocket* ConnectedSocket = nullptr;
+	class FWorkerThread* PollingThread = nullptr;
 	class FRunnableThread* CurrentThread = nullptr;
 
 	enum EReceiveMode
@@ -51,7 +48,6 @@ private:
 	uint32 BodySize;
 
 public:
-	FTcpIpSocketConnected Connected;
 	FTcpIpSocketDisconnected Disconnected;
 	FTcpIpSocketReceiveData ReceiveData;
 };

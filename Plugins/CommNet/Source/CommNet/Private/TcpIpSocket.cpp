@@ -1,6 +1,6 @@
 #include "TcpIpSocket.h"
 #include "TcpSocketBuilder.h"
-#include "SocketPollingThread.h"
+#include "WorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 
 UTcpIpSocket::UTcpIpSocket()
@@ -15,47 +15,12 @@ UTcpIpSocket::~UTcpIpSocket()
 
 }
 
-bool UTcpIpSocket::Connect(const FString& IpAddress, int32 Port)
-{
-	Close();
 
-	auto socket = FTcpSocketBuilder(TEXT("CommNet TcpIpClient"))
-		.AsNonBlocking()
-		.Build();
-
-	if (socket == nullptr) return false;
-
-	uint8 IP4Nums[4];
-	if (!FormatIP4ToNumber(IpAddress, IP4Nums))
-	{
-		UE_LOG(LogTemp, Error, TEXT("UTcpIpSocket::ipaddress format violation"));
-		return false;
-	}
-
-	FIPv4Endpoint Endpoint(FIPv4Address(IP4Nums[0], IP4Nums[1], IP4Nums[2], IP4Nums[3]), Port);
-
-	if (!socket->Connect(Endpoint.ToInternetAddr().Get()))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UTcpIpSocket::Failed to connect to the server"));
-		return false;
-	}
-	
-	ConnectedSocket = socket;
-	int32 newSize;
-	ConnectedSocket->SetReceiveBufferSize(1024 * 1024, newSize);
-
-	Connected.Broadcast();
-
-	StartPollilng();
-
-	return true;
-}
-
-void UTcpIpSocket::Close()
+void UTcpIpSocket::Close(bool Wait /*=true*/)
 {
 	if (!ConnectedSocket) return;
 
-	CurrentThread->Kill(true);
+	CurrentThread->Kill(Wait);
 	ConnectedSocket->Close();
 	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectedSocket);
 
@@ -70,32 +35,10 @@ void UTcpIpSocket::Send(const TArray<uint8>& DataBuffer)
 	ConnectedSocket->Send(DataBuffer.GetData(), DataBuffer.Num(), BytesSent);
 }
 
-bool UTcpIpSocket::FormatIP4ToNumber(const FString& IpAddress, uint8(&Out)[4])
+void UTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
 {
-	auto _ip = IpAddress.ToLower();
-	if (_ip == TEXT("localhost"))
-	{
-		Out[0] = 127;
-		Out[1] = 0;
-		Out[2] = 0;
-		Out[3] = 1;
-		return true;
-	}
-
-	_ip.Replace(TEXT(" "), TEXT(""));
-
-	const TCHAR* Delims[] = { TEXT(".") };
-	TArray<FString> Parts;
-	_ip.ParseIntoArray(Parts, Delims, true);
-	if (Parts.Num() != 4)
-		return false;
-
-	for (int32 i = 0; i < 4; ++i)
-	{
-		Out[i] = FCString::Atoi(*Parts[i]);
-	}
-
-	return true;
+	ConnectedSocket = ConnectionSocket;
+	StartPollilng();
 }
 
 void UTcpIpSocket::StartPollilng()
@@ -103,8 +46,8 @@ void UTcpIpSocket::StartPollilng()
 	ReceiveMode = EReceiveMode::Size;
 	ReceiveBuffer.Reset(1024);
 
-	PollingThread = new FSocketPollingThread([this] { ReceivedData(); });
-	CurrentThread = FRunnableThread::Create(PollingThread, TEXT("CommNet TcpIpClient PollingThread"));
+	PollingThread = new FWorkerThread([this] { ReceivedData(); });
+	CurrentThread = FRunnableThread::Create(PollingThread, TEXT("CommNet TcpIpSocket PollingThread"));
 
 }
 
@@ -119,11 +62,7 @@ void UTcpIpSocket::ReceivedData()
 		if (!ConnectedSocket->Recv(ReceiveBuffer.GetData(), WantSize(), Read, ESocketReceiveFlags::WaitAll))
 		{
 			Disconnected.Broadcast();
-			CurrentThread->Kill(false);
-			ConnectedSocket->Close();
-			ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectedSocket);
-
-			ConnectedSocket = nullptr;
+			Close(false);
 			break;
 		}
 

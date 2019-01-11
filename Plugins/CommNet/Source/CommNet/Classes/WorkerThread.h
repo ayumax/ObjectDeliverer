@@ -5,11 +5,11 @@
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 
 
-class COMMNET_API FSocketPollingThread : public FRunnable
+class COMMNET_API FWorkerThread : public FRunnable
 {
 public:
-	FSocketPollingThread(TFunction<void()> InWork);
-	~FSocketPollingThread();
+	FWorkerThread(TFunction<void()> InWork);
+	~FWorkerThread();
 
 	virtual uint32 Run() override;
 	virtual void Stop() override;
