@@ -35,7 +35,6 @@ protected:
 
 protected:
 	FSocket* ConnectedSocket = nullptr;
-	class FWorkerThread* PollingThread = nullptr;
 	class FRunnableThread* CurrentThread = nullptr;
 
 	enum EReceiveMode

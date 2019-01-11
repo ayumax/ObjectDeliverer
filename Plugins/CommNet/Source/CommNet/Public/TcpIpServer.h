@@ -29,6 +29,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
 		void Send(const TArray<uint8>& DataBuffer);
 
+private:
+	void OnListen();
 
 public:
 	FTcpIpServerConnected Connected;
@@ -36,5 +38,7 @@ public:
 	FTcpIpServerReceiveData ReceiveData;
 
 private:
+	class FRunnableThread* ListenThread = nullptr;
+
 	TArray<UTcpIpSocket*> ConnectedSockets;
 };
