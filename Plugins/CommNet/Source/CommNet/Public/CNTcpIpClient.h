@@ -19,10 +19,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
 		bool Connect(const FString& IpAddress, int32 Port);
 
-
-
-
 public:
-	FTcpIpClientConnected Connected;
+	UPROPERTY(BlueprintAssignable, Category = "CommNet")
+		FTcpIpClientConnected Connected;
 
 };

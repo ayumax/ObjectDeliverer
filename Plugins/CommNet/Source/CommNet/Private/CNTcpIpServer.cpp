@@ -44,9 +44,9 @@ void UCNTcpIpServer::Close()
 
 	ConnectedSockets.Reset();
 
-	if (ListenerSocket) return;
+	if (!ListenerSocket) return;
 
-	ListenThread->Kill(true);
+	ListenThread->Kill(false);
 	ListenerSocket->Close();
 	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ListenerSocket);
 
@@ -92,6 +92,9 @@ void UCNTcpIpServer::DisconnectedClient(UCNTcpIpSocket* ClientSocket)
 	auto foundIndex = ConnectedSockets.Find(ClientSocket);
 	if (foundIndex != INDEX_NONE)
 	{
+		ClientSocket->Disconnected.RemoveDynamic(this, &UCNTcpIpServer::DisconnectedClient);
+		ClientSocket->ReceiveData.RemoveDynamic(this, &UCNTcpIpServer::ReceiveDataFromClient);
+		
 		ConnectedSockets.RemoveAt(foundIndex);
 
 		Disconnected.Broadcast(ClientSocket);

@@ -26,7 +26,8 @@ protected:
 	void UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip);
 
 public:
-	FUdpSocketReceiveData ReceiveData;
+	UPROPERTY(BlueprintAssignable, Category = "CommNet")
+		FUdpSocketReceiveData ReceiveData;
 
 private:
 	FUdpSocketReceiver* Receiver = nullptr;

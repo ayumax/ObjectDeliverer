@@ -40,9 +40,12 @@ private:
 		void ReceiveDataFromClient(UCNTcpIpSocket* ClientSocket, const TArray<uint8>& Buffer, int32 Size);
 
 public:
-	FTcpIpServerConnected Connected;
-	FTcpIpServerDisconnected Disconnected;
-	FTcpIpServerReceiveData ReceiveData;
+	UPROPERTY(BlueprintAssignable, Category = "CommNet")
+		FTcpIpServerConnected Connected;
+	UPROPERTY(BlueprintAssignable, Category = "CommNet")
+		FTcpIpServerDisconnected Disconnected;
+	UPROPERTY(BlueprintAssignable, Category = "CommNet")
+		FTcpIpServerReceiveData ReceiveData;
 
 private:
 	FSocket* ListenerSocket = nullptr;

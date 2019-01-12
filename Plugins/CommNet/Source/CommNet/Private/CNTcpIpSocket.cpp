@@ -34,8 +34,17 @@ void UCNTcpIpSocket::Send(const TArray<uint8>& DataBuffer)
 {
 	if (!InnerSocket) return;
 
+	TArray<uint8> buffer;
+	buffer.SetNum(4);
+	buffer[0] = (uint8)((DataBuffer.Num() >> 24) & 0xFF);
+	buffer[1] = (uint8)(DataBuffer.Num() >> 16 & 0xFF);
+	buffer[2] = (uint8)(DataBuffer.Num() >> 8 & 0xFF);
+	buffer[3] = (uint8)(DataBuffer.Num() & 0xFF);
+
+	buffer.Append(DataBuffer);
+
 	int32 BytesSent;
-	InnerSocket->Send(DataBuffer.GetData(), DataBuffer.Num(), BytesSent);
+	InnerSocket->Send(buffer.GetData(), buffer.Num(), BytesSent);
 }
 
 void UCNTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
@@ -47,7 +56,7 @@ void UCNTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
 void UCNTcpIpSocket::StartPollilng()
 {
 	ReceiveMode = EReceiveMode::Size;
-	ReceiveBuffer.Reset(1024);
+	ReceiveBuffer.SetNum(1024);
 
 	auto PollingThread = new FWorkerThread([this] { ReceivedData(); });
 	CurrentThread = FRunnableThread::Create(PollingThread, TEXT("CommNet TcpIpSocket PollingThread"));
@@ -96,7 +105,7 @@ void UCNTcpIpSocket::OnReceivedSize()
 
 	if (BodySize > (uint32)ReceiveBuffer.Num())
 	{
-		ReceiveBuffer.Reset(BodySize);
+		ReceiveBuffer.SetNum(BodySize, false);
 	}
 
 	ReceiveMode = EReceiveMode::Body;
