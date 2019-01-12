@@ -26,6 +26,13 @@ void UCNUdpSocketReceiver::OnClose()
 	}
 }
 
+void UCNUdpSocketReceiver::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	Close();
+}
+
 void UCNUdpSocketReceiver::UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip)
 {
 	int64 receivedSize = data->TotalSize();

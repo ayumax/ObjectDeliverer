@@ -30,6 +30,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
 		void Send(const TArray<uint8>& DataBuffer);
 
+	virtual void BeginDestroy() override;
+
 private:
 	void OnListen();
 

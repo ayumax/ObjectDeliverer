@@ -24,6 +24,8 @@ public:
 
 	void OnConnected(FSocket* ConnectionSocket);
 
+	virtual void BeginDestroy() override;
+
 protected:
 	void CloseSocket(bool Wait);
 	void StartPollilng();

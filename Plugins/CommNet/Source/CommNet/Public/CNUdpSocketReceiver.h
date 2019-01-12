@@ -19,6 +19,8 @@ public:
 	UCNUdpSocketReceiver();
 	~UCNUdpSocketReceiver();
 
+	virtual void BeginDestroy() override;
+
 protected:
 	virtual void OnStart() override;
 	virtual void OnClose() override;
