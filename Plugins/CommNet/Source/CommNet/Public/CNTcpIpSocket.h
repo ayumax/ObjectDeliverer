@@ -45,6 +45,8 @@ protected:
 	uint32 BodySize;
 
 public:
-	FTcpIpSocketDisconnected Disconnected;
-	FTcpIpSocketReceiveData ReceiveData;
+	UPROPERTY(BlueprintAssignable, Category = "CommNet")
+		FTcpIpSocketDisconnected Disconnected;
+	UPROPERTY(BlueprintAssignable, Category = "CommNet")
+		FTcpIpSocketReceiveData ReceiveData;
 };

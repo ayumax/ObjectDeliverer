@@ -36,5 +36,5 @@ void FWorkerThread::Stop()
 
 void FWorkerThread::Exit()
 {
-
+	ContinueRun = false;
 }
