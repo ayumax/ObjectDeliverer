@@ -1,68 +1,70 @@
-#include "TcpIpSocket.h"
+#include "CNTcpIpSocket.h"
 #include "TcpSocketBuilder.h"
 #include "WorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 
-UTcpIpSocket::UTcpIpSocket()
+UCNTcpIpSocket::UCNTcpIpSocket()
 	: ReceiveMode(EReceiveMode::Size)
 	, BodySize(0)
 {
 
 }
 
-UTcpIpSocket::~UTcpIpSocket()
+UCNTcpIpSocket::~UCNTcpIpSocket()
 {
 
 }
 
 
-void UTcpIpSocket::Close(bool Wait /*=true*/)
+void UCNTcpIpSocket::Close()
 {
-	if (!ConnectedSocket) return;
+	CloseSocket(true);
+}
+
+void UCNTcpIpSocket::CloseSocket(bool Wait)
+{
+	if (!InnerSocket) return;
 
 	CurrentThread->Kill(Wait);
-	ConnectedSocket->Close();
-	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectedSocket);
 
-	ConnectedSocket = nullptr;
+	CloseInnerSocket();
 }
 
-void UTcpIpSocket::Send(const TArray<uint8>& DataBuffer)
+void UCNTcpIpSocket::Send(const TArray<uint8>& DataBuffer)
 {
-	if (!ConnectedSocket) return;
+	if (!InnerSocket) return;
 
 	int32 BytesSent;
-	ConnectedSocket->Send(DataBuffer.GetData(), DataBuffer.Num(), BytesSent);
+	InnerSocket->Send(DataBuffer.GetData(), DataBuffer.Num(), BytesSent);
 }
 
-void UTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
+void UCNTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
 {
-	ConnectedSocket = ConnectionSocket;
+	InnerSocket = ConnectionSocket;
 	StartPollilng();
 }
 
-void UTcpIpSocket::StartPollilng()
+void UCNTcpIpSocket::StartPollilng()
 {
 	ReceiveMode = EReceiveMode::Size;
 	ReceiveBuffer.Reset(1024);
 
 	auto PollingThread = new FWorkerThread([this] { ReceivedData(); });
 	CurrentThread = FRunnableThread::Create(PollingThread, TEXT("CommNet TcpIpSocket PollingThread"));
-
 }
 
-void UTcpIpSocket::ReceivedData()
+void UCNTcpIpSocket::ReceivedData()
 {
-	uint32 Size;
-	while (ConnectedSocket->HasPendingData(Size))
+	uint32 Size = 0;
+	while (InnerSocket->HasPendingData(Size))
 	{
 		if (Size < WantSize()) return;
 
 		int32 Read = 0;
-		if (!ConnectedSocket->Recv(ReceiveBuffer.GetData(), WantSize(), Read, ESocketReceiveFlags::WaitAll))
+		if (!InnerSocket->Recv(ReceiveBuffer.GetData(), WantSize(), Read, ESocketReceiveFlags::WaitAll))
 		{
-			Disconnected.Broadcast();
-			Close(false);
+			Disconnected.Broadcast(this);
+			CloseSocket(false);
 			break;
 		}
 
@@ -78,7 +80,7 @@ void UTcpIpSocket::ReceivedData()
 
 }
 
-uint32 UTcpIpSocket::WantSize()
+uint32 UCNTcpIpSocket::WantSize()
 {
 	if (ReceiveMode == EReceiveMode::Size)
 	{
@@ -88,7 +90,7 @@ uint32 UTcpIpSocket::WantSize()
 	return BodySize;
 }
 
-void UTcpIpSocket::OnReceivedSize()
+void UCNTcpIpSocket::OnReceivedSize()
 {
 	BodySize = ReceiveBuffer[0] << 24 | ReceiveBuffer[1] << 16 | ReceiveBuffer[2] << 8 | ReceiveBuffer[3];
 
@@ -100,9 +102,9 @@ void UTcpIpSocket::OnReceivedSize()
 	ReceiveMode = EReceiveMode::Body;
 }
 
-void UTcpIpSocket::OnReceivedBody()
+void UCNTcpIpSocket::OnReceivedBody()
 {
-	ReceiveData.Broadcast(ReceiveBuffer, (int32)BodySize);
+	ReceiveData.Broadcast(this, ReceiveBuffer, (int32)BodySize);
 
 	ReceiveMode = EReceiveMode::Size;
 }

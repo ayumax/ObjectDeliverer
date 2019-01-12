@@ -1,4 +1,5 @@
 // Copyright 1998-2018 Epic Games, Inc. All Rights Reserved.
+using System.IO;
 
 namespace UnrealBuildTool.Rules
 {
@@ -8,13 +9,9 @@ namespace UnrealBuildTool.Rules
 		{
             PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-			PrivateIncludePaths.AddRange(
-				new string[] {
-					"CommNet/Classes"
-				}
-				);
+            PublicIncludePaths.Add(Path.Combine(ModuleDirectory, "Private"));
 
-			PublicDependencyModuleNames.AddRange(
+            PublicDependencyModuleNames.AddRange(
 				new string[]
 				{
                     "Core",

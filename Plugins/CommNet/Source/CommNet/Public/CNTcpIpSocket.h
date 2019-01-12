@@ -1,32 +1,31 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CNSocketBase.h"
+#include "CNTcpIpSocket.generated.h"
 
-#include "TcpIpSocket.generated.h"
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTcpIpSocketDisconnected);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTcpIpSocketReceiveData, const TArray<uint8>&, Buffer, int32, Size);
-
-
-class FSocket;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTcpIpSocketDisconnected, class UCNTcpIpSocket*, ClientSocket);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FTcpIpSocketReceiveData, class UCNTcpIpSocket*, ClientSocket, const TArray<uint8>&, Buffer, int32, Size);
 
 UCLASS(BlueprintType, Blueprintable)
-class COMMNET_API UTcpIpSocket : public UObject
+class COMMNET_API UCNTcpIpSocket : public UCNSocketBase
 {
 	GENERATED_BODY()
-public:
 
-	UTcpIpSocket();
-	~UTcpIpSocket();
+public:
+	UCNTcpIpSocket();
+	virtual ~UCNTcpIpSocket();
 
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-		void Close(bool Wait = true);
+		void Close();
 
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
 		void Send(const TArray<uint8>& DataBuffer);
 
-protected:
 	void OnConnected(FSocket* ConnectionSocket);
+
+protected:
+	void CloseSocket(bool Wait);
 	void StartPollilng();
 	void ReceivedData();
 	uint32 WantSize();
@@ -34,7 +33,6 @@ protected:
 	void OnReceivedBody();
 
 protected:
-	FSocket* ConnectedSocket = nullptr;
 	class FRunnableThread* CurrentThread = nullptr;
 
 	enum EReceiveMode
