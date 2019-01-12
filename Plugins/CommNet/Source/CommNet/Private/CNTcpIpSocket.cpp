@@ -21,6 +21,13 @@ void UCNTcpIpSocket::Close()
 	CloseSocket(true);
 }
 
+void UCNTcpIpSocket::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	CloseSocket(true);
+}
+
 void UCNTcpIpSocket::CloseSocket(bool Wait)
 {
 	if (!InnerSocket) return;
@@ -35,16 +42,17 @@ void UCNTcpIpSocket::Send(const TArray<uint8>& DataBuffer)
 	if (!InnerSocket) return;
 
 	TArray<uint8> buffer;
+	buffer.Reset(4 + DataBuffer.Num());
 	buffer.SetNum(4);
+
 	buffer[0] = (uint8)((DataBuffer.Num() >> 24) & 0xFF);
-	buffer[1] = (uint8)(DataBuffer.Num() >> 16 & 0xFF);
-	buffer[2] = (uint8)(DataBuffer.Num() >> 8 & 0xFF);
+	buffer[1] = (uint8)((DataBuffer.Num() >> 16) & 0xFF);
+	buffer[2] = (uint8)((DataBuffer.Num() >> 8) & 0xFF);
 	buffer[3] = (uint8)(DataBuffer.Num() & 0xFF);
 
 	buffer.Append(DataBuffer);
 
-	int32 BytesSent;
-	InnerSocket->Send(buffer.GetData(), buffer.Num(), BytesSent);
+	SendToConnected(buffer);
 }
 
 void UCNTcpIpSocket::OnConnected(FSocket* ConnectionSocket)

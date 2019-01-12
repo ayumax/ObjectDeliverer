@@ -53,6 +53,14 @@ void UCNTcpIpServer::Close()
 	ListenerSocket = nullptr;
 }
 
+void UCNTcpIpServer::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	Close();
+}
+
+
 void UCNTcpIpServer::Send(const TArray<uint8>& DataBuffer)
 {
 	for (auto clientSocket : ConnectedSockets)
