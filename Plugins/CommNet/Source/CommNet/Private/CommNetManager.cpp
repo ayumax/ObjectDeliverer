@@ -1,6 +1,14 @@
 #include "CommNetManager.h"
 #include "CommNetProtocol.h"
 
+UCommNetManager::UCommNetManager()
+{
+
+}
+
+UCommNetManager::~UCommNetManager()
+{
+}
 
 void UCommNetManager::Start(UCommNetProtocol* Protocol)
 {
@@ -21,18 +29,31 @@ void UCommNetManager::Start(UCommNetProtocol* Protocol)
 		ReceiveData.Broadcast(FromObject, Buffer, Size);
 	});
 
+
 	CurrentProtocol->Start();
 }
 
 void UCommNetManager::Close()
 {
 	if (!CurrentProtocol) return;
+	if (!IsValid(CurrentProtocol)) return;
 
+	if (CurrentProtocol->Connected.IsBound())
+	{
+		CurrentProtocol->Connected.Unbind();
+	}
+	
+	if (CurrentProtocol->Disconnected.IsBound())
+	{
+		CurrentProtocol->Disconnected.Unbind();
+	}
+	
+	if (CurrentProtocol->ReceiveData.IsBound())
+	{
+		CurrentProtocol->ReceiveData.Unbind();
+	}
+	
 	CurrentProtocol->Close();
-
-	CurrentProtocol->Connected.Unbind();
-	CurrentProtocol->Disconnected.Unbind();
-	CurrentProtocol->ReceiveData.Unbind();
 
 	CurrentProtocol = nullptr;
 }
@@ -44,3 +65,10 @@ void UCommNetManager::Send(const TArray<uint8>& DataBuffer)
 	CurrentProtocol->Send(DataBuffer);
 }
 
+
+void UCommNetManager::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	Close();
+}

@@ -12,7 +12,6 @@ UCNTcpIpSocket::UCNTcpIpSocket()
 
 UCNTcpIpSocket::~UCNTcpIpSocket()
 {
-
 }
 
 
@@ -21,16 +20,12 @@ void UCNTcpIpSocket::Close_Implementation()
 	CloseSocket(true);
 }
 
-void UCNTcpIpSocket::BeginDestroy()
-{
-	Super::BeginDestroy();
-
-	CloseSocket(true);
-}
 
 void UCNTcpIpSocket::CloseSocket(bool Wait)
 {
 	if (!InnerSocket) return;
+
+	CloseInnerSocket();
 
 	CurrentThread->Kill(Wait);
 	delete CurrentThread;
@@ -39,7 +34,6 @@ void UCNTcpIpSocket::CloseSocket(bool Wait)
 	delete CurrentInnerThread;
 	CurrentInnerThread = nullptr;
 
-	CloseInnerSocket();
 }
 
 void UCNTcpIpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)

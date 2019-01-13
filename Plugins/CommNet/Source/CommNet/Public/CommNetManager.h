@@ -15,6 +15,9 @@ class COMMNET_API UCommNetManager : public UObject
 	GENERATED_BODY()
 
 public:
+	UCommNetManager();
+	~UCommNetManager();
+
 	/**
 	 * start communication protocol.
 	 */
@@ -44,6 +47,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "CommNet")
 	FCommNetManagerReceiveData ReceiveData;
 
+	virtual void BeginDestroy() override;
 
 private:
 	UPROPERTY()

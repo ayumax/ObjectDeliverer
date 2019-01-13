@@ -30,15 +30,11 @@ void UCNUdpSocket::Start_Implementation()
 		.AsBlocking()
 		.WithReceiveBufferSize(1024 * 1024)
 		.Build();
-
-	OnStart();
 }
 
 void UCNUdpSocket::Close_Implementation()
 {
 	CloseInnerSocket();
-
-	OnClose();
 }
 
 void UCNUdpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)

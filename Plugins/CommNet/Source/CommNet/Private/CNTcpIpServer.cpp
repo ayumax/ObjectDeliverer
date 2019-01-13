@@ -21,7 +21,7 @@ void UCNTcpIpServer::Initialize(int32 Port)
 
 void UCNTcpIpServer::Start_Implementation()
 {
-	Close();
+	Close_Implementation();
 
 	auto socket = FTcpSocketBuilder(TEXT("CommNet TcpIpServer"))
 		.AsBlocking()
@@ -47,27 +47,19 @@ void UCNTcpIpServer::Close_Implementation()
 	ConnectedSockets.Reset();
 
 	if (!ListenerSocket) return;
+	ListenerSocket->Close();
+	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ListenerSocket);
+	ListenerSocket = nullptr;
 
-	ListenThread->Kill(false);
+	ListenThread->Kill(true);
 	delete ListenThread;
 	ListenThread = nullptr;
 
 	delete ListenInnerThread;
 	ListenInnerThread = nullptr;
 
-	ListenerSocket->Close();
-	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ListenerSocket);
 
-	ListenerSocket = nullptr;
 }
-
-void UCNTcpIpServer::BeginDestroy()
-{
-	Super::BeginDestroy();
-
-	Close();
-}
-
 
 void UCNTcpIpServer::Send_Implementation(const TArray<uint8>& DataBuffer)
 {

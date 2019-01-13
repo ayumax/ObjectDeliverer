@@ -18,14 +18,17 @@ public:
 	UCNUdpSocketReceiver();
 	~UCNUdpSocketReceiver();
 
-	virtual void BeginDestroy() override;
+	virtual void Start_Implementation() override;
+	virtual void Close_Implementation() override;
 
 protected:
-	virtual void OnStart() override;
-	virtual void OnClose() override;
-	
 	void UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip);
 
 private:
 	FUdpSocketReceiver* Receiver = nullptr;
+
+public:
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
+	int32 BoundPort;
 };
