@@ -91,33 +91,36 @@ void UCNTcpIpServer::OnListen()
 		if (_clientSocket != nullptr)
 		{
 			auto clientSocket = NewObject<UCNTcpIpSocket>();
-			clientSocket->Disconnected.AddDynamic(this, &UCNTcpIpServer::DisconnectedClient);
-			clientSocket->ReceiveData.AddDynamic(this, &UCNTcpIpServer::ReceiveDataFromClient);
+			clientSocket->Disconnected.BindUObject(this, &UCNTcpIpServer::DisconnectedClient);
+			clientSocket->ReceiveData.BindUObject(this, &UCNTcpIpServer::ReceiveDataFromClient);
 
 			clientSocket->OnConnected(_clientSocket);
 
 			ConnectedSockets.Add(clientSocket);
 
-			Connected.Broadcast(clientSocket);
+			DispatchConnected(clientSocket);
 		}
 	}
 }
 
-void UCNTcpIpServer::DisconnectedClient(UCNTcpIpSocket* ClientSocket)
+void UCNTcpIpServer::DisconnectedClient(UCommNetProtocol* ClientSocket)
 {
-	auto foundIndex = ConnectedSockets.Find(ClientSocket);
+	auto _clientSocket = Cast< UCNTcpIpSocket>(ClientSocket);
+	if (!IsValid(_clientSocket)) return;
+
+	auto foundIndex = ConnectedSockets.Find(_clientSocket);
 	if (foundIndex != INDEX_NONE)
 	{
-		ClientSocket->Disconnected.RemoveDynamic(this, &UCNTcpIpServer::DisconnectedClient);
-		ClientSocket->ReceiveData.RemoveDynamic(this, &UCNTcpIpServer::ReceiveDataFromClient);
+		_clientSocket->Disconnected.Unbind();
+		_clientSocket->ReceiveData.Unbind();
 		
 		ConnectedSockets.RemoveAt(foundIndex);
 
-		Disconnected.Broadcast(ClientSocket);
+		DispatchDisconnected(ClientSocket);
 	}
 }
 
-void UCNTcpIpServer::ReceiveDataFromClient(UCNTcpIpSocket* ClientSocket, const TArray<uint8>& Buffer, int32 Size)
+void UCNTcpIpServer::ReceiveDataFromClient(UCommNetProtocol* ClientSocket, const TArray<uint8>& Buffer, int32 Size)
 {
-	ReceiveData.Broadcast(ClientSocket, Buffer, Size);
+	DispatchReceiveData(ClientSocket, Buffer, Size);
 }

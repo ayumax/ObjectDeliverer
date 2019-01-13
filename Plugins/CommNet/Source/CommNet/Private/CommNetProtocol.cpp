@@ -14,3 +14,18 @@ void UCommNetProtocol::Send_Implementation(const TArray<uint8>& DataBuffer)
 {
 
 }
+
+void UCommNetProtocol::DispatchConnected(UCommNetProtocol* ConnectedObject)
+{
+	Connected.ExecuteIfBound(ConnectedObject);
+}
+
+void UCommNetProtocol::DispatchDisconnected(UCommNetProtocol* DisconnectedObject)
+{
+	Disconnected.ExecuteIfBound(DisconnectedObject);
+}
+
+void UCommNetProtocol::DispatchReceiveData(UCommNetProtocol* FromObject, const TArray<uint8>& Buffer, int32 Size)
+{
+	ReceiveData.ExecuteIfBound(FromObject, Buffer, Size);
+}

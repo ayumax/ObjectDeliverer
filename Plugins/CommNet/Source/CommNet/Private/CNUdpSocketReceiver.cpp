@@ -36,5 +36,5 @@ void UCNUdpSocketReceiver::UdpReceivedCallback(const FArrayReaderPtr& data, cons
 {
 	int64 receivedSize = data->TotalSize();
 	
-	ReceiveData.Broadcast(this, *(data.Get()), (int32)receivedSize);
+	DispatchReceiveData(this, *(data.Get()), (int32)receivedSize);
 }

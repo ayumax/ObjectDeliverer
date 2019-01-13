@@ -3,9 +3,11 @@
 #include "CoreMinimal.h"
 #include "CommNetProtocol.generated.h"
 
-/**
-* 
-*/
+DECLARE_DELEGATE_OneParam(FCommNetProtocolConnected, UCommNetProtocol*);
+DECLARE_DELEGATE_OneParam(FCommNetProtocolDisconnected, UCommNetProtocol*);
+DECLARE_DELEGATE_ThreeParams(FCommNetProtocolReceiveData, UCommNetProtocol*, const TArray<uint8>&, int32);
+
+
 UCLASS(BlueprintType)
 class COMMNET_API UCommNetProtocol : public UObject
 {
@@ -34,4 +36,16 @@ public:
 	void Send(const TArray<uint8>& DataBuffer);
 	virtual void Send_Implementation(const TArray<uint8>& DataBuffer);
 
+protected:
+	UFUNCTION(BlueprintCallable, Category = "CommNet")
+	void DispatchConnected(UCommNetProtocol* ConnectedObject);
+	UFUNCTION(BlueprintCallable, Category = "CommNet")
+	void DispatchDisconnected(UCommNetProtocol* DisconnectedObject);
+	UFUNCTION(BlueprintCallable, Category = "CommNet")
+	void DispatchReceiveData(UCommNetProtocol* FromObject, const TArray<uint8>& Buffer, int32 Size);
+
+public:
+	FCommNetProtocolConnected Connected;
+	FCommNetProtocolDisconnected Disconnected;
+	FCommNetProtocolReceiveData ReceiveData;
 };
