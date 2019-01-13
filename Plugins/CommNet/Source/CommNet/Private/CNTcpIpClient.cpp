@@ -38,7 +38,7 @@ void UCNTcpIpClient::Start_Implementation()
 		return;
 	}
 
-	Connected.Broadcast(this);
+	DispatchConnected(this);
 
 	OnConnected(socket);
 }

@@ -4,9 +4,6 @@
 #include "CNSocketBase.h"
 #include "CNTcpIpSocket.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTcpIpSocketDisconnected, class UCNTcpIpSocket*, ClientSocket);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FTcpIpSocketReceiveData, class UCNTcpIpSocket*, ClientSocket, const TArray<uint8>&, Buffer, int32, Size);
-
 UCLASS(BlueprintType, Blueprintable)
 class COMMNET_API UCNTcpIpSocket : public UCNSocketBase
 {
@@ -44,9 +41,4 @@ protected:
 	TArray<uint8> ReceiveBuffer;
 	uint32 BodySize;
 
-public:
-	UPROPERTY(BlueprintAssignable, Category = "CommNet")
-		FTcpIpSocketDisconnected Disconnected;
-	UPROPERTY(BlueprintAssignable, Category = "CommNet")
-		FTcpIpSocketReceiveData ReceiveData;
 };

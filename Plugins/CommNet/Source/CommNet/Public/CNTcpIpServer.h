@@ -6,9 +6,6 @@
 #include "CommNetProtocol.h"
 #include "CNTcpIpServer.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTcpIpServerConnected, class UCNTcpIpSocket*, ClientSocket);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTcpIpServerDisconnected, class UCNTcpIpSocket*, ClientSocket);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FTcpIpServerReceiveData, class UCNTcpIpSocket*, ClientSocket, const TArray<uint8>&, Buffer, int32, Size);
 
 class UCNTcpIpSocket;
 
@@ -39,19 +36,12 @@ protected:
 	void OnListen();
 
 	UFUNCTION()
-	void DisconnectedClient(UCNTcpIpSocket* ClientSocket);
+	void DisconnectedClient(UCommNetProtocol* ClientSocket);
 
 	UFUNCTION()
-	void ReceiveDataFromClient(UCNTcpIpSocket* ClientSocket, const TArray<uint8>& Buffer, int32 Size);
+	void ReceiveDataFromClient(UCommNetProtocol* ClientSocket, const TArray<uint8>& Buffer, int32 Size);
 
 public:
-	UPROPERTY(BlueprintAssignable, Category = "CommNet")
-	FTcpIpServerConnected Connected;
-	UPROPERTY(BlueprintAssignable, Category = "CommNet")
-	FTcpIpServerDisconnected Disconnected;
-	UPROPERTY(BlueprintAssignable, Category = "CommNet")
-	FTcpIpServerReceiveData ReceiveData;
-
 	UPROPERTY(EditAnywhere, Category = "CommNet")
 	int32 ListenPort;
 
@@ -60,7 +50,7 @@ public:
 
 protected:
 	FSocket* ListenerSocket = nullptr;
-	class FWorkerThread ListenInnerThread = nullptr;
+	class FWorkerThread* ListenInnerThread = nullptr;
 	class FRunnableThread* ListenThread = nullptr;
 
 	TArray<UCNTcpIpSocket*> ConnectedSockets;

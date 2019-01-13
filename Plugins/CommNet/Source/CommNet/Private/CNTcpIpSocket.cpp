@@ -85,7 +85,7 @@ void UCNTcpIpSocket::ReceivedData()
 		int32 Read = 0;
 		if (!InnerSocket->Recv(ReceiveBuffer.GetData(), WantSize(), Read, ESocketReceiveFlags::WaitAll))
 		{
-			Disconnected.Broadcast(this);
+			DispatchDisconnected(this);
 			CloseSocket(false);
 			break;
 		}
@@ -126,7 +126,7 @@ void UCNTcpIpSocket::OnReceivedSize()
 
 void UCNTcpIpSocket::OnReceivedBody()
 {
-	ReceiveData.Broadcast(this, ReceiveBuffer, (int32)BodySize);
+	DispatchReceiveData(this, ReceiveBuffer, (int32)BodySize);
 
 	ReceiveMode = EReceiveMode::Size;
 }
