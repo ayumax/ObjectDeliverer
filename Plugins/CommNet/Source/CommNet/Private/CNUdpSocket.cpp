@@ -13,8 +13,19 @@ UCNUdpSocket::~UCNUdpSocket()
 
 }
 
-void UCNUdpSocket::Start()
+void UCNUdpSocket::Initialize(const FString& IpAddress, int32 Port)
 {
+	DestinationIpAddress = IpAddress;
+	DestinationPort = Port;
+}
+
+void UCNUdpSocket::Start_Implementation()
+{
+	auto endPoint = GetIP4EndPoint(DestinationIpAddress, DestinationPort);
+	if (!endPoint.Get<0>()) return;
+
+	DestinationEndpoint = endPoint.Get<1>();
+
 	InnerSocket = FUdpSocketBuilder(TEXT("CommNet UdpSocket"))
 		.AsBlocking()
 		.WithReceiveBufferSize(1024 * 1024)
@@ -23,9 +34,14 @@ void UCNUdpSocket::Start()
 	OnStart();
 }
 
-void UCNUdpSocket::Close()
+void UCNUdpSocket::Close_Implementation()
 {
 	CloseInnerSocket();
 
 	OnClose();
+}
+
+void UCNUdpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)
+{
+	SendTo(DataBuffer, DestinationEndpoint);
 }

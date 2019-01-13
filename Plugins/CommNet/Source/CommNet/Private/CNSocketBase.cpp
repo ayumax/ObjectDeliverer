@@ -25,20 +25,12 @@ void UCNSocketBase::CloseInnerSocket()
 	InnerSocket = nullptr;
 }
 
-void UCNSocketBase::SendTo(const TArray<uint8>& DataBuffer, const FString& IpAddress, int32 Port)
+void UCNSocketBase::SendTo(const TArray<uint8>& DataBuffer, const FIPv4Endpoint& EndPoint)
 {
 	if (!InnerSocket) return;
 
-	uint8 IP4Nums[4];
-	if (!FormatIP4ToNumber(IpAddress, IP4Nums))
-	{
-		UE_LOG(LogTemp, Error, TEXT("UCNSocketBase::ipaddress format violation"));
-		return;
-	}
-	FIPv4Endpoint Endpoint(FIPv4Address(IP4Nums[0], IP4Nums[1], IP4Nums[2], IP4Nums[3]), Port);
-
 	int32 BytesSent;
-	InnerSocket->SendTo(DataBuffer.GetData(), DataBuffer.Num(), BytesSent, Endpoint.ToInternetAddr().Get());
+	InnerSocket->SendTo(DataBuffer.GetData(), DataBuffer.Num(), BytesSent, EndPoint.ToInternetAddr().Get());
 }
 
 void UCNSocketBase::SendToConnected(const TArray<uint8>& DataBuffer)
@@ -76,4 +68,18 @@ bool UCNSocketBase::FormatIP4ToNumber(const FString& IpAddress, uint8(&Out)[4])
 	}
 
 	return true;
+}
+
+TTuple<bool, FIPv4Endpoint> UCNSocketBase::GetIP4EndPoint(const FString& IpAddress, int32 Port)
+{
+	uint8 IP4Nums[4];
+	if (!FormatIP4ToNumber(IpAddress, IP4Nums))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UCNTcpIpSocket::ipaddress format violation"));
+		return MakeTuple(false, FIPv4Endpoint());
+	}
+
+	FIPv4Endpoint Endpoint(FIPv4Address(IP4Nums[0], IP4Nums[1], IP4Nums[2], IP4Nums[3]), Port);
+
+	return MakeTuple(true, Endpoint);
 }

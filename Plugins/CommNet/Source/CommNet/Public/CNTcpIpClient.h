@@ -16,11 +16,23 @@ public:
 	UCNTcpIpClient();
 	~UCNTcpIpClient();
 
+	/**
+	 * Initialize TCP/IP server.
+	 * @param IpAddress - The ip address of the connection destination.
+	 * @param Port - The port number of the connection destination.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-		bool Connect(const FString& IpAddress, int32 Port);
+	void Initialize(const FString& IpAddress, int32 Port);
+
+	virtual void Start_Implementation() override;
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "CommNet")
-		FTcpIpClientConnected Connected;
+	FTcpIpClientConnected Connected;
 
+	UPROPERTY(EditAnywhere, Category = "CommNet")
+	FString ServerIpAddress;
+
+	UPROPERTY(EditAnywhere, Category = "CommNet")
+	int32 ServerPort;
 };

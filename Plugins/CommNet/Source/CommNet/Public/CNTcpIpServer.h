@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Networking.h"
 #include "Sockets.h"
-
+#include "CommNetProtocol.h"
 #include "CNTcpIpServer.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTcpIpServerConnected, class UCNTcpIpSocket*, ClientSocket);
@@ -13,7 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FTcpIpServerReceiveData, class UC
 class UCNTcpIpSocket;
 
 UCLASS(BlueprintType, Blueprintable)
-class COMMNET_API UCNTcpIpServer : public UObject
+class COMMNET_API UCNTcpIpServer : public UCommNetProtocol
 {
 	GENERATED_BODY()
 
@@ -21,36 +21,46 @@ public:
 	UCNTcpIpServer();
 	~UCNTcpIpServer();
  
+	/**
+	 * Initialize TCP/IP server.
+	 * @param Port - listen port number.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-		bool Start(int32 Port);
+	void Initialize(int32 Port);
 
-	UFUNCTION(BlueprintCallable, Category = "CommNet")
-		void Close();
+	virtual void Start_Implementation() override;
 
-	UFUNCTION(BlueprintCallable, Category = "CommNet")
-		void Send(const TArray<uint8>& DataBuffer);
+	virtual void Close_Implementation() override;
+	virtual void Send_Implementation(const TArray<uint8>& DataBuffer) override;
 
 	virtual void BeginDestroy() override;
 
-private:
+protected:
 	void OnListen();
 
 	UFUNCTION()
-		void DisconnectedClient(UCNTcpIpSocket* ClientSocket);
+	void DisconnectedClient(UCNTcpIpSocket* ClientSocket);
 
 	UFUNCTION()
-		void ReceiveDataFromClient(UCNTcpIpSocket* ClientSocket, const TArray<uint8>& Buffer, int32 Size);
+	void ReceiveDataFromClient(UCNTcpIpSocket* ClientSocket, const TArray<uint8>& Buffer, int32 Size);
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "CommNet")
-		FTcpIpServerConnected Connected;
+	FTcpIpServerConnected Connected;
 	UPROPERTY(BlueprintAssignable, Category = "CommNet")
-		FTcpIpServerDisconnected Disconnected;
+	FTcpIpServerDisconnected Disconnected;
 	UPROPERTY(BlueprintAssignable, Category = "CommNet")
-		FTcpIpServerReceiveData ReceiveData;
+	FTcpIpServerReceiveData ReceiveData;
 
-private:
+	UPROPERTY(EditAnywhere, Category = "CommNet")
+	int32 ListenPort;
+
+	UPROPERTY(EditAnywhere, Category = "CommNet")
+	int32 MaxBacklog = 10;
+
+protected:
 	FSocket* ListenerSocket = nullptr;
+	class FWorkerThread ListenInnerThread = nullptr;
 	class FRunnableThread* ListenThread = nullptr;
 
 	TArray<UCNTcpIpSocket*> ConnectedSockets;
