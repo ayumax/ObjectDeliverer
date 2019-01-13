@@ -33,9 +33,9 @@ void UCommNetProtocol::DispatchDisconnected(UCommNetProtocol* DisconnectedObject
 	Disconnected.ExecuteIfBound(DisconnectedObject);
 }
 
-void UCommNetProtocol::DispatchReceiveData(UCommNetProtocol* FromObject, const TArray<uint8>& Buffer, int32 Size)
+void UCommNetProtocol::DispatchReceiveData(UCommNetProtocol* FromObject, const TArray<uint8>& Buffer)
 {
-	ReceiveData.ExecuteIfBound(FromObject, Buffer, Size);
+	ReceiveData.ExecuteIfBound(FromObject, Buffer);
 }
 
 void UCommNetProtocol::BeginDestroy()

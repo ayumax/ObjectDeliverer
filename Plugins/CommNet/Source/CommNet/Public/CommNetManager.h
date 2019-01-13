@@ -4,10 +4,11 @@
 #include "CommNetManager.generated.h"
 
 class UCommNetProtocol;
+class UCNPacketRule;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCommNetManagerConnected, UCommNetProtocol*, ClientSocket);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCommNetManagerDisconnected, UCommNetProtocol*, ClientSocket);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FCommNetManagerReceiveData, UCommNetProtocol*, ClientSocket, const TArray<uint8>&, Buffer, int32, Size);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCommNetManagerReceiveData, UCommNetProtocol*, ClientSocket, const TArray<uint8>&, Buffer);
 
 UCLASS(BlueprintType)
 class COMMNET_API UCommNetManager : public UObject
@@ -22,7 +23,7 @@ public:
 	 * start communication protocol.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-	void Start(UCommNetProtocol* Protocol);
+	void Start(UCommNetProtocol* Protocol, UCNPacketRule* PacketRule);
 
 	/**
 	 * close communication protocol.
@@ -33,6 +34,7 @@ public:
 	/**
 	 * send the data to the connection destination.
 	 * @param DataBuffer - databuffer
+	 * @param DataSize - Size to send in databuffer(0:all bytes in databuffer)
 	 */
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
 	void Send(const TArray<uint8>& DataBuffer);

@@ -23,21 +23,11 @@ protected:
 	void CloseSocket(bool Wait);
 	void StartPollilng();
 	void ReceivedData();
-	uint32 WantSize();
-	void OnReceivedSize();
-	void OnReceivedBody();
 
 protected:
 	class FWorkerThread* CurrentInnerThread = nullptr;
 	class FRunnableThread* CurrentThread = nullptr;
 
-	enum EReceiveMode
-	{
-		Size,
-		Body
-	} ReceiveMode;
-	
 	TArray<uint8> ReceiveBuffer;
-	uint32 BodySize;
 
 };

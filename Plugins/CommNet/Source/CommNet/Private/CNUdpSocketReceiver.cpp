@@ -1,4 +1,5 @@
 #include "CNUdpSocketReceiver.h"
+#include "CNPacketRule.h"
 
 UCNUdpSocketReceiver::UCNUdpSocketReceiver()
 {
@@ -48,6 +49,29 @@ void UCNUdpSocketReceiver::Close_Implementation()
 void UCNUdpSocketReceiver::UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip)
 {
 	int64 receivedSize = data->TotalSize();
-	
-	DispatchReceiveData(this, *(data.Get()), (int32)receivedSize);
+	TArray<uint8>& receiveBuffer = *(data.Get());
+
+	auto wantSize = PacketRule->GetWantSize();
+
+	TArray<uint8> BodyBuffer;
+
+	if (wantSize < receivedSize)
+	{
+		TArray<uint8> SplitBuffer;
+		int64 nowSize = receivedSize;
+
+		while (nowSize > PacketRule->GetWantSize())
+		{
+			SplitBuffer.SetNum(PacketRule->GetWantSize(), false);
+			FMemory::Memcpy(SplitBuffer.GetData() + (receivedSize - nowSize), receiveBuffer.GetData(), SplitBuffer.Num());
+
+			nowSize -= PacketRule->GetWantSize();
+
+			if (PacketRule->NotifyReceiveData(SplitBuffer, BodyBuffer))
+			{
+				DispatchReceiveData(this, BodyBuffer);
+			}
+		}
+
+	}
 }

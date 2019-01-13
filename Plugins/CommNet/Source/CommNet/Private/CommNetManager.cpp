@@ -1,5 +1,6 @@
 #include "CommNetManager.h"
 #include "CommNetProtocol.h"
+#include "CNPacketRule.h"
 
 UCommNetManager::UCommNetManager()
 {
@@ -10,9 +11,10 @@ UCommNetManager::~UCommNetManager()
 {
 }
 
-void UCommNetManager::Start(UCommNetProtocol* Protocol)
+void UCommNetManager::Start(UCommNetProtocol* Protocol, UCNPacketRule* PacketRule)
 {
 	CurrentProtocol = Protocol;
+	CurrentProtocol->PacketRule = PacketRule;
 
 	CurrentProtocol->Connected.BindLambda([this](UCommNetProtocol* ConnectedObject) 
 	{
@@ -24,9 +26,9 @@ void UCommNetManager::Start(UCommNetProtocol* Protocol)
 		Connected.Broadcast(DisconnectedObject);
 	});
 
-	CurrentProtocol->ReceiveData.BindLambda([this](UCommNetProtocol* FromObject, const TArray<uint8>& Buffer, int32 Size)
+	CurrentProtocol->ReceiveData.BindLambda([this](UCommNetProtocol* FromObject, const TArray<uint8>& Buffer)
 	{
-		ReceiveData.Broadcast(FromObject, Buffer, Size);
+		ReceiveData.Broadcast(FromObject, Buffer);
 	});
 
 
