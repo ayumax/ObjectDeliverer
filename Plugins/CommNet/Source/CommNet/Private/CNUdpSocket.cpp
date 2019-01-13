@@ -2,6 +2,7 @@
 #include "UdpSocketBuilder.h"
 #include "WorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
+#include "CNPacketRule.h"
 
 UCNUdpSocket::UCNUdpSocket()
 {
@@ -39,5 +40,9 @@ void UCNUdpSocket::Close_Implementation()
 
 void UCNUdpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)
 {
-	SendTo(DataBuffer, DestinationEndpoint);
+	TArray<uint8> BufferForSend;
+
+	PacketRule->MakeSendPacket(DataBuffer, BufferForSend);
+
+	SendTo(BufferForSend, DestinationEndpoint);
 }

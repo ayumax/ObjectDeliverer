@@ -2,10 +2,9 @@
 #include "TcpSocketBuilder.h"
 #include "WorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
+#include "CNPacketRule.h"
 
 UCNTcpIpSocket::UCNTcpIpSocket()
-	: ReceiveMode(EReceiveMode::Size)
-	, BodySize(0)
 {
 
 }
@@ -40,18 +39,11 @@ void UCNTcpIpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)
 {
 	if (!InnerSocket) return;
 
-	TArray<uint8> buffer;
-	buffer.Reset(4 + DataBuffer.Num());
-	buffer.SetNum(4);
+	TArray<uint8> BufferForSend;
 
-	buffer[0] = (uint8)((DataBuffer.Num() >> 24) & 0xFF);
-	buffer[1] = (uint8)((DataBuffer.Num() >> 16) & 0xFF);
-	buffer[2] = (uint8)((DataBuffer.Num() >> 8) & 0xFF);
-	buffer[3] = (uint8)(DataBuffer.Num() & 0xFF);
+	PacketRule->MakeSendPacket(DataBuffer, BufferForSend);
 
-	buffer.Append(DataBuffer);
-
-	SendToConnected(buffer);
+	SendToConnected(BufferForSend);
 }
 
 void UCNTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
@@ -62,65 +54,41 @@ void UCNTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
 
 void UCNTcpIpSocket::StartPollilng()
 {
-	ReceiveMode = EReceiveMode::Size;
 	ReceiveBuffer.SetNum(1024);
-
 	CurrentInnerThread = new FWorkerThread([this] { ReceivedData(); });
 	CurrentThread = FRunnableThread::Create(CurrentInnerThread, TEXT("CommNet TcpIpSocket PollingThread"));
 }
 
 void UCNTcpIpSocket::ReceivedData()
 {
+	TArray<uint8> BodyBuffer;
+
 	uint32 Size = 0;
 	while (InnerSocket->HasPendingData(Size))
 	{
-		if (Size < WantSize()) return;
+		uint32 wantSize = PacketRule->GetWantSize();
+
+		if (wantSize > 0)
+		{
+			if (Size < wantSize) return;
+		}
+
+		auto receiveSize = wantSize == 0 ? Size : wantSize;
+
+		ReceiveBuffer.SetNum(receiveSize, false);
 
 		int32 Read = 0;
-		if (!InnerSocket->Recv(ReceiveBuffer.GetData(), WantSize(), Read, ESocketReceiveFlags::WaitAll))
+		if (!InnerSocket->Recv(ReceiveBuffer.GetData(), ReceiveBuffer.Num(), Read, ESocketReceiveFlags::WaitAll))
 		{
 			DispatchDisconnected(this);
 			CloseSocket(false);
 			break;
 		}
 
-		if (ReceiveMode == EReceiveMode::Size)
+		if (PacketRule->NotifyReceiveData(ReceiveBuffer, BodyBuffer))
 		{
-			OnReceivedSize();
-		}
-		else
-		{
-			OnReceivedBody();
+			DispatchReceiveData(this, BodyBuffer);
 		}
 	}
-
 }
 
-uint32 UCNTcpIpSocket::WantSize()
-{
-	if (ReceiveMode == EReceiveMode::Size)
-	{
-		return 4;
-	}
-
-	return BodySize;
-}
-
-void UCNTcpIpSocket::OnReceivedSize()
-{
-	BodySize = ReceiveBuffer[0] << 24 | ReceiveBuffer[1] << 16 | ReceiveBuffer[2] << 8 | ReceiveBuffer[3];
-
-	if (BodySize > (uint32)ReceiveBuffer.Num())
-	{
-		ReceiveBuffer.SetNum(BodySize, false);
-	}
-
-	ReceiveMode = EReceiveMode::Body;
-}
-
-void UCNTcpIpSocket::OnReceivedBody()
-{
-	DispatchReceiveData(this, ReceiveBuffer, (int32)BodySize);
-
-	ReceiveMode = EReceiveMode::Size;
-}

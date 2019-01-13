@@ -85,6 +85,7 @@ void UCNTcpIpServer::OnListen()
 			auto clientSocket = NewObject<UCNTcpIpSocket>();
 			clientSocket->Disconnected.BindUObject(this, &UCNTcpIpServer::DisconnectedClient);
 			clientSocket->ReceiveData.BindUObject(this, &UCNTcpIpServer::ReceiveDataFromClient);
+			clientSocket->PacketRule = PacketRule;
 
 			clientSocket->OnConnected(_clientSocket);
 
@@ -112,7 +113,7 @@ void UCNTcpIpServer::DisconnectedClient(UCommNetProtocol* ClientSocket)
 	}
 }
 
-void UCNTcpIpServer::ReceiveDataFromClient(UCommNetProtocol* ClientSocket, const TArray<uint8>& Buffer, int32 Size)
+void UCNTcpIpServer::ReceiveDataFromClient(UCommNetProtocol* ClientSocket, const TArray<uint8>& Buffer)
 {
-	DispatchReceiveData(ClientSocket, Buffer, Size);
+	DispatchReceiveData(ClientSocket, Buffer);
 }

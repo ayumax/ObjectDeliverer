@@ -5,8 +5,9 @@
 
 DECLARE_DELEGATE_OneParam(FCommNetProtocolConnected, UCommNetProtocol*);
 DECLARE_DELEGATE_OneParam(FCommNetProtocolDisconnected, UCommNetProtocol*);
-DECLARE_DELEGATE_ThreeParams(FCommNetProtocolReceiveData, UCommNetProtocol*, const TArray<uint8>&, int32);
+DECLARE_DELEGATE_TwoParams(FCommNetProtocolReceiveData, UCommNetProtocol*, const TArray<uint8>&);
 
+class UCNPacketRule;
 
 UCLASS(BlueprintType)
 class COMMNET_API UCommNetProtocol : public UObject
@@ -48,9 +49,13 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
 	void DispatchDisconnected(UCommNetProtocol* DisconnectedObject);
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-	void DispatchReceiveData(UCommNetProtocol* FromObject, const TArray<uint8>& Buffer, int32 Size);
+	void DispatchReceiveData(UCommNetProtocol* FromObject, const TArray<uint8>& Buffer);
+
 
 public:
+	UPROPERTY()
+	UCNPacketRule* PacketRule;
+
 	FCommNetProtocolConnected Connected;
 	FCommNetProtocolDisconnected Disconnected;
 	FCommNetProtocolReceiveData ReceiveData;

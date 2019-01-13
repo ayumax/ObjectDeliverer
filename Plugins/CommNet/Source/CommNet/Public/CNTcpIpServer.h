@@ -36,7 +36,7 @@ protected:
 	void DisconnectedClient(UCommNetProtocol* ClientSocket);
 
 	UFUNCTION()
-	void ReceiveDataFromClient(UCommNetProtocol* ClientSocket, const TArray<uint8>& Buffer, int32 Size);
+	void ReceiveDataFromClient(UCommNetProtocol* ClientSocket, const TArray<uint8>& Buffer);
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
