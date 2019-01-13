@@ -1,5 +1,6 @@
 #include "CNPacketRuleSizeBody.h"
 #include "CommNetProtocol.h"
+#include "CNPacketRuleFactory.h"
 
 UCNPacketRuleSizeBody::UCNPacketRuleSizeBody()
 {
@@ -17,7 +18,7 @@ void UCNPacketRuleSizeBody::Initialize_Implementation()
 	BodySize = 0;
 }
 
-void UCNPacketRuleSizeBody::MakeSendPacket_Implementation(const TArray<uint8>& BodyBuffer, TArray<uint8>& SendBuffer)
+void UCNPacketRuleSizeBody::MakeSendPacket_Implementation(const TArray<uint8>& BodyBuffer)
 {
 	auto BodyBufferNum = BodyBuffer.Num();
 	auto SendSize = BodyBufferNum + SizeLength;
@@ -40,20 +41,19 @@ void UCNPacketRuleSizeBody::MakeSendPacket_Implementation(const TArray<uint8>& B
 
 	FMemory::Memcpy(BufferForSend.GetData() + SizeLength, BodyBuffer.GetData(), BodyBufferNum);
 
-	SendBuffer = BufferForSend;
+	DispatchMadeSendBuffer(BufferForSend);
 
 }
 
-bool UCNPacketRuleSizeBody::NotifyReceiveData_Implementation(const TArray<uint8>& DataBuffer, TArray<uint8>& BodyBuffer)
+void UCNPacketRuleSizeBody::NotifyReceiveData_Implementation(const TArray<uint8>& DataBuffer)
 {
 	if (ReceiveMode == EReceiveMode::Size)
 	{
 		OnReceivedSize(DataBuffer);
-		return false;
+		return;
 	}
 	
-	OnReceivedBody(DataBuffer, BodyBuffer);
-	return true;
+	OnReceivedBody(DataBuffer);
 }
 
 void UCNPacketRuleSizeBody::OnReceivedSize(const TArray<uint8>& DataBuffer)
@@ -76,10 +76,11 @@ void UCNPacketRuleSizeBody::OnReceivedSize(const TArray<uint8>& DataBuffer)
 	ReceiveMode = EReceiveMode::Body;
 }
 
-void UCNPacketRuleSizeBody::OnReceivedBody(const TArray<uint8>& DataBuffer, TArray<uint8>& BodyBuffer)
+void UCNPacketRuleSizeBody::OnReceivedBody(const TArray<uint8>& DataBuffer)
 {
-	BodyBuffer = DataBuffer;
-	BodySize = GetWantSize_Implementation();
+	DispatchMadeReceiveBuffer(DataBuffer);
+
+	BodySize = 0;
 
 	ReceiveMode = EReceiveMode::Size;
 }
@@ -94,3 +95,7 @@ int32 UCNPacketRuleSizeBody::GetWantSize_Implementation()
 	return BodySize;
 }
 
+UCNPacketRule* UCNPacketRuleSizeBody::Clone_Implementation()
+{
+	return UCNPacketRuleFactory::CreateCNPacketRuleSizeBody(SizeLength, SizeBufferEndian);
+}

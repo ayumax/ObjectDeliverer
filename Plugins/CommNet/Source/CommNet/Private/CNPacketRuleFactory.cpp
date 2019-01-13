@@ -18,8 +18,9 @@ UCNPacketRuleSizeBody* UCNPacketRuleFactory::CreateCNPacketRuleSizeBody(int32 Si
 	return PacketRule;
 }
 
-UCNPacketRuleTerminate* UCNPacketRuleFactory::CreateCNPacketRuleTerminate()
+UCNPacketRuleTerminate* UCNPacketRuleFactory::CreateCNPacketRuleTerminate(const TArray<uint8>& Terminate)
 {
 	auto PacketRule = NewObject<UCNPacketRuleTerminate>();
+	PacketRule->Terminate = Terminate;
 	return PacketRule;
 }

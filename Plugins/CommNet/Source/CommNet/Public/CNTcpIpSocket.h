@@ -18,6 +18,7 @@ public:
 
 	void OnConnected(FSocket* ConnectionSocket);
 
+	virtual void RequestSend(const TArray<uint8>& DataBuffer) override;
 
 protected:
 	void CloseSocket(bool Wait);

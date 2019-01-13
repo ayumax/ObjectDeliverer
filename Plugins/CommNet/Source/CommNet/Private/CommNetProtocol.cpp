@@ -1,4 +1,5 @@
 #include "CommNetProtocol.h"
+#include "CNPacketRule.h"
 
 UCommNetProtocol::UCommNetProtocol()
 {
@@ -43,4 +44,25 @@ void UCommNetProtocol::BeginDestroy()
 	Super::BeginDestroy();
 
 	Close_Implementation();
+}
+
+void UCommNetProtocol::SetPacketRule(UCNPacketRule* _PacketRule)
+{
+	PacketRule = _PacketRule;
+	PacketRule->Initialize();
+
+	PacketRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+	{
+		RequestSend(Buffer);
+	});
+
+	PacketRule->MadeReceiveBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+	{
+		DispatchReceiveData(this, Buffer);
+	});
+}
+
+void UCommNetProtocol::RequestSend(const TArray<uint8>& DataBuffer)
+{
+
 }

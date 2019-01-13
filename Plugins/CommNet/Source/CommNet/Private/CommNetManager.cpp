@@ -14,7 +14,7 @@ UCommNetManager::~UCommNetManager()
 void UCommNetManager::Start(UCommNetProtocol* Protocol, UCNPacketRule* PacketRule)
 {
 	CurrentProtocol = Protocol;
-	CurrentProtocol->PacketRule = PacketRule;
+	CurrentProtocol->SetPacketRule(PacketRule);
 
 	CurrentProtocol->Connected.BindLambda([this](UCommNetProtocol* ConnectedObject) 
 	{

@@ -20,19 +20,16 @@ void UCNUdpSocketReceiver::InitializeWithReceiver(const FString& IpAddress, int3
 
 void UCNUdpSocketReceiver::Start_Implementation()
 {
-	auto endPoint = GetIP4EndPoint(DestinationIpAddress, DestinationPort);
-	if (!endPoint.Get<0>()) return;
+	Super::Start_Implementation();
 
-	DestinationEndpoint = endPoint.Get<1>();
-
-	InnerSocket = FUdpSocketBuilder(TEXT("CommNet UdpSocket"))
-		.AsBlocking()
+	ReceiveSocket = FUdpSocketBuilder(TEXT("CommNet UdpSocket"))
 		.WithReceiveBufferSize(1024 * 1024)
 		.BoundToPort(BoundPort)
 		.Build();
 
-	Receiver = new FUdpSocketReceiver(InnerSocket, FTimespan::FromMicroseconds(1), TEXT("UCNUdpSocketReceiver"));
+	Receiver = new FUdpSocketReceiver(ReceiveSocket, FTimespan::FromMilliseconds(10), TEXT("UCNUdpSocketReceiver"));
 	Receiver->OnDataReceived().BindUObject(this, &UCNUdpSocketReceiver::UdpReceivedCallback);
+	Receiver->Start();
 }
 
 void UCNUdpSocketReceiver::Close_Implementation()
@@ -41,9 +38,19 @@ void UCNUdpSocketReceiver::Close_Implementation()
 
 	if (Receiver)
 	{
+		Receiver->Stop();
 		delete Receiver;
 		Receiver = nullptr;
 	}
+
+	if (!ReceiveSocket) return;
+
+	ReceiveSocket->Close();
+	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ReceiveSocket);
+
+	ReceiveSocket = nullptr;
+
+	
 }
 
 void UCNUdpSocketReceiver::UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip)
@@ -60,17 +67,14 @@ void UCNUdpSocketReceiver::UdpReceivedCallback(const FArrayReaderPtr& data, cons
 		TArray<uint8> SplitBuffer;
 		int64 nowSize = receivedSize;
 
-		while (nowSize > PacketRule->GetWantSize())
+		while (nowSize >= PacketRule->GetWantSize())
 		{
 			SplitBuffer.SetNum(PacketRule->GetWantSize(), false);
-			FMemory::Memcpy(SplitBuffer.GetData() + (receivedSize - nowSize), receiveBuffer.GetData(), SplitBuffer.Num());
+			FMemory::Memcpy(SplitBuffer.GetData(), receiveBuffer.GetData() + (receivedSize - nowSize), SplitBuffer.Num());
 
 			nowSize -= PacketRule->GetWantSize();
 
-			if (PacketRule->NotifyReceiveData(SplitBuffer, BodyBuffer))
-			{
-				DispatchReceiveData(this, BodyBuffer);
-			}
+			PacketRule->NotifyReceiveData(SplitBuffer);
 		}
 
 	}

@@ -43,6 +43,10 @@ public:
 
 	virtual void BeginDestroy() override;
 
+	void SetPacketRule(UCNPacketRule* PacketRule);
+
+	virtual void RequestSend(const TArray<uint8>& DataBuffer);
+
 protected:
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
 	void DispatchConnected(UCommNetProtocol* ConnectedObject);
@@ -51,10 +55,10 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
 	void DispatchReceiveData(UCommNetProtocol* FromObject, const TArray<uint8>& Buffer);
 
-
-public:
 	UPROPERTY()
 	UCNPacketRule* PacketRule;
+
+public:
 
 	FCommNetProtocolConnected Connected;
 	FCommNetProtocolDisconnected Disconnected;
