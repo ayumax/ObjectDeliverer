@@ -19,5 +19,5 @@ public:
 	static class UCNPacketRuleSizeBody* CreateCNPacketRuleSizeBody(int32 SizeLength = 4, ECNBufferEndian SizeBufferEndian = ECNBufferEndian::Big);
 
 	UFUNCTION(BlueprintPure, Category = "CommNet")
-	static class UCNPacketRuleTerminate* CreateCNPacketRuleTerminate();
+	static class UCNPacketRuleTerminate* CreateCNPacketRuleTerminate(const TArray<uint8>& Terminate);
 };

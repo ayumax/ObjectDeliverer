@@ -28,7 +28,6 @@ void UCNUdpSocket::Start_Implementation()
 	DestinationEndpoint = endPoint.Get<1>();
 
 	InnerSocket = FUdpSocketBuilder(TEXT("CommNet UdpSocket"))
-		.AsBlocking()
 		.WithReceiveBufferSize(1024 * 1024)
 		.Build();
 }
@@ -40,9 +39,10 @@ void UCNUdpSocket::Close_Implementation()
 
 void UCNUdpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)
 {
-	TArray<uint8> BufferForSend;
+	PacketRule->MakeSendPacket(DataBuffer);
+}
 
-	PacketRule->MakeSendPacket(DataBuffer, BufferForSend);
-
-	SendTo(BufferForSend, DestinationEndpoint);
+void UCNUdpSocket::RequestSend(const TArray<uint8>& DataBuffer)
+{
+	SendTo(DataBuffer, DestinationEndpoint);
 }

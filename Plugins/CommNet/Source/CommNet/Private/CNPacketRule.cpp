@@ -14,16 +14,30 @@ void UCNPacketRule::Initialize_Implementation()
 
 }
 
-void UCNPacketRule::MakeSendPacket_Implementation(const TArray<uint8>& BodyBuffer, TArray<uint8>& SendBuffer)
+void UCNPacketRule::MakeSendPacket_Implementation(const TArray<uint8>& BodyBuffer)
 {
 }
 
-bool UCNPacketRule::NotifyReceiveData_Implementation(const TArray<uint8>& DataBuffer, TArray<uint8>& BodyBuffer)
+void UCNPacketRule::NotifyReceiveData_Implementation(const TArray<uint8>& DataBuffer)
 {
-	return false;
 }
 
 int32 UCNPacketRule::GetWantSize_Implementation()
 {
 	return 0;
+}
+
+UCNPacketRule* UCNPacketRule::Clone_Implementation()
+{
+	return nullptr;
+}
+
+void UCNPacketRule::DispatchMadeSendBuffer(const TArray<uint8>& SendBuffer)
+{
+	MadeSendBuffer.ExecuteIfBound(SendBuffer);
+}
+
+void UCNPacketRule::DispatchMadeReceiveBuffer(const TArray<uint8>& ReceiveBuffer)
+{
+	MadeReceiveBuffer.ExecuteIfBound(ReceiveBuffer);
 }

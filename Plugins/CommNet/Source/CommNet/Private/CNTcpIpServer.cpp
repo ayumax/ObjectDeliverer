@@ -2,6 +2,7 @@
 #include "TcpSocketBuilder.h"
 #include "CNTcpIpSocket.h"
 #include "WorkerThread.h"
+#include "CNPacketRule.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 
 UCNTcpIpServer::UCNTcpIpServer()
@@ -85,7 +86,7 @@ void UCNTcpIpServer::OnListen()
 			auto clientSocket = NewObject<UCNTcpIpSocket>();
 			clientSocket->Disconnected.BindUObject(this, &UCNTcpIpServer::DisconnectedClient);
 			clientSocket->ReceiveData.BindUObject(this, &UCNTcpIpServer::ReceiveDataFromClient);
-			clientSocket->PacketRule = PacketRule;
+			clientSocket->SetPacketRule(PacketRule->Clone());
 
 			clientSocket->OnConnected(_clientSocket);
 

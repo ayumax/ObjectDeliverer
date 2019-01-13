@@ -39,11 +39,7 @@ void UCNTcpIpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)
 {
 	if (!InnerSocket) return;
 
-	TArray<uint8> BufferForSend;
-
-	PacketRule->MakeSendPacket(DataBuffer, BufferForSend);
-
-	SendToConnected(BufferForSend);
+	PacketRule->MakeSendPacket(DataBuffer);
 }
 
 void UCNTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
@@ -85,10 +81,11 @@ void UCNTcpIpSocket::ReceivedData()
 			break;
 		}
 
-		if (PacketRule->NotifyReceiveData(ReceiveBuffer, BodyBuffer))
-		{
-			DispatchReceiveData(this, BodyBuffer);
-		}
+		PacketRule->NotifyReceiveData(ReceiveBuffer);
 	}
 }
 
+void UCNTcpIpSocket::RequestSend(const TArray<uint8>& DataBuffer)
+{
+	SendToConnected(DataBuffer);
+}

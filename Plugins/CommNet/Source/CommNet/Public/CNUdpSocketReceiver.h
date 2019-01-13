@@ -28,6 +28,7 @@ protected:
 	void UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip);
 
 private:
+	FSocket* ReceiveSocket;
 	FUdpSocketReceiver* Receiver = nullptr;
 
 public:

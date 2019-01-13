@@ -25,6 +25,7 @@ public:
 	virtual void Close_Implementation() override;
 	virtual void Send_Implementation(const TArray<uint8>& DataBuffer) override;
 
+	virtual void RequestSend(const TArray<uint8>& DataBuffer) override;
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
