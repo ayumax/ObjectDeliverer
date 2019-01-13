@@ -14,7 +14,6 @@ void UCNUdpSocketReceiver::OnStart()
 {
 	Receiver = new FUdpSocketReceiver(InnerSocket, FTimespan::FromMicroseconds(1), TEXT("UCNUdpSocketReceiver"));
 	Receiver->OnDataReceived().BindUObject(this, &UCNUdpSocketReceiver::UdpReceivedCallback);
-
 }
 
 void UCNUdpSocketReceiver::OnClose()

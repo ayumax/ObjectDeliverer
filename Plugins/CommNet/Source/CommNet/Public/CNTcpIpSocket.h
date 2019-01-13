@@ -16,11 +16,8 @@ public:
 	UCNTcpIpSocket();
 	virtual ~UCNTcpIpSocket();
 
-	UFUNCTION(BlueprintCallable, Category = "CommNet")
-		void Close();
-
-	UFUNCTION(BlueprintCallable, Category = "CommNet")
-		void Send(const TArray<uint8>& DataBuffer);
+	virtual void Close_Implementation() override;
+	virtual void Send_Implementation(const TArray<uint8>& DataBuffer) override;
 
 	void OnConnected(FSocket* ConnectionSocket);
 
@@ -35,6 +32,7 @@ protected:
 	void OnReceivedBody();
 
 protected:
+	class FWorkerThread* CurrentInnerThread = nullptr;
 	class FRunnableThread* CurrentThread = nullptr;
 
 	enum EReceiveMode

@@ -16,7 +16,7 @@ UCNTcpIpSocket::~UCNTcpIpSocket()
 }
 
 
-void UCNTcpIpSocket::Close()
+void UCNTcpIpSocket::Close_Implementation()
 {
 	CloseSocket(true);
 }
@@ -33,11 +33,16 @@ void UCNTcpIpSocket::CloseSocket(bool Wait)
 	if (!InnerSocket) return;
 
 	CurrentThread->Kill(Wait);
+	delete CurrentThread;
+	CurrentThread = nullptr;
+
+	delete CurrentInnerThread;
+	CurrentInnerThread = nullptr;
 
 	CloseInnerSocket();
 }
 
-void UCNTcpIpSocket::Send(const TArray<uint8>& DataBuffer)
+void UCNTcpIpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)
 {
 	if (!InnerSocket) return;
 
@@ -66,8 +71,8 @@ void UCNTcpIpSocket::StartPollilng()
 	ReceiveMode = EReceiveMode::Size;
 	ReceiveBuffer.SetNum(1024);
 
-	auto PollingThread = new FWorkerThread([this] { ReceivedData(); });
-	CurrentThread = FRunnableThread::Create(PollingThread, TEXT("CommNet TcpIpSocket PollingThread"));
+	CurrentInnerThread = new FWorkerThread([this] { ReceivedData(); });
+	CurrentThread = FRunnableThread::Create(CurrentInnerThread, TEXT("CommNet TcpIpSocket PollingThread"));
 }
 
 void UCNTcpIpSocket::ReceivedData()

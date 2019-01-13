@@ -13,14 +13,30 @@ public:
 	UCNUdpSocket();
 	~UCNUdpSocket();
 
+	/**
+	 * Initialize UDP.
+	 * @param IpAddress - The ip address of the destination.
+	 * @param Port - The port number of the destination.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-		void Start();
+	void Initialize(const FString& IpAddress, int32 Port);
 
-	UFUNCTION(BlueprintCallable, Category = "CommNet")
-		void Close();
+	virtual void Start_Implementation() override;
+	virtual void Close_Implementation() override;
+	virtual void Send_Implementation(const TArray<uint8>& DataBuffer) override;
+
 
 protected:
 	virtual void OnStart() {}
 	virtual void OnClose() {}
 
+public:
+	UPROPERTY(EditAnywhere, Category = "CommNet")
+	FString DestinationIpAddress;
+
+	UPROPERTY(EditAnywhere, Category = "CommNet")
+	int32 DestinationPort;
+
+protected:
+	FIPv4Endpoint DestinationEndpoint;
 };

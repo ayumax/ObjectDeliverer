@@ -12,7 +12,13 @@ UCNTcpIpClient::~UCNTcpIpClient()
 
 }
 
-bool UCNTcpIpClient::Connect(const FString& IpAddress, int32 Port)
+void UCNTcpIpClient::Initialize(const FString& IpAddress, int32 Port)
+{
+	ServerIpAddress = IpAddress;
+	ServerPort = Port;
+}
+
+void UCNTcpIpClient::Start_Implementation()
 {
 	CloseSocket(true);
 
@@ -21,26 +27,18 @@ bool UCNTcpIpClient::Connect(const FString& IpAddress, int32 Port)
 		.WithReceiveBufferSize(1024 * 1024)
 		.Build();
 
-	if (socket == nullptr) return false;
+	if (socket == nullptr) return;
 
-	uint8 IP4Nums[4];
-	if (!FormatIP4ToNumber(IpAddress, IP4Nums))
-	{
-		UE_LOG(LogTemp, Error, TEXT("UCNTcpIpSocket::ipaddress format violation"));
-		return false;
-	}
+	auto endPoint = GetIP4EndPoint(ServerIpAddress, ServerPort);
+	if (!endPoint.Get<0>()) return;
 
-	FIPv4Endpoint Endpoint(FIPv4Address(IP4Nums[0], IP4Nums[1], IP4Nums[2], IP4Nums[3]), Port);
-
-	if (!socket->Connect(Endpoint.ToInternetAddr().Get()))
+	if (!socket->Connect(endPoint.Get<1>().ToInternetAddr().Get()))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UCNTcpIpSocket::Failed to connect to the server"));
-		return false;
+		return;
 	}
-	
+
 	Connected.Broadcast(this);
 
 	OnConnected(socket);
-
-	return true;
 }

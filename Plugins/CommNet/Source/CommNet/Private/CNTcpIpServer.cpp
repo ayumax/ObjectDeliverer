@@ -14,28 +14,30 @@ UCNTcpIpServer::~UCNTcpIpServer()
 
 }
 
-bool UCNTcpIpServer::Start(int32 Port)
+void UCNTcpIpServer::Initialize(int32 Port)
+{
+	ListenPort = Port;
+}
+
+void UCNTcpIpServer::Start_Implementation()
 {
 	Close();
 
 	auto socket = FTcpSocketBuilder(TEXT("CommNet TcpIpServer"))
 		.AsBlocking()
-		.BoundToPort(Port)
-		.Listening(10)
+		.BoundToPort(ListenPort)
+		.Listening(MaxBacklog)
 		.Build();
 
-	if (socket == nullptr) return false;
+	if (socket == nullptr) return;
 
 	ListenerSocket = socket;
 
-	auto worker = new FWorkerThread([this] { OnListen(); });
-	ListenThread = FRunnableThread::Create(worker, TEXT("CommNet TcpIpSocket ListenThread"));
-	
-
-	return true;
+	ListenInnerThread = new FWorkerThread([this] { OnListen(); });
+	ListenThread = FRunnableThread::Create(ListenInnerThread, TEXT("CommNet TcpIpSocket ListenThread"));
 }
 
-void UCNTcpIpServer::Close()
+void UCNTcpIpServer::Close_Implementation()
 {
 	for (auto clientSocket : ConnectedSockets)
 	{
@@ -47,6 +49,12 @@ void UCNTcpIpServer::Close()
 	if (!ListenerSocket) return;
 
 	ListenThread->Kill(false);
+	delete ListenThread;
+	ListenThread = nullptr;
+
+	delete ListenInnerThread;
+	ListenInnerThread = nullptr;
+
 	ListenerSocket->Close();
 	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ListenerSocket);
 
@@ -61,7 +69,7 @@ void UCNTcpIpServer::BeginDestroy()
 }
 
 
-void UCNTcpIpServer::Send(const TArray<uint8>& DataBuffer)
+void UCNTcpIpServer::Send_Implementation(const TArray<uint8>& DataBuffer)
 {
 	for (auto clientSocket : ConnectedSockets)
 	{
