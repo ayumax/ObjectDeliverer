@@ -26,15 +26,11 @@ public:
 	virtual void Send_Implementation(const TArray<uint8>& DataBuffer) override;
 
 
-protected:
-	virtual void OnStart() {}
-	virtual void OnClose() {}
-
 public:
-	UPROPERTY(EditAnywhere, Category = "CommNet")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
 	FString DestinationIpAddress;
 
-	UPROPERTY(EditAnywhere, Category = "CommNet")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
 	int32 DestinationPort;
 
 protected:

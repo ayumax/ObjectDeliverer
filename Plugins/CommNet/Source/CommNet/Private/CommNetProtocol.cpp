@@ -1,5 +1,13 @@
 #include "CommNetProtocol.h"
 
+UCommNetProtocol::UCommNetProtocol()
+{
+
+}
+
+UCommNetProtocol::~UCommNetProtocol()
+{
+}
 
 void UCommNetProtocol::Start_Implementation()
 {
@@ -28,4 +36,11 @@ void UCommNetProtocol::DispatchDisconnected(UCommNetProtocol* DisconnectedObject
 void UCommNetProtocol::DispatchReceiveData(UCommNetProtocol* FromObject, const TArray<uint8>& Buffer, int32 Size)
 {
 	ReceiveData.ExecuteIfBound(FromObject, Buffer, Size);
+}
+
+void UCommNetProtocol::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	Close_Implementation();
 }

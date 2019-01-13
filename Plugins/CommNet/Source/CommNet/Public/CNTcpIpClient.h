@@ -25,9 +25,9 @@ public:
 	virtual void Start_Implementation() override;
 
 public:
-	UPROPERTY(EditAnywhere, Category = "CommNet")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
 	FString ServerIpAddress;
 
-	UPROPERTY(EditAnywhere, Category = "CommNet")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
 	int32 ServerPort;
 };

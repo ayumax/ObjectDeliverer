@@ -14,6 +14,9 @@ class COMMNET_API UCommNetProtocol : public UObject
 	GENERATED_BODY()
 
 public:
+	UCommNetProtocol();
+	~UCommNetProtocol();
+
 	/**
 	 * start communication protocol.
 	 */
@@ -35,6 +38,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "CommNet")
 	void Send(const TArray<uint8>& DataBuffer);
 	virtual void Send_Implementation(const TArray<uint8>& DataBuffer);
+
+
+	virtual void BeginDestroy() override;
 
 protected:
 	UFUNCTION(BlueprintCallable, Category = "CommNet")

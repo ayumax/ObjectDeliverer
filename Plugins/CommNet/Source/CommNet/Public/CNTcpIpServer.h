@@ -30,8 +30,6 @@ public:
 	virtual void Close_Implementation() override;
 	virtual void Send_Implementation(const TArray<uint8>& DataBuffer) override;
 
-	virtual void BeginDestroy() override;
-
 protected:
 	void OnListen();
 
@@ -42,10 +40,10 @@ protected:
 	void ReceiveDataFromClient(UCommNetProtocol* ClientSocket, const TArray<uint8>& Buffer, int32 Size);
 
 public:
-	UPROPERTY(EditAnywhere, Category = "CommNet")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
 	int32 ListenPort;
 
-	UPROPERTY(EditAnywhere, Category = "CommNet")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CommNet")
 	int32 MaxBacklog = 10;
 
 protected:
