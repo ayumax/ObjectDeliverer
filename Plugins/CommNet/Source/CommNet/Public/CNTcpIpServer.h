@@ -40,10 +40,10 @@ protected:
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
-	int32 ListenPort;
+	int32 ListenPort = 8000;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CommNet")
-	int32 MaxBacklog = 10;
+	int32 MaxBacklog = 1;
 
 protected:
 	FSocket* ListenerSocket = nullptr;

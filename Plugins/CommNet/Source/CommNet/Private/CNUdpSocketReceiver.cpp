@@ -10,6 +10,13 @@ UCNUdpSocketReceiver::~UCNUdpSocketReceiver()
 
 }	
 
+void UCNUdpSocketReceiver::InitializeWithReceiver(const FString& IpAddress, int32 Port, int32 _BoundPort)
+{
+	Super::Initialize(IpAddress, Port);
+
+	BoundPort = _BoundPort;
+}
+
 void UCNUdpSocketReceiver::Start_Implementation()
 {
 	auto endPoint = GetIP4EndPoint(DestinationIpAddress, DestinationPort);

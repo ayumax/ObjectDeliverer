@@ -19,7 +19,7 @@ public:
 	 * @param Port - The port number of the destination.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-	void Initialize(const FString& IpAddress, int32 Port);
+	virtual void Initialize(const FString& IpAddress = "localhost", int32 Port = 8000);
 
 	virtual void Start_Implementation() override;
 	virtual void Close_Implementation() override;
@@ -28,10 +28,10 @@ public:
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
-	FString DestinationIpAddress;
+	FString DestinationIpAddress = "localhost";
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
-	int32 DestinationPort;
+	int32 DestinationPort = 8000;
 
 protected:
 	FIPv4Endpoint DestinationEndpoint;

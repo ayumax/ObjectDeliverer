@@ -22,7 +22,7 @@ public:
 	 * @param Retry - If connection fails, try connection again
 	 */
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-	void Initialize(const FString& IpAddress, int32 Port, bool Retry = false);
+	void Initialize(const FString& IpAddress = "localhost", int32 Port = 8000, bool Retry = false);
 
 	virtual void Start_Implementation() override;
 	virtual void Close_Implementation() override;
@@ -33,13 +33,13 @@ private:
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
-	FString ServerIpAddress;
+	FString ServerIpAddress = "localhost";
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
-	int32 ServerPort;
+	int32 ServerPort = 8000;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "CommNet")
-	bool RetryConnect;
+	bool RetryConnect = false;
 
 private:
 	FTimerHandle ConnectTimerHandle;

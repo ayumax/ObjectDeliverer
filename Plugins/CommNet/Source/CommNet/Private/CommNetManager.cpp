@@ -53,7 +53,7 @@ void UCommNetManager::Close()
 		CurrentProtocol->ReceiveData.Unbind();
 	}
 	
-	CurrentProtocol->Close();
+	CurrentProtocol->Close_Implementation();
 
 	CurrentProtocol = nullptr;
 }
