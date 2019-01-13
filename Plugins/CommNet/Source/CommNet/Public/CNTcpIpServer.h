@@ -26,7 +26,6 @@ public:
 	void Initialize(int32 Port);
 
 	virtual void Start_Implementation() override;
-
 	virtual void Close_Implementation() override;
 	virtual void Send_Implementation(const TArray<uint8>& DataBuffer) override;
 

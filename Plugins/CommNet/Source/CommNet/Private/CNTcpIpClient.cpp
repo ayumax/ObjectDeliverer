@@ -1,5 +1,6 @@
 #include "CNTcpIpClient.h"
 #include "TcpSocketBuilder.h"
+#include "Engine/World.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 
 UCNTcpIpClient::UCNTcpIpClient()
@@ -12,10 +13,11 @@ UCNTcpIpClient::~UCNTcpIpClient()
 
 }
 
-void UCNTcpIpClient::Initialize(const FString& IpAddress, int32 Port)
+void UCNTcpIpClient::Initialize(const FString& IpAddress, int32 Port, bool Retry/* = false*/)
 {
 	ServerIpAddress = IpAddress;
 	ServerPort = Port;
+	RetryConnect = Retry;
 }
 
 void UCNTcpIpClient::Start_Implementation()
@@ -32,13 +34,33 @@ void UCNTcpIpClient::Start_Implementation()
 	auto endPoint = GetIP4EndPoint(ServerIpAddress, ServerPort);
 	if (!endPoint.Get<0>()) return;
 
-	if (!socket->Connect(endPoint.Get<1>().ToInternetAddr().Get()))
+	ConnectEndPoint = endPoint.Get<1>();
+	InnerSocket = socket;
+
+	TryConnect();
+}
+
+void UCNTcpIpClient::TryConnect()
+{
+	if (InnerSocket->Connect(ConnectEndPoint.ToInternetAddr().Get()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UCNTcpIpSocket::Failed to connect to the server"));
-		return;
+		DispatchConnected(this);
+
+		OnConnected(InnerSocket);
 	}
+	else if(RetryConnect)
+	{
+		GetWorld()->GetTimerManager().SetTimer(ConnectTimerHandle, this, &UCNTcpIpClient::TryConnect, 1.0f, false, 1.0f);
+	}
+}
 
-	DispatchConnected(this);
+void UCNTcpIpClient::Close_Implementation()
+{
+	Super::Close_Implementation();
 
-	OnConnected(socket);
+	auto world = GetWorld();
+	if (world)
+	{
+		world->GetTimerManager().ClearTimer(ConnectTimerHandle);
+	}
 }
