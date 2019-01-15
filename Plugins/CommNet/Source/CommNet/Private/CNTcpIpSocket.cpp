@@ -24,8 +24,6 @@ void UCNTcpIpSocket::CloseSocket(bool Wait)
 {
 	if (!InnerSocket) return;
 
-	CloseInnerSocket();
-
 	CurrentThread->Kill(Wait);
 	delete CurrentThread;
 	CurrentThread = nullptr;
@@ -33,6 +31,7 @@ void UCNTcpIpSocket::CloseSocket(bool Wait)
 	delete CurrentInnerThread;
 	CurrentInnerThread = nullptr;
 
+	CloseInnerSocket();
 }
 
 void UCNTcpIpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)
@@ -82,6 +81,12 @@ void UCNTcpIpSocket::ReceivedData()
 		}
 
 		PacketRule->NotifyReceiveData(ReceiveBuffer);
+	}
+
+	if (InnerSocket->GetConnectionState() != ESocketConnectionState::SCS_Connected)
+	{
+		DispatchDisconnected(this);
+		CloseSocket(false);
 	}
 }
 

@@ -37,7 +37,7 @@ void UCNTcpIpClient::Start_Implementation()
 	ConnectEndPoint = endPoint.Get<1>();
 	InnerSocket = socket;
 
-	TryConnect();
+	GWorld->GetTimerManager().SetTimer(ConnectTimerHandle, this, &UCNTcpIpClient::TryConnect, 0.1f, false, 0.1f);
 }
 
 void UCNTcpIpClient::TryConnect()
@@ -50,7 +50,7 @@ void UCNTcpIpClient::TryConnect()
 	}
 	else if(RetryConnect)
 	{
-		GetWorld()->GetTimerManager().SetTimer(ConnectTimerHandle, this, &UCNTcpIpClient::TryConnect, 1.0f, false, 1.0f);
+		GWorld->GetTimerManager().SetTimer(ConnectTimerHandle, this, &UCNTcpIpClient::TryConnect, 1.0f, false, 1.0f);
 	}
 }
 
@@ -58,9 +58,8 @@ void UCNTcpIpClient::Close_Implementation()
 {
 	Super::Close_Implementation();
 
-	auto world = GetWorld();
-	if (world)
+	if (GWorld)
 	{
-		world->GetTimerManager().ClearTimer(ConnectTimerHandle);
+		GWorld->GetTimerManager().ClearTimer(ConnectTimerHandle);
 	}
 }
