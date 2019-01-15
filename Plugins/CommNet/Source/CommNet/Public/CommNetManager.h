@@ -55,3 +55,40 @@ private:
 	UPROPERTY()
 	UCommNetProtocol* CurrentProtocol;
 };
+
+UCLASS()
+class COMMNET_API UCommNetManagerTestHelper : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION()
+	void OnConnect(UCommNetProtocol* ClientSocket)
+	{
+		ConnectedSocket.Add(ClientSocket);
+	}
+	UFUNCTION()
+	void OnDisConnect(UCommNetProtocol* ClientSocket)
+	{
+		DisconnectedSocket.Add(ClientSocket);
+	}
+	UFUNCTION()
+	void OnReceive(UCommNetProtocol* ClientSocket, const TArray<uint8>& Buffer)
+	{
+		ReceiveSocket = ClientSocket;
+		ReceiveBuffer = Buffer;
+	}
+
+	UPROPERTY()
+	TArray<UCommNetProtocol*> ConnectedSocket;
+
+	UPROPERTY()
+	TArray<UCommNetProtocol*> DisconnectedSocket;
+
+	UPROPERTY()
+	UCommNetProtocol* ReceiveSocket;
+
+	UPROPERTY()
+	TArray<uint8> ReceiveBuffer;
+
+};
