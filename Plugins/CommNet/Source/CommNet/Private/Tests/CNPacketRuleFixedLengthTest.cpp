@@ -1,5 +1,6 @@
 #include "AutomationTest.h"
 #include "CNPacketRuleFixedLength.h"
+#include "CNPacketRuleFactory.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCNPacketRuleFixedLengthTest_MakeSendPacket, "CommNet.PacketRuleTests.CNPacketRuleFixedLengthTest.MakeSendPacket", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
@@ -7,7 +8,8 @@ bool FCNPacketRuleFixedLengthTest_MakeSendPacket::RunTest(const FString& Paramet
 {
 	// just size
 	{
-		auto packetRule = NewObject<UCNPacketRuleFixedLength>();
+		auto packetRule = UCNPacketRuleFactory::CreatePacketRuleFixedLength(8);
+
 		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer)
 		{
 			TestEqual(TEXT("MakeSendPacket check size"), Buffer.Num(), 8);
@@ -18,7 +20,7 @@ bool FCNPacketRuleFixedLengthTest_MakeSendPacket::RunTest(const FString& Paramet
 			}
 
 		});
-		packetRule->FixedSize = 8;
+
 		packetRule->Initialize();
 
 		TArray<uint8> buffer;
@@ -33,7 +35,8 @@ bool FCNPacketRuleFixedLengthTest_MakeSendPacket::RunTest(const FString& Paramet
 
 	// over size
 	{
-		auto packetRule = NewObject<UCNPacketRuleFixedLength>();
+		auto packetRule = UCNPacketRuleFactory::CreatePacketRuleFixedLength(8);
+
 		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer)
 		{
 			TestEqual(TEXT("MakeSendPacket check size"), Buffer.Num(), 8);
@@ -44,7 +47,7 @@ bool FCNPacketRuleFixedLengthTest_MakeSendPacket::RunTest(const FString& Paramet
 			}
 
 		});
-		packetRule->FixedSize = 8;
+
 		packetRule->Initialize();
 
 		TArray<uint8> buffer;
@@ -59,7 +62,8 @@ bool FCNPacketRuleFixedLengthTest_MakeSendPacket::RunTest(const FString& Paramet
 	
 	// under size
 	{
-		auto packetRule = NewObject<UCNPacketRuleFixedLength>();
+		auto packetRule = UCNPacketRuleFactory::CreatePacketRuleFixedLength(8);
+
 		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer)
 		{
 			TestEqual(TEXT("MakeSendPacket check size"), Buffer.Num(), 8);
@@ -75,7 +79,7 @@ bool FCNPacketRuleFixedLengthTest_MakeSendPacket::RunTest(const FString& Paramet
 			}
 
 		});
-		packetRule->FixedSize = 8;
+
 		packetRule->Initialize();
 
 		TArray<uint8> buffer;
@@ -98,9 +102,14 @@ bool FCNPacketRuleFixedLengthTest_NotifyReceiveData::RunTest(const FString& Para
 {
 	// 
 	{
-		auto packetRule = NewObject<UCNPacketRuleFixedLength>();
-		packetRule->MadeReceiveBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+		auto packetRule = UCNPacketRuleFactory::CreatePacketRuleFixedLength(8);
+
+		bool isReceived = false;
+
+		packetRule->MadeReceiveBuffer.BindLambda([this, &isReceived](const TArray<uint8>& Buffer)
 		{
+			isReceived = true;
+
 			TestEqual(TEXT("NotifyReceiveData check size"), Buffer.Num(), 8);
 
 			for (int i = 0; i < Buffer.Num(); ++i)
@@ -109,7 +118,7 @@ bool FCNPacketRuleFixedLengthTest_NotifyReceiveData::RunTest(const FString& Para
 			}
 
 		});
-		packetRule->FixedSize = 8;
+
 		packetRule->Initialize();
 
 		TArray<uint8> buffer;
@@ -120,6 +129,8 @@ bool FCNPacketRuleFixedLengthTest_NotifyReceiveData::RunTest(const FString& Para
 		}
 
 		packetRule->NotifyReceiveData(buffer);
+
+		TestEqual(TEXT("NotifyReceiveData check receuved"), isReceived, true);
 	}
 
 
