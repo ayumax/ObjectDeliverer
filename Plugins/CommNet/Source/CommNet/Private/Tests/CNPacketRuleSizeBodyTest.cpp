@@ -77,6 +77,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCNPacketRuleSizeBodyTest_NotifyReceiveData, "C
 
 bool FCNPacketRuleSizeBodyTest_NotifyReceiveData::RunTest(const FString& Parameters)
 {
+	// size buffer is big endian
 	{
 		auto packetRule = UCNPacketRuleFactory::CreateCNPacketRuleSizeBody(4, ECNBufferEndian::Big);
 
@@ -89,12 +90,17 @@ bool FCNPacketRuleSizeBodyTest_NotifyReceiveData::RunTest(const FString& Paramet
 		buffer[2] = 0;
 		buffer[3] = 8;
 
-		packetRule->MadeReceiveBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+		bool notCall = true;
+
+		packetRule->MadeReceiveBuffer.BindLambda([this, &notCall](const TArray<uint8>& Buffer)
 		{
-			TestEqual(TEXT("NotifyReceiveData not call"), 1, 0);
+			// must not be called here
+			notCall = false;
 		});
 
 		packetRule->NotifyReceiveData(buffer);
+		
+		TestEqual(TEXT("NotifyReceiveData not call"), notCall, true);
 
 		buffer.SetNum(8);
 		for (int i = 0; i < buffer.Num(); ++i)
@@ -102,8 +108,12 @@ bool FCNPacketRuleSizeBodyTest_NotifyReceiveData::RunTest(const FString& Paramet
 			buffer[i] = i;
 		}
 
-		packetRule->MadeReceiveBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+		bool isReceived = false;
+
+		packetRule->MadeReceiveBuffer.BindLambda([this, &isReceived](const TArray<uint8>& Buffer)
 		{
+			isReceived = true;
+
 			TestEqual(TEXT("NotifyReceiveData check size"), Buffer.Num(), 8);
 
 			for (int i = 0; i < 8; ++i)
@@ -113,6 +123,59 @@ bool FCNPacketRuleSizeBodyTest_NotifyReceiveData::RunTest(const FString& Paramet
 		});
 
 		packetRule->NotifyReceiveData(buffer);
+
+		TestEqual(TEXT("NotifyReceiveData check receuved"), isReceived, true);
+	}
+
+	// size buffer is little endian
+	{
+		auto packetRule = UCNPacketRuleFactory::CreateCNPacketRuleSizeBody(4, ECNBufferEndian::Little);
+
+		packetRule->Initialize();
+
+		TArray<uint8> buffer;
+		buffer.SetNum(4);
+		buffer[0] = 8;
+		buffer[1] = 0;
+		buffer[2] = 0;
+		buffer[3] = 0;
+
+		bool notCall = true;
+
+		packetRule->MadeReceiveBuffer.BindLambda([this, &notCall](const TArray<uint8>& Buffer)
+		{
+			// must not be called here
+			notCall = false;
+		});
+
+
+		packetRule->NotifyReceiveData(buffer);
+
+		TestEqual(TEXT("NotifyReceiveData not call"), notCall, true);
+
+		buffer.SetNum(8);
+		for (int i = 0; i < buffer.Num(); ++i)
+		{
+			buffer[i] = i;
+		}
+
+		bool isReceived = false;
+
+		packetRule->MadeReceiveBuffer.BindLambda([this, &isReceived](const TArray<uint8>& Buffer)
+		{
+			isReceived = true;
+
+			TestEqual(TEXT("NotifyReceiveData check size"), Buffer.Num(), 8);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				TestEqual(TEXT("MakeSendPacket check buffer value"), Buffer[i], i);
+			}
+		});
+
+		packetRule->NotifyReceiveData(buffer);
+
+		TestEqual(TEXT("NotifyReceiveData check receuved"), isReceived, true);
 	}
 
 
