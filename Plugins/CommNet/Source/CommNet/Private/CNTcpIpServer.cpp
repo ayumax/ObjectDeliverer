@@ -52,7 +52,6 @@ void UCNTcpIpServer::Close_Implementation()
 	if (!ListenerSocket) return;
 	ListenerSocket->Close();
 	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ListenerSocket);
-	ListenerSocket = nullptr;
 
 	if (!ListenThread) return;
 	ListenThread->Kill(true);
@@ -63,6 +62,7 @@ void UCNTcpIpServer::Close_Implementation()
 	delete ListenInnerThread;
 	ListenInnerThread = nullptr;
 
+	ListenerSocket = nullptr;
 
 }
 

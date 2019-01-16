@@ -21,7 +21,6 @@ void UCNSocketBase::CloseInnerSocket()
 
 	InnerSocket->Close();
 	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(InnerSocket);
-
 	InnerSocket = nullptr;
 }
 

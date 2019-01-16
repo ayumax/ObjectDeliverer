@@ -30,5 +30,4 @@ protected:
 	class FRunnableThread* CurrentThread = nullptr;
 
 	TArray<uint8> ReceiveBuffer;
-
 };
