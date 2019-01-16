@@ -23,7 +23,7 @@ void UCommNetManager::Start(UCommNetProtocol* Protocol, UCNPacketRule* PacketRul
 
 	CurrentProtocol->Disconnected.BindLambda([this](UCommNetProtocol* DisconnectedObject)
 	{
-		Connected.Broadcast(DisconnectedObject);
+		Disconnected.Broadcast(DisconnectedObject);
 	});
 
 	CurrentProtocol->ReceiveData.BindLambda([this](UCommNetProtocol* FromObject, const TArray<uint8>& Buffer)

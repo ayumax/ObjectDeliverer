@@ -34,7 +34,7 @@ void UCNTcpIpServer::Start_Implementation()
 
 	ListenerSocket = socket;
 
-	ListenInnerThread = new FWorkerThread([this] { OnListen(); });
+	ListenInnerThread = new FWorkerThread([this] { return OnListen(); });
 	ListenThread = FRunnableThread::Create(ListenInnerThread, TEXT("CommNet TcpIpSocket ListenThread"));
 }
 
@@ -42,6 +42,8 @@ void UCNTcpIpServer::Close_Implementation()
 {
 	for (auto clientSocket : ConnectedSockets)
 	{
+		clientSocket->Disconnected.Unbind();
+		clientSocket->ReceiveData.Unbind();
 		clientSocket->Close();
 	}
 
@@ -52,10 +54,12 @@ void UCNTcpIpServer::Close_Implementation()
 	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ListenerSocket);
 	ListenerSocket = nullptr;
 
+	if (!ListenThread) return;
 	ListenThread->Kill(true);
 	delete ListenThread;
 	ListenThread = nullptr;
 
+	if (!ListenInnerThread) return;
 	delete ListenInnerThread;
 	ListenInnerThread = nullptr;
 
@@ -70,9 +74,9 @@ void UCNTcpIpServer::Send_Implementation(const TArray<uint8>& DataBuffer)
 	}
 }
 
-void UCNTcpIpServer::OnListen()
+bool UCNTcpIpServer::OnListen()
 {
-	if (!ListenerSocket) return;
+	if (!ListenerSocket) return false;
 
 	TSharedRef<FInternetAddr> RemoteAddress = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
 	bool Pending = false;
@@ -95,6 +99,8 @@ void UCNTcpIpServer::OnListen()
 			DispatchConnected(clientSocket);
 		}
 	}
+
+	return true;
 }
 
 void UCNTcpIpServer::DisconnectedClient(UCommNetProtocol* ClientSocket)

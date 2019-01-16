@@ -24,14 +24,16 @@ void UCNTcpIpSocket::CloseSocket(bool Wait)
 {
 	if (!InnerSocket) return;
 
+	CloseInnerSocket();
+
+	if (!CurrentThread) return;
 	CurrentThread->Kill(Wait);
 	delete CurrentThread;
 	CurrentThread = nullptr;
 
+	if (!CurrentInnerThread) return;
 	delete CurrentInnerThread;
 	CurrentInnerThread = nullptr;
-
-	CloseInnerSocket();
 }
 
 void UCNTcpIpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)
@@ -50,13 +52,16 @@ void UCNTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
 void UCNTcpIpSocket::StartPollilng()
 {
 	ReceiveBuffer.SetNum(1024);
-	CurrentInnerThread = new FWorkerThread([this] { ReceivedData(); });
+	CurrentInnerThread = new FWorkerThread([this] { return ReceivedData(); });
 	CurrentThread = FRunnableThread::Create(CurrentInnerThread, TEXT("CommNet TcpIpSocket PollingThread"));
 }
 
-void UCNTcpIpSocket::ReceivedData()
+bool UCNTcpIpSocket::ReceivedData()
 {
-	TArray<uint8> BodyBuffer;
+	if (InnerSocket->GetConnectionState() != ESocketConnectionState::SCS_Connected)
+	{
+		return false;
+	}
 
 	uint32 Size = 0;
 	while (InnerSocket->HasPendingData(Size))
@@ -65,7 +70,7 @@ void UCNTcpIpSocket::ReceivedData()
 
 		if (wantSize > 0)
 		{
-			if (Size < wantSize) return;
+			if (Size < wantSize) return true;
 		}
 
 		auto receiveSize = wantSize == 0 ? Size : wantSize;
@@ -76,18 +81,14 @@ void UCNTcpIpSocket::ReceivedData()
 		if (!InnerSocket->Recv(ReceiveBuffer.GetData(), ReceiveBuffer.Num(), Read, ESocketReceiveFlags::WaitAll))
 		{
 			DispatchDisconnected(this);
-			CloseSocket(false);
-			break;
+			CloseInnerSocket();
+			return false;
 		}
 
 		PacketRule->NotifyReceiveData(ReceiveBuffer);
 	}
 
-	if (InnerSocket->GetConnectionState() != ESocketConnectionState::SCS_Connected)
-	{
-		DispatchDisconnected(this);
-		CloseSocket(false);
-	}
+	return true;
 }
 
 void UCNTcpIpSocket::RequestSend(const TArray<uint8>& DataBuffer)

@@ -8,7 +8,7 @@
 class COMMNET_API FWorkerThread : public FRunnable
 {
 public:
-	FWorkerThread(TFunction<void()> InWork);
+	FWorkerThread(TFunction<bool()> InWork);
 	~FWorkerThread();
 
 	virtual uint32 Run() override;
@@ -16,6 +16,6 @@ public:
 	virtual void Exit() override;
 
 private:
-	TFunction<void()> Work;
+	TFunction<bool()> Work;
 	volatile bool ContinueRun;
 };
