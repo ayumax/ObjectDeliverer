@@ -30,7 +30,7 @@ public:
 	virtual void Send_Implementation(const TArray<uint8>& DataBuffer) override;
 
 protected:
-	void OnListen();
+	bool OnListen();
 
 	UFUNCTION()
 	void DisconnectedClient(UCommNetProtocol* ClientSocket);
@@ -43,7 +43,7 @@ public:
 	int32 ListenPort = 8000;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CommNet")
-	int32 MaxBacklog = 1;
+	int32 MaxBacklog = 10;
 
 protected:
 	FSocket* ListenerSocket = nullptr;

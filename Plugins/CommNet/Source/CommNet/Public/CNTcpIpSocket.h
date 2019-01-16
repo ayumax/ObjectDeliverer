@@ -23,7 +23,7 @@ public:
 protected:
 	void CloseSocket(bool Wait);
 	void StartPollilng();
-	void ReceivedData();
+	bool ReceivedData();
 
 protected:
 	class FWorkerThread* CurrentInnerThread = nullptr;

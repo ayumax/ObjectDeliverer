@@ -76,7 +76,7 @@ public:
 	void OnReceive(UCommNetProtocol* ClientSocket, const TArray<uint8>& Buffer)
 	{
 		ReceiveSocket = ClientSocket;
-		ReceiveBuffer = Buffer;
+		ReceiveBuffers.Add(Buffer);
 	}
 
 	UPROPERTY()
@@ -88,7 +88,6 @@ public:
 	UPROPERTY()
 	UCommNetProtocol* ReceiveSocket;
 
-	UPROPERTY()
-	TArray<uint8> ReceiveBuffer;
+	TArray<TArray<uint8>> ReceiveBuffers;
 
 };

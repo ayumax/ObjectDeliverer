@@ -1,7 +1,7 @@
 #include "WorkerThread.h"
 #include "Runtime/Core/Public/HAL/PlatformProcess.h"
 
-FWorkerThread::FWorkerThread(TFunction<void()> InWork)
+FWorkerThread::FWorkerThread(TFunction<bool()> InWork)
 	: Work(InWork)
 	, ContinueRun(true)
 {
@@ -17,7 +17,11 @@ uint32 FWorkerThread::Run()
 {
 	while (ContinueRun)
 	{
-		Work();
+		if (!Work())
+		{
+			return 0;
+		}
+
 
 		if (ContinueRun)
 		{
