@@ -331,10 +331,15 @@ bool FCNTcpIpServerClientTest7::RunTest(const FString& Parameters)
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper, commnetClient, commnetServer]()
 	{
 		TestEqual("check received count", serverHelper->ReceiveBuffers.Num(), 1000);
-		for (int i = 0; i < 1000 && i < serverHelper->ReceiveBuffers.Num(); ++i)
+		if (serverHelper->ReceiveBuffers.Num() == 1000)
 		{
-			TestEqual("check received data", (serverHelper->ReceiveBuffers[i])[0], (uint8)i);
+			for (int i = 0; i < 1000; ++i)
+			{
+				TArray<uint8>& receivebuf = serverHelper->ReceiveBuffers[i];
+				TestEqual("check received data", receivebuf[0], (uint8)i);
+			}
 		}
+		
 
 		commnetClient->Close();
 		commnetServer->Close();

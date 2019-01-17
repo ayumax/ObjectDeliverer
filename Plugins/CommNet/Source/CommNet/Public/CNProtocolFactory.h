@@ -18,8 +18,8 @@ public:
 	static class UCNTcpIpServer* CreateTcpIpServer(int32 Port);
 
 	UFUNCTION(BlueprintPure, Category = "CommNet")
-	static class UCNUdpSocket* CreateUdpSocket(const FString& IpAddress, int32 Port);
+	static class UCNUdpSocketSender* CreateUdpSocketSender(const FString& IpAddress, int32 Port);
 
 	UFUNCTION(BlueprintPure, Category = "CommNet")
-	static class UCNUdpSocketReceiver* CreateCNUdpSocketReceiver(const FString& IpAddress, int32 Port, int32 BoundPort);
+	static class UCNUdpSocketReceiver* CreateCNUdpSocketReceiver(int32 BoundPort);
 };

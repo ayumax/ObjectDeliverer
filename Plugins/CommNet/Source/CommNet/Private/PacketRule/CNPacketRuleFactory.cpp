@@ -2,6 +2,7 @@
 #include "CNPacketRuleFixedLength.h"
 #include "CNPacketRuleSizeBody.h"
 #include "CNPacketRuleTerminate.h"
+#include "CNPacketRuleNodivision.h"
 
 UCNPacketRuleFixedLength* UCNPacketRuleFactory::CreatePacketRuleFixedLength(int32 FixedSize)
 {
@@ -23,4 +24,9 @@ UCNPacketRuleTerminate* UCNPacketRuleFactory::CreateCNPacketRuleTerminate(const 
 	auto PacketRule = NewObject<UCNPacketRuleTerminate>();
 	PacketRule->Terminate = Terminate;
 	return PacketRule;
+}
+
+UCNPacketRuleNodivision* UCNPacketRuleFactory::CreateCNPacketRuleNodivision()
+{
+	return NewObject<UCNPacketRuleNodivision>();
 }

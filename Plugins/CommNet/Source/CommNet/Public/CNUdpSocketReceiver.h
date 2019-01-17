@@ -1,8 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CNUdpSocket.h"
-
+#include "CNSocketBase.h"
 #include "CNUdpSocketReceiver.generated.h"
 
 
@@ -10,7 +9,7 @@ class FSocket;
 class FUdpSocketReceiver;
 
 UCLASS(BlueprintType, Blueprintable)
-class COMMNET_API UCNUdpSocketReceiver : public UCNUdpSocket
+class COMMNET_API UCNUdpSocketReceiver : public UCNSocketBase
 {
 	GENERATED_BODY()
 
@@ -19,7 +18,7 @@ public:
 	~UCNUdpSocketReceiver();
 
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-	void InitializeWithReceiver(const FString& IpAddress = "localhost", int32 Port = 8000, int32 BoundPort = 8001);
+	void InitializeWithReceiver(int32 BoundPort = 8001);
 
 	virtual void Start_Implementation() override;
 	virtual void Close_Implementation() override;
@@ -28,7 +27,6 @@ protected:
 	void UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip);
 
 private:
-	FSocket* ReceiveSocket;
 	FUdpSocketReceiver* Receiver = nullptr;
 
 public:
