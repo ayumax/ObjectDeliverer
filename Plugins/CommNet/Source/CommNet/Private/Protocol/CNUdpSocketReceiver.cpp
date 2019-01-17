@@ -11,31 +11,25 @@ UCNUdpSocketReceiver::~UCNUdpSocketReceiver()
 
 }	
 
-void UCNUdpSocketReceiver::InitializeWithReceiver(const FString& IpAddress, int32 Port, int32 _BoundPort)
+void UCNUdpSocketReceiver::InitializeWithReceiver(int32 _BoundPort)
 {
-	Super::Initialize(IpAddress, Port);
-
 	BoundPort = _BoundPort;
 }
 
 void UCNUdpSocketReceiver::Start_Implementation()
 {
-	Super::Start_Implementation();
-
-	ReceiveSocket = FUdpSocketBuilder(TEXT("CommNet UdpSocket"))
+	InnerSocket = FUdpSocketBuilder(TEXT("CommNet UdpSocket"))
 		.WithReceiveBufferSize(1024 * 1024)
 		.BoundToPort(BoundPort)
 		.Build();
 
-	Receiver = new FUdpSocketReceiver(ReceiveSocket, FTimespan::FromMilliseconds(10), TEXT("UCNUdpSocketReceiver"));
+	Receiver = new FUdpSocketReceiver(InnerSocket, FTimespan::FromMilliseconds(10), TEXT("UCNUdpSocketReceiver"));
 	Receiver->OnDataReceived().BindUObject(this, &UCNUdpSocketReceiver::UdpReceivedCallback);
 	Receiver->Start();
 }
 
 void UCNUdpSocketReceiver::Close_Implementation()
 {
-	Super::Close_Implementation();
-
 	if (Receiver)
 	{
 		Receiver->Stop();
@@ -43,14 +37,7 @@ void UCNUdpSocketReceiver::Close_Implementation()
 		Receiver = nullptr;
 	}
 
-	if (!ReceiveSocket) return;
-
-	ReceiveSocket->Close();
-	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ReceiveSocket);
-
-	ReceiveSocket = nullptr;
-
-	
+	CloseInnerSocket();	
 }
 
 void UCNUdpSocketReceiver::UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip)

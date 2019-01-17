@@ -1,26 +1,26 @@
-#include "CNUdpSocket.h"
+#include "CNUdpSocketSender.h"
 #include "UdpSocketBuilder.h"
-#include "WorkerThread.h"
+#include "Utils/WorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 #include "CNPacketRule.h"
 
-UCNUdpSocket::UCNUdpSocket()
+UCNUdpSocketSender::UCNUdpSocketSender()
 {
 
 }
 
-UCNUdpSocket::~UCNUdpSocket()
+UCNUdpSocketSender::~UCNUdpSocketSender()
 {
 
 }
 
-void UCNUdpSocket::Initialize(const FString& IpAddress, int32 Port)
+void UCNUdpSocketSender::Initialize(const FString& IpAddress, int32 Port)
 {
 	DestinationIpAddress = IpAddress;
 	DestinationPort = Port;
 }
 
-void UCNUdpSocket::Start_Implementation()
+void UCNUdpSocketSender::Start_Implementation()
 {
 	auto endPoint = GetIP4EndPoint(DestinationIpAddress, DestinationPort);
 	if (!endPoint.Get<0>()) return;
@@ -32,17 +32,17 @@ void UCNUdpSocket::Start_Implementation()
 		.Build();
 }
 
-void UCNUdpSocket::Close_Implementation()
+void UCNUdpSocketSender::Close_Implementation()
 {
 	CloseInnerSocket();
 }
 
-void UCNUdpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)
+void UCNUdpSocketSender::Send_Implementation(const TArray<uint8>& DataBuffer)
 {
 	PacketRule->MakeSendPacket(DataBuffer);
 }
 
-void UCNUdpSocket::RequestSend(const TArray<uint8>& DataBuffer)
+void UCNUdpSocketSender::RequestSend(const TArray<uint8>& DataBuffer)
 {
 	SendTo(DataBuffer, DestinationEndpoint);
 }

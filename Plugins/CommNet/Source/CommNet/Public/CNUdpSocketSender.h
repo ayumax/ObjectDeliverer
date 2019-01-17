@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "CNSocketBase.h"
-#include "CNUdpSocket.generated.h"
+#include "CNUdpSocketSender.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)
-class COMMNET_API UCNUdpSocket : public UCNSocketBase
+class COMMNET_API UCNUdpSocketSender : public UCNSocketBase
 {
 	GENERATED_BODY()
 
 public:
-	UCNUdpSocket();
-	~UCNUdpSocket();
+	UCNUdpSocketSender();
+	~UCNUdpSocketSender();
 
 	/**
 	 * Initialize UDP.

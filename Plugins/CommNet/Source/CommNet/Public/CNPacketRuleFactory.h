@@ -20,4 +20,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "CommNet")
 	static class UCNPacketRuleTerminate* CreateCNPacketRuleTerminate(const TArray<uint8>& Terminate);
+
+	UFUNCTION(BlueprintPure, Category = "CommNet")
+	static class UCNPacketRuleNodivision* CreateCNPacketRuleNodivision();
 };

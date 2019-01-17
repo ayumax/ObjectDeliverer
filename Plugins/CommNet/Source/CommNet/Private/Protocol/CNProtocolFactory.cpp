@@ -1,7 +1,7 @@
 #include "CNProtocolFactory.h"
 #include "CNTcpIpClient.h"
 #include "CNTcpIpServer.h"
-#include "CNUdpSocket.h"
+#include "CNUdpSocketSender.h"
 #include "CNUdpSocketReceiver.h"
 
 UCNTcpIpClient* UCNProtocolFactory::CreateTcpIpClient(const FString& IpAddress, int32 Port, bool Retry/* = false*/)
@@ -18,16 +18,16 @@ UCNTcpIpServer* UCNProtocolFactory::CreateTcpIpServer(int32 Port)
 	return protocol;
 }
 
-UCNUdpSocket* UCNProtocolFactory::CreateUdpSocket(const FString& IpAddress, int32 Port)
+UCNUdpSocketSender* UCNProtocolFactory::CreateUdpSocketSender(const FString& IpAddress, int32 Port)
 {
-	auto protocol = NewObject<UCNUdpSocket>();
+	auto protocol = NewObject<UCNUdpSocketSender>();
 	protocol->Initialize(IpAddress, Port);
 	return protocol;
 }
 
-UCNUdpSocketReceiver* UCNProtocolFactory::CreateCNUdpSocketReceiver(const FString& IpAddress, int32 Port, int32 BoundPort)
+UCNUdpSocketReceiver* UCNProtocolFactory::CreateCNUdpSocketReceiver(int32 BoundPort)
 {
 	auto protocol = NewObject<UCNUdpSocketReceiver>();
-	protocol->InitializeWithReceiver(IpAddress, Port, BoundPort);
+	protocol->InitializeWithReceiver(BoundPort);
 	return protocol;
 }
