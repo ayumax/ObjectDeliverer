@@ -21,5 +21,6 @@ public:
 
 	virtual void NotifyReceiveBuffer_Implementation(const TArray<uint8>& buffer) override;
 
+	UPROPERTY(BlueprintAssignable, Category = "CommNet")
 	FCNUtf8StringDeliveryBoxReceived Received;
 };

@@ -1,6 +1,7 @@
 #include "CommNetManager.h"
 #include "CommNetProtocol.h"
 #include "CNPacketRule.h"
+#include "CNDeliveryBox.h"
 
 UCommNetManager::UCommNetManager()
 {
@@ -11,10 +12,20 @@ UCommNetManager::~UCommNetManager()
 {
 }
 
-void UCommNetManager::Start(UCommNetProtocol* Protocol, UCNPacketRule* PacketRule)
+void UCommNetManager::Start(UCommNetProtocol* Protocol, UCNPacketRule* PacketRule, UCNDeliveryBox* _DeliveryBox)
 {
 	CurrentProtocol = Protocol;
 	CurrentProtocol->SetPacketRule(PacketRule);
+
+	DeliveryBox = _DeliveryBox;
+	if (DeliveryBox)
+	{
+		DeliveryBox->RequestSend.BindLambda([this](const TArray<uint8>& Buffer)
+		{
+			Send(Buffer);
+		});
+	}
+	
 
 	CurrentProtocol->Connected.BindLambda([this](UCommNetProtocol* ConnectedObject) 
 	{
@@ -29,6 +40,11 @@ void UCommNetManager::Start(UCommNetProtocol* Protocol, UCNPacketRule* PacketRul
 	CurrentProtocol->ReceiveData.BindLambda([this](UCommNetProtocol* FromObject, const TArray<uint8>& Buffer)
 	{
 		ReceiveData.Broadcast(FromObject, Buffer);
+
+		if (DeliveryBox)
+		{
+			DeliveryBox->NotifyReceiveBuffer(Buffer);
+		}
 	});
 
 

@@ -5,6 +5,7 @@
 
 class UCommNetProtocol;
 class UCNPacketRule;
+class UCNDeliveryBox;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCommNetManagerConnected, UCommNetProtocol*, ClientSocket);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCommNetManagerDisconnected, UCommNetProtocol*, ClientSocket);
@@ -23,7 +24,7 @@ public:
 	 * start communication protocol.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-	void Start(UCommNetProtocol* Protocol, UCNPacketRule* PacketRule);
+	void Start(UCommNetProtocol* Protocol, UCNPacketRule* PacketRule, UCNDeliveryBox* DeliveryBox = nullptr);
 
 	/**
 	 * close communication protocol.
@@ -54,6 +55,8 @@ public:
 private:
 	UPROPERTY()
 	UCommNetProtocol* CurrentProtocol;
+	UPROPERTY()
+	UCNDeliveryBox* DeliveryBox;
 };
 
 UCLASS()
