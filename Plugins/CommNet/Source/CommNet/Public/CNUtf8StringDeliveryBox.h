@@ -16,7 +16,7 @@ public:
 	~UCNUtf8StringDeliveryBox();
 
 	UFUNCTION(BlueprintCallable, Category = "CommNet")
-	void SendData(const FString& message);
+	void Send(const FString& message);
 
 
 	virtual void NotifyReceiveBuffer_Implementation(const TArray<uint8>& buffer) override;

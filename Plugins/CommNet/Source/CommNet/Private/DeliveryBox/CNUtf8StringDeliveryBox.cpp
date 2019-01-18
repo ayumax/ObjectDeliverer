@@ -10,7 +10,7 @@ UCNUtf8StringDeliveryBox::~UCNUtf8StringDeliveryBox()
 {
 }
 
-void UCNUtf8StringDeliveryBox::SendData(const FString& message)
+void UCNUtf8StringDeliveryBox::Send(const FString& message)
 {
 	TArray<uint8> buffer;
 	UCNStringUtil::StringToBuffer(message, buffer);
