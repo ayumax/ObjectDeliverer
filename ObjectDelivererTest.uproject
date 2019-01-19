@@ -1,0 +1,19 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "4.21",
+  "Category": "",
+  "Description": "",
+  "Modules": [
+    {
+      "Name": "ObjectDelivererTest",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "ObjectDeliverer",
+      "Enabled": true
+    }
+  ]
+}
