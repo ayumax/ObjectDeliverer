@@ -18,7 +18,9 @@ namespace UnrealBuildTool.Rules
                     "CoreUObject",
                     "Engine",
                     "Sockets",
-                    "Networking"
+                    "Networking",
+                    "Json",
+                    "JsonUtilities"
                 }
 				);
 
