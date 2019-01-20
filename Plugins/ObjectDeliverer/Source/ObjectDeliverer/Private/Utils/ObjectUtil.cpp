@@ -4,13 +4,13 @@ EUPropertyType UObjectUtil::GetUPropertyType(UProperty* Property)
 {
 	UClass* Class = Property->GetClass();
 
-	if (Class->IsChildOf(UIntProperty::StaticClass()))
+	if (Class->IsChildOf(UBoolProperty::StaticClass()))
 	{
 		return EUPropertyType::Bool;
 	}
 	else if (Class->IsChildOf(UIntProperty::StaticClass()))
 	{
-		return EUPropertyType::Int32;
+		return EUPropertyType::Int;
 	}
 	else if (Class->IsChildOf(UFloatProperty::StaticClass()))
 	{
@@ -36,6 +36,10 @@ EUPropertyType UObjectUtil::GetUPropertyType(UProperty* Property)
 	else if (Class->IsChildOf(UEnumProperty::StaticClass()))
 	{
 		return EUPropertyType::Enum;
+	}
+	else if (Class->IsChildOf(UStrProperty::StaticClass()))
+	{
+		return EUPropertyType::String;
 	}
 	else if (Class->IsChildOf(UArrayProperty::StaticClass()))
 	{

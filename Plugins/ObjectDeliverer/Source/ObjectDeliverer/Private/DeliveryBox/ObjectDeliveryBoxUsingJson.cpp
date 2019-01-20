@@ -46,59 +46,33 @@ TSharedPtr<FJsonObject> UObjectDeliveryBoxUsingJson::CreateJsonObject(const UObj
 {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 
+	if (!Obj) return JsonObject;
+
 	for (TFieldIterator<UProperty> PropIt(Obj->GetClass(), EFieldIteratorFlags::IncludeSuper); PropIt; ++PropIt)
 	{
 		UProperty* Property = *PropIt;
 		FString PropertyName = Property->GetName();
 		uint8* CurrentPropAddr = PropIt->ContainerPtrToValuePtr<uint8>((UObject*)Obj);
 
-		switch (UObjectUtil::GetUPropertyType(Property))
-		{
-		case EUPropertyType::Bool:
-			JsonObject->SetBoolField(PropertyName, ((UBoolProperty*)Property)->GetPropertyValue(CurrentPropAddr));
-			break;
-		case EUPropertyType::Int32:
-			JsonObject->SetNumberField(PropertyName, (int32)((UUInt32Property*)Property)->GetSignedIntPropertyValue(CurrentPropAddr));
-			break;
-		case EUPropertyType::Float:
-			JsonObject->SetNumberField(PropertyName, (float)((UFloatProperty*)Property)->GetFloatingPointPropertyValue(CurrentPropAddr));
-			break;
-		case EUPropertyType::UInt8:
-			JsonObject->SetNumberField(PropertyName, (uint8)((UByteProperty*)Property)->GetUnsignedIntPropertyValue(CurrentPropAddr));
-			break;
-		case EUPropertyType::Enum:
-			JsonObject->SetNumberField(PropertyName, (int32)((UEnumProperty*)Property)->GetUnderlyingProperty()->GetUnsignedIntPropertyValue(CurrentPropAddr));
-			break;
-		case EUPropertyType::Array:
-		{
-			TArray<TSharedPtr<FJsonValue>> arrayValue;
-			UArrayProperty* ArrayProperty = (UArrayProperty*)Property;
-			FScriptArrayHelper ArrayHelper(ArrayProperty, CurrentPropAddr);
-			for (int32 ArrayIndex = 0; ArrayIndex < ArrayHelper.Num(); ++ArrayIndex)
-			{
-				void* ArrayData = ArrayHelper.GetRawPtr(ArrayIndex);
-				TSharedPtr<FJsonValue> arrayItem = FJsonObjectConverter::UPropertyToJsonValue(ArrayProperty->Inner, ArrayData, 0, 0);
-				arrayValue.Add(arrayItem);
-			}
-			JsonObject->SetArrayField(PropertyName, arrayValue);
-		}
-			break;
-		case EUPropertyType::Struct:
-		{
-			TSharedRef<FJsonObject> OutJsonObject = MakeShareable(new FJsonObject());
-			UStructProperty* StructProperty = (UStructProperty*)Property;
-			FJsonObjectConverter::UStructToJsonObject(StructProperty->Struct, CurrentPropAddr, OutJsonObject, 0, 0);
+		FJsonObjectConverter::CustomExportCallback CustomCB;
+		CustomCB.BindStatic(UObjectDeliveryBoxUsingJson::ObjectJsonCallback);
+		JsonObject->SetField(PropertyName, FJsonObjectConverter::UPropertyToJsonValue(Property, CurrentPropAddr, 0, 0, &CustomCB));
 
-
-			JsonObject->SetObjectField(PropertyName, OutJsonObject);
-		}
-			
-			break;
-		case EUPropertyType::Object:
-			JsonObject->SetObjectField(PropertyName, CreateJsonObject(((UObjectProperty*)Property)->GetObjectPropertyValue(CurrentPropAddr)));
-			break;
-		}
 	}
 
 	return JsonObject;
+}
+
+TSharedPtr<FJsonValue> UObjectDeliveryBoxUsingJson::ObjectJsonCallback(UProperty* Property, const void* Value)
+{
+	if (UObjectProperty* ObjectProperty = Cast<UObjectProperty>(Property))
+	{
+		if (!ObjectProperty->HasAnyFlags(RF_Transient)) // We are taking Transient to mean we don't want to serialize to Json either (could make a new flag if nessasary)
+		{
+			return MakeShareable(new FJsonValueObject(CreateJsonObject(ObjectProperty->GetObjectPropertyValue(Value))));
+		}
+	}
+
+	// invalid
+	return TSharedPtr<FJsonValue>();
 }

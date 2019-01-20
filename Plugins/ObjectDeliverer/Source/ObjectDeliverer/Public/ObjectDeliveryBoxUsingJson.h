@@ -20,6 +20,8 @@ public:
 
 	virtual void NotifyReceiveBuffer_Implementation(const TArray<uint8>& buffer) override;
 
+	static TSharedPtr<FJsonValue> ObjectJsonCallback(UProperty* Property, const void* Value);
+
 private:
-	TSharedPtr<FJsonObject> CreateJsonObject(const UObject* Obj);
+	static TSharedPtr<FJsonObject> CreateJsonObject(const UObject* Obj);
 };
