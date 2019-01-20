@@ -24,4 +24,7 @@ public:
 
 private:
 	static TSharedPtr<FJsonObject> CreateJsonObject(const UObject* Obj);
+	static bool JsonObjectToUObject(const TSharedRef<FJsonObject>& JsonObject, UObject* OutObject, int64 CheckFlags, int64 SkipFlags);
+
+
 };

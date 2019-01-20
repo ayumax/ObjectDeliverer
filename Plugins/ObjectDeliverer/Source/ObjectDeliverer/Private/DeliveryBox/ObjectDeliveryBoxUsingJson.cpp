@@ -76,3 +76,57 @@ TSharedPtr<FJsonValue> UObjectDeliveryBoxUsingJson::ObjectJsonCallback(UProperty
 	// invalid
 	return TSharedPtr<FJsonValue>();
 }
+
+bool UObjectDeliveryBoxUsingJson::JsonObjectToUObject(const TSharedRef<FJsonObject>& JsonObject, UObject* OutObject, int64 CheckFlags, int64 SkipFlags)
+{
+	auto& JsonAttributes = JsonObject->Values;
+
+	int32 NumUnclaimedProperties = JsonAttributes.Num();
+	if (NumUnclaimedProperties <= 0)
+	{
+		return true;
+	}
+
+	// iterate over the struct properties
+	for (TFieldIterator<UProperty> PropIt(OutObject->GetClass()); PropIt; ++PropIt)
+	{
+		UProperty* Property = *PropIt;
+
+		// Check to see if we should ignore this property
+		if (CheckFlags != 0 && !Property->HasAnyPropertyFlags(CheckFlags))
+		{
+			continue;
+		}
+		if (Property->HasAnyPropertyFlags(SkipFlags))
+		{
+			continue;
+		}
+
+		// find a json value matching this property name
+		const TSharedPtr<FJsonValue>* JsonValue = JsonAttributes.Find(Property->GetName());
+		if (!JsonValue)
+		{
+			// we allow values to not be found since this mirrors the typical UObject mantra that all the fields are optional when deserializing
+			continue;
+		}
+
+		if (JsonValue->IsValid() && !(*JsonValue)->IsNull())
+		{
+			void* Value = Property->ContainerPtrToValuePtr<uint8>(OutObject);
+			
+			if (!FJsonObjectConverter::JsonValueToUProperty(*JsonValue, Property, Value, CheckFlags, SkipFlags))
+			{
+				UE_LOG(LogJson, Error, TEXT("JsonObjectToUStruct - Unable to parse %s.%s from JSON"), *JsonObject->OutObject->GetClass()->GetName(), *Property->GetName());
+				return false;
+			}
+		}
+
+		if (--NumUnclaimedProperties <= 0)
+		{
+			// If we found all properties that were in the JsonAttributes map, there is no reason to keep looking for more.
+			break;
+		}
+	}
+
+	return true;
+}
