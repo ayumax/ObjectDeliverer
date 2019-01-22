@@ -4,25 +4,41 @@
 #include "Utf8StringDeliveryBox.h"
 #include "ObjectDeliveryBoxUsingJson.h"
 #include "ObjectDelivererManager.h"
+#include "ProtocolTcpIpClient.h"
+#include "ProtocolTcpIpServer.h"
+#include "PacketRuleSizeBody.h"
+#include "ProtocolUdpSocketSender.h"
+#include "ProtocolUdpSocketReceiver.h"
+#include "PacketRuleFixedLength.h"
+#include "PacketRuleNodivision.h"
+#include "PacketRuleTerminate.h"
 
-MyClass::MyClass()
+USampleObject::USampleObject()
 {
 }
 
-MyClass::~MyClass()
+USampleObject::~USampleObject()
 {
 }
 
-void MyClass::Start()
+UMyClass::UMyClass()
+{
+}
+
+UMyClass::~UMyClass()
+{
+}
+
+void UMyClass::Start()
 {
 	auto deliverer = NewObject<UObjectDelivererManager>();
 
 	// bind connected event
-	deliverer->Connected.AddDynamic(this, &MyClass::OnConnect);
+	deliverer->Connected.AddDynamic(this, &UMyClass::OnConnect);
 	// bind disconnected event
-	deliverer->Disconnected.AddDynamic(this, &MyClass::OnDisConnect);
+	deliverer->Disconnected.AddDynamic(this, &UMyClass::OnDisConnect);
 	// bind receive event
-	deliverer->ReceiveData.AddDynamic(this, &MyClass::OnReceive);
+	deliverer->ReceiveData.AddDynamic(this, &UMyClass::OnReceive);
 
 	// start deliverer
 	// + protocol : TCP/IP Server
@@ -62,44 +78,47 @@ void MyClass::Start()
 
 	// UTF-8 string
 	auto deliverybox = NewObject<UUtf8StringDeliveryBox>();
-	deliverybox->Received.AddDynamic(this, &MyClass::OnReceiveString);
+	deliverybox->Received.AddDynamic(this, &UMyClass::OnReceiveString);
 	deliverer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099), UPacketRuleFactory::CreatePacketRuleSizeBody(), deliverybox);
 
 	deliverybox->Send(TEXT("ABCDEFG"));
 
+
 	// Object(Json)
-	auto deliverybox = NewObject<UObjectDeliveryBoxUsingJson>();
-	deliverybox->Received.AddDynamic(this, &MyClass::OnReceiveObject);
+	auto deliverybox2 = NewObject<UObjectDeliveryBoxUsingJson>();
+	deliverybox2->Initialize(USampleObject::StaticClass());
+	deliverybox2->Received.AddDynamic(this, &UMyClass::OnReceiveObject);
 	deliverer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099), UPacketRuleFactory::CreatePacketRuleSizeBody(), deliverybox);
 
-	auto obj = NewObject<SampleObject>();
-	deliverybox->Send(obj);
+	auto obj = NewObject<USampleObject>();
+	deliverybox2->Send(obj);
 }
 
-void MyClass::OnConnect(UObjectDelivererProtocol* ClientSocket)
+void UMyClass::OnConnect(UObjectDelivererProtocol* ClientSocket)
 {
 	// send data
 	TArray<uint8> buffer;
-	deliverer->Send(buffer);
+	//deliverer->Send(buffer);
 }
 
-void MyClass::OnDisConnect(UObjectDelivererProtocol* ClientSocket)
+void UMyClass::OnDisConnect(UObjectDelivererProtocol* ClientSocket)
 {
 	// closed
 	UE_LOG(LogTemp, Log, TEXT("closed"));
 }
 
-void MyClass::OnReceive(UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer)
+void UMyClass::OnReceive(UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer)
 {
 	// received data buffer
 }
 
-void MyClass::OnReceiveString(UObjectDelivererProtocol* ClientSocket, FString ReceivedString)
+void UMyClass::OnReceiveString(FString ReceivedString)
 {
 	// received data string
 }
 
-void MyClass::OnReceiveObject(UObjectDelivererProtocol* ClientSocket, const UObject* ReceivedObject)
+void UMyClass::OnReceiveObject(UObject* ReceivedObject)
 {
 	// received data object
+	USampleObject* obj = Cast<USampleObject>(ReceivedObject);
 }

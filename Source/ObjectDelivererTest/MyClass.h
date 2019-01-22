@@ -7,22 +7,37 @@
 
 /**
  * 
- */
-UCLASS()
-class OBJECTDELIVERERTEST_API MyClass : public UObject
+ */UCLASS()
+class OBJECTDELIVERERTEST_API USampleObject : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	MyClass();
-	~MyClass();
+	USampleObject();
+	~USampleObject();
+
+	
+};
+
+UCLASS()
+class OBJECTDELIVERERTEST_API UMyClass : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UMyClass();
+	~UMyClass();
 
 	void Start();
 
 	UFUNCTION()
-		void OnConnect(UObjectDelivererProtocol* ClientSocket);
+	void OnConnect(UObjectDelivererProtocol* ClientSocket);
 	UFUNCTION()
-		void OnDisConnect(UObjectDelivererProtocol* ClientSocket);
+	void OnDisConnect(UObjectDelivererProtocol* ClientSocket);
 	UFUNCTION()
-		void OnReceive(UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer);
+	void OnReceive(UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer);
+	UFUNCTION()
+	void OnReceiveString(FString ReceivedString);
+	UFUNCTION()
+	void OnReceiveObject(UObject* ReceivedObject);
 };
