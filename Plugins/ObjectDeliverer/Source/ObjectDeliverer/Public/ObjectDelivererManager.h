@@ -1,6 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PacketRuleFactory.h"
+#include "ProtocolFactory.h"
 #include "ObjectDelivererManager.generated.h"
 
 class UObjectDelivererProtocol;
