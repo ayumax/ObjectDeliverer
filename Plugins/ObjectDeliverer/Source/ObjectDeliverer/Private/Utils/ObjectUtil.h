@@ -9,11 +9,12 @@ enum class EUPropertyType : uint8
 	None,
 
 	Bool,
-	Int32,
+	Int,
 	Float,
 	Double,
 	UInt8,
 	Enum,
+	String,
 	Array,
 	Map,
 	Set,
