@@ -4,7 +4,7 @@
 #include "DeliveryBox.h"
 #include "ObjectDeliveryBox.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCNObjectDeliveryBoxReceived, const UObject*, ReceivedObject);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCNObjectDeliveryBoxReceived, UObject*, ReceivedObject);
 
 UCLASS(BlueprintType)
 class OBJECTDELIVERER_API UObjectDeliveryBox : public UDeliveryBox
