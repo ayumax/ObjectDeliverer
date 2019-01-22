@@ -30,8 +30,5 @@ public:
 
 protected:
 	UPROPERTY()
-	UObject* DeliveryObject;
-
-	UPROPERTY()
-	TMap<FString, UProperty*> PropertyMap;
+	UClass* TargetClass;
 };
