@@ -31,6 +31,10 @@ The following rules are available for built-in split rules of transmitted and re
 + Please activate ObjectDeliverer from Plugins after launching editor
 
 # Quick Start
+1. Create an ObjectDelivererManager
+1. Create a DeliveryBox(If you wish to send and receive data other than binary)
+1. Set the send / receive protocol and PacketRule, then start the ObjectDelivererManager
+
 ![blueprint_0](https://user-images.githubusercontent.com/8191970/51612470-de671900-1f64-11e9-83eb-993b6e8c2a12.PNG)
 ![blueprint_1](https://user-images.githubusercontent.com/8191970/51612551-08b8d680-1f65-11e9-87c4-820cdaa40195.PNG)
 ![blueprint_2](https://user-images.githubusercontent.com/8191970/51612572-12423e80-1f65-11e9-9734-d46a3277cc98.PNG)
@@ -75,6 +79,7 @@ void UMyClass::OnReceive(UObjectDelivererProtocol* ClientSocket, const TArray<ui
 ```
 
 # Change of communication protocol
+You can switch to a different communication protocol by replacing the transmission / reception protocol set in ObjectDelivererManager.
 
 ```cpp
 // TCP/IP Server
@@ -96,6 +101,7 @@ deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099),
 
 
 # Change of data division rule
+You can easily change the packet splitting rule.
 
 ```cpp
 // FixedSize
@@ -116,6 +122,8 @@ deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099),
 ```
 
 # Change of Serialization method
+Using DeliveryBox enables sending and receiving of non-binary data (character strings and objects).
+
 ```cpp
 // UTF-8 string
 auto deliverybox = NewObject<UUtf8StringDeliveryBox>();
