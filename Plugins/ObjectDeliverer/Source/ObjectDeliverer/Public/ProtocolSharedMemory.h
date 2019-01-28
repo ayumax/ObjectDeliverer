@@ -26,9 +26,10 @@ public:
 	virtual void Close_Implementation() override;
 	
 	virtual void RequestSend(const TArray<uint8>& DataBuffer) override;
-
+	
 protected:
 	bool ReceivedData();
+	void CloseSharedMemory();
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
@@ -42,5 +43,11 @@ protected:
 	class FRunnableThread* CurrentThread = nullptr;
 
 	TArray<uint8> ReceiveBuffer;
+	TArray<uint8> TempBuffer;
 
+	void* SharedMemoryHandle;           ///<  Mapped memory handle.
+	unsigned char* SharedMemoryData;	///<  Pointer to memory data.
+	void* SharedMemoryMutex;            ///<  Mutex handle.
+
+	uint8 NowCounter;
 };
