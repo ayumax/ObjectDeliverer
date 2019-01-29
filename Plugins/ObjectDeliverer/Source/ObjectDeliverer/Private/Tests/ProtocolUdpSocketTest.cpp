@@ -8,9 +8,9 @@
 #include "ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCNUdpTest1, "ObjectDeliverer.ProtocolTest.CNUdpTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolUdpTest1, "ObjectDeliverer.ProtocolTest.ProtocolUdpTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FCNUdpTest1::RunTest(const FString& Parameters)
+bool FProtocolUdpTest1::RunTest(const FString& Parameters)
 {
 
 	// send and receive.

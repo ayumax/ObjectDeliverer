@@ -30,6 +30,11 @@ void UProtocolUdpSocketSender::Start_Implementation()
 	InnerSocket = FUdpSocketBuilder(TEXT("ObjectDeliverer UdpSocket"))
 		.WithReceiveBufferSize(1024 * 1024)
 		.Build();
+
+	if (InnerSocket)
+	{
+		DispatchConnected(this);
+	}
 }
 
 void UProtocolUdpSocketSender::Close_Implementation()
