@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "PacketRuleFactory.h"
 #include "ProtocolFactory.h"
+#include "UObject/GCObject.h"
 #include "ObjectDelivererManager.generated.h"
 
 class UObjectDelivererProtocol;
@@ -55,9 +56,9 @@ public:
 	virtual void BeginDestroy() override;
 
 private:
-	UPROPERTY()
+	UPROPERTY(Transient)
 	UObjectDelivererProtocol* CurrentProtocol;
-	UPROPERTY()
+	UPROPERTY(Transient)
 	UDeliveryBox* DeliveryBox;
 };
 

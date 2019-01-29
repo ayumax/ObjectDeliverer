@@ -55,7 +55,7 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer")
 	void DispatchReceiveData(UObjectDelivererProtocol* FromObject, const TArray<uint8>& Buffer);
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	UPacketRule* PacketRule;
 
 public:

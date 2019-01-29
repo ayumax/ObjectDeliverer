@@ -71,7 +71,7 @@ void UObjectDelivererManager::Close()
 		CurrentProtocol->ReceiveData.Unbind();
 	}
 	
-	CurrentProtocol->Close_Implementation();
+	CurrentProtocol->Close();
 
 	CurrentProtocol = nullptr;
 }

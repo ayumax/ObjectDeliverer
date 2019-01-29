@@ -22,7 +22,7 @@ void UProtocolTcpIpServer::Initialize(int32 Port)
 
 void UProtocolTcpIpServer::Start_Implementation()
 {
-	Close_Implementation();
+	Close();
 
 	auto socket = FTcpSocketBuilder(TEXT("ObjectDeliverer TcpIpServer"))
 		.AsBlocking()
