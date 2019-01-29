@@ -13,6 +13,7 @@ You can also add your own protocol.
 + TCP/IP Client
 + UDP(Sender)
 + UDP(Receiver)
++ Shared Memory(Windows Only)
 
 ## Data division rule
 The following rules are available for built-in split rules of transmitted and received data.
@@ -96,6 +97,10 @@ deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketSender("localhost", 90
 
 // UDP Receiver
 deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099),
+                 UPacketRuleFactory::CreatePacketRuleSizeBody());
+
+// Shared Memory
+deliverer->Start(UProtocolFactory::CreateProtocolSharedMemory("memory_test", 1024),
                  UPacketRuleFactory::CreatePacketRuleSizeBody());
 ```
 
