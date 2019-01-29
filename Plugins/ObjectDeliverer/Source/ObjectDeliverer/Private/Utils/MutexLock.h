@@ -5,9 +5,6 @@
 class MutexLock
 {
 public:
-	MutexLock(void* Mutex);
-	~MutexLock();
+	static void Lock(void* Mutex, TFunction<void()> InWork);
 
-private:
-	void* MutexHandle;
 };

@@ -34,7 +34,7 @@ void UProtocolSharedMemory::Start_Implementation()
 #ifdef PLATFORM_WINDOWS
 	/*  Create a named mutex for inter-process protection of data */
 	FString mutexName = SharedMemoryName + "MUTEX";
-	int32 MemorySize = SharedMemorySize + sizeof(uint8) + sizeof(int32);
+	SharedMemoryTotalSize = SharedMemorySize + sizeof(uint8) + sizeof(int32);
 
 	SharedMemoryMutex = CreateMutex(NULL, false, *mutexName);
 
@@ -44,10 +44,10 @@ void UProtocolSharedMemory::Start_Implementation()
 		NULL,
 		PAGE_READWRITE,
 		0,
-		MemorySize,
+		SharedMemoryTotalSize,
 		*SharedMemoryName);
 
-	if (GetLastError() == ERROR_ALREADY_EXISTS || SharedMemoryHandle == nullptr)
+	if (SharedMemoryHandle == nullptr)
 	{
 		CloseSharedMemory();
 		return;
@@ -56,7 +56,7 @@ void UProtocolSharedMemory::Start_Implementation()
 	SharedMemoryData = (unsigned char *)MapViewOfFile(SharedMemoryHandle,
 		FILE_MAP_ALL_ACCESS,
 		0, 0,
-		MemorySize);
+		SharedMemoryTotalSize);
 
 	if (!SharedMemoryData)
 	{
@@ -64,10 +64,10 @@ void UProtocolSharedMemory::Start_Implementation()
 		return;
 	}
 
+	MutexLock::Lock(SharedMemoryMutex, [this]()
 	{
-		MutexLock lock(SharedMemoryMutex);
-		FMemory::Memset(SharedMemoryData, 0, MemorySize);
-	}
+		FMemory::Memset(SharedMemoryData, 0, SharedMemoryTotalSize);
+	});
 
 	NowCounter = 0;
 
@@ -75,9 +75,11 @@ void UProtocolSharedMemory::Start_Implementation()
 	return;
 #endif
 
-	ReceiveBuffer.SetNum(MemorySize);
+	ReceiveBuffer.SetNum(SharedMemoryTotalSize);
 	CurrentInnerThread = new FWorkerThread([this] { return ReceivedData(); });
 	CurrentThread = FRunnableThread::Create(CurrentInnerThread, TEXT("ObjectDeliverer ProtocolSharedMemory PollingThread"));
+
+	DispatchConnected(this);
 }
 
 void UProtocolSharedMemory::Close_Implementation()
@@ -101,11 +103,12 @@ bool UProtocolSharedMemory::ReceivedData()
 #ifdef PLATFORM_WINDOWS
 
 	uint32 Size = 0;
+
+	MutexLock::Lock(SharedMemoryMutex, [this, &Size]()
 	{
 		uint8 counter = 0;
-		MutexLock lock(SharedMemoryMutex);
 		FMemory::Memcpy(&counter, SharedMemoryData, sizeof(uint8));
-		if (counter == NowCounter) return true;
+		if (counter == NowCounter) return;
 
 		NowCounter = counter;
 
@@ -114,7 +117,9 @@ bool UProtocolSharedMemory::ReceivedData()
 		TempBuffer.SetNum(Size, false);
 
 		FMemory::Memcpy(TempBuffer.GetData(), SharedMemoryData + sizeof(uint8) + sizeof(uint32), Size);
-	}
+	});
+
+	if (Size == 0) return true;
 	
 	uint32 wantSize = PacketRule->GetWantSize();
 
@@ -126,6 +131,7 @@ bool UProtocolSharedMemory::ReceivedData()
 	int32 Offset = 0;
 	while (Size > 0)
 	{
+		wantSize = PacketRule->GetWantSize();
 		auto receiveSize = wantSize == 0 ? Size : wantSize;
 
 		ReceiveBuffer.SetNum(receiveSize, false);
@@ -137,11 +143,19 @@ bool UProtocolSharedMemory::ReceivedData()
 
 		PacketRule->NotifyReceiveData(ReceiveBuffer);
 	}
-
-#endif
 	return true;
+#else
+	return false;
+#endif
+	
 }
 
+void UProtocolSharedMemory::Send_Implementation(const TArray<uint8>& DataBuffer)
+{
+	if (!SharedMemoryHandle) return;
+
+	PacketRule->MakeSendPacket(DataBuffer);
+}
 
 void UProtocolSharedMemory::RequestSend(const TArray<uint8>& DataBuffer)
 {
@@ -153,19 +167,22 @@ void UProtocolSharedMemory::RequestSend(const TArray<uint8>& DataBuffer)
 	{
 		int32 writeSize = DataBuffer.Num();
 
-		NowCounter++;
-		if (NowCounter == 0)
+		MutexLock::Lock(SharedMemoryMutex, [this, writeSize, &DataBuffer]()
 		{
-			NowCounter = 1;
-		}
+			NowCounter++;
+			if (NowCounter == 0)
+			{
+				NowCounter = 1;
+			}
 
-		MutexLock lock(SharedMemoryMutex);
-		FMemory::Memcpy(SharedMemoryData, &NowCounter, sizeof(uint8));
+			FMemory::Memcpy(SharedMemoryData, &NowCounter, sizeof(uint8));
 
-		FMemory::Memcpy(SharedMemoryData + sizeof(uint8), &writeSize, sizeof(int32));
-		FMemory::Memcpy(SharedMemoryData + sizeof(uint8) + sizeof(int32), DataBuffer.GetData(), writeSize);
+			FMemory::Memcpy(SharedMemoryData + sizeof(uint8), &writeSize, sizeof(int32));
+			FMemory::Memcpy(SharedMemoryData + sizeof(uint8) + sizeof(int32), DataBuffer.GetData(), writeSize);
 
-		FlushViewOfFile(SharedMemoryData, sizeof(uint8) + sizeof(int32) + writeSize);
+			FlushViewOfFile(SharedMemoryData, sizeof(uint8) + sizeof(int32) + writeSize);
+		});
+		
 	}
 #endif
 }

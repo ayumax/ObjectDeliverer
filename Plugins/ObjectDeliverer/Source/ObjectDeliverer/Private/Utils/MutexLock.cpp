@@ -3,23 +3,20 @@
 #include "Windows/WindowsHWrapper.h"
 #endif
 
-MutexLock::MutexLock(void* Mutex)
-	:MutexHandle(Mutex)
-{
-#ifdef PLATFORM_WINDOWS
-	if (MutexHandle)
-	{
-		WaitForSingleObject(MutexHandle, INFINITE);
-	}
-#endif
-}
 
-MutexLock::~MutexLock()
+void MutexLock::Lock(void* Mutex, TFunction<void()> InWork)
 {
 #ifdef PLATFORM_WINDOWS
-	if (MutexHandle)
+	if (Mutex)
 	{
-		ReleaseMutex(MutexHandle);
+		WaitForSingleObject(Mutex, INFINITE);
+	}
+
+	InWork();
+
+	if (Mutex)
+	{
+		ReleaseMutex(Mutex);
 	}
 #endif
 }

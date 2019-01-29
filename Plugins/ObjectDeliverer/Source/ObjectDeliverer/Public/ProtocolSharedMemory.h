@@ -24,7 +24,8 @@ public:
 
 	virtual void Start_Implementation() override;
 	virtual void Close_Implementation() override;
-	
+	virtual void Send_Implementation(const TArray<uint8>& DataBuffer) override;
+
 	virtual void RequestSend(const TArray<uint8>& DataBuffer) override;
 	
 protected:
@@ -48,6 +49,6 @@ protected:
 	void* SharedMemoryHandle;           ///<  Mapped memory handle.
 	unsigned char* SharedMemoryData;	///<  Pointer to memory data.
 	void* SharedMemoryMutex;            ///<  Mutex handle.
-
+	int32 SharedMemoryTotalSize;
 	uint8 NowCounter;
 };
