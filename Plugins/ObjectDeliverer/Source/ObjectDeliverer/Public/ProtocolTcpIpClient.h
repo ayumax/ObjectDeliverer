@@ -28,8 +28,7 @@ public:
 	virtual void Close_Implementation() override;
 
 private:
-	UFUNCTION()
-	void TryConnect();
+	bool TryConnect();
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
@@ -41,7 +40,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
 	bool RetryConnect = false;
 
-private:
-	FTimerHandle ConnectTimerHandle;
+protected:
+	class FWorkerThread* ConnectInnerThread = nullptr;
+	class FRunnableThread* ConnectThread = nullptr;
+
 	FIPv4Endpoint ConnectEndPoint;
 };

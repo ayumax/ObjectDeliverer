@@ -8,7 +8,7 @@
 class OBJECTDELIVERER_API FWorkerThread : public FRunnable
 {
 public:
-	FWorkerThread(TFunction<bool()> InWork);
+	FWorkerThread(TFunction<bool()> InWork, float WaitSeconds = 0.001f);
 	~FWorkerThread();
 
 	virtual uint32 Run() override;
@@ -17,5 +17,6 @@ public:
 
 private:
 	TFunction<bool()> Work;
+	float Seconds;
 	volatile bool ContinueRun;
 };

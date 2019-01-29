@@ -1,8 +1,9 @@
 #include "WorkerThread.h"
 #include "Runtime/Core/Public/HAL/PlatformProcess.h"
 
-FWorkerThread::FWorkerThread(TFunction<bool()> InWork)
+FWorkerThread::FWorkerThread(TFunction<bool()> InWork, float WaitSeconds)
 	: Work(InWork)
+	, Seconds(WaitSeconds)
 	, ContinueRun(true)
 {
 
@@ -25,7 +26,7 @@ uint32 FWorkerThread::Run()
 
 		if (ContinueRun)
 		{
-			FPlatformProcess::Sleep(0.001);
+			FPlatformProcess::Sleep(Seconds);
 		}
 	}
 
