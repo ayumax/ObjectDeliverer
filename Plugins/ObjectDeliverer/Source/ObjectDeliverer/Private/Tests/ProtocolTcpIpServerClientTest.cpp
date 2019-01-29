@@ -9,9 +9,9 @@
 #include "ObjectDelivererManager.h"
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCNTcpIpServerClientTest1, "ObjectDeliverer.ProtocolTest.CNTcpIpServerClientTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest1, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FCNTcpIpServerClientTest1::RunTest(const FString& Parameters)
+bool FProtocolTcpIpServerClientTest1::RunTest(const FString& Parameters)
 {
 	// connect client to server and close client.
 	auto serverHelper = NewObject<UObjectDelivererManagerTestHelper>();
@@ -19,14 +19,14 @@ bool FCNTcpIpServerClientTest1::RunTest(const FString& Parameters)
 	auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
 	ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
 
 	auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
 	ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper]()
@@ -55,9 +55,9 @@ bool FCNTcpIpServerClientTest1::RunTest(const FString& Parameters)
 }
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCNTcpIpServerClientTest2, "ObjectDeliverer.ProtocolTest.CNTcpIpServerClientTest2", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest2, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest2", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FCNTcpIpServerClientTest2::RunTest(const FString& Parameters)
+bool FProtocolTcpIpServerClientTest2::RunTest(const FString& Parameters)
 {
 	// connect client to server and close server.
 	auto serverHelper = NewObject<UObjectDelivererManagerTestHelper>();
@@ -65,14 +65,14 @@ bool FCNTcpIpServerClientTest2::RunTest(const FString& Parameters)
 	auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
 	ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
 
 	auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
 	ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper]()
@@ -103,9 +103,9 @@ bool FCNTcpIpServerClientTest2::RunTest(const FString& Parameters)
 
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCNTcpIpServerClientTest3, "ObjectDeliverer.ProtocolTest.CNTcpIpServerClientTest3", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest3, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest3", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FCNTcpIpServerClientTest3::RunTest(const FString& Parameters)
+bool FProtocolTcpIpServerClientTest3::RunTest(const FString& Parameters)
 {
 
 	// connect client to server(not equal port)
@@ -114,7 +114,7 @@ bool FCNTcpIpServerClientTest3::RunTest(const FString& Parameters)
 	auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
 	ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
 
@@ -145,9 +145,9 @@ bool FCNTcpIpServerClientTest3::RunTest(const FString& Parameters)
 }
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCNTcpIpServerClientTest4, "ObjectDeliverer.ProtocolTest.CNTcpIpServerClientTest4", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest4, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest4", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FCNTcpIpServerClientTest4::RunTest(const FString& Parameters)
+bool FProtocolTcpIpServerClientTest4::RunTest(const FString& Parameters)
 {
 
 	// connect multi client to server
@@ -156,24 +156,24 @@ bool FCNTcpIpServerClientTest4::RunTest(const FString& Parameters)
 	auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
 	ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
 
 	auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
 	ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	auto ObjectDelivererClient2 = NewObject<UObjectDelivererManager>();
 	ObjectDelivererClient2->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererClient2->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererClient2->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererClient2->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	auto ObjectDelivererClient3 = NewObject<UObjectDelivererManager>();
 	ObjectDelivererClient3->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererClient3->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererClient3->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererClient3->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper]()
@@ -197,9 +197,9 @@ bool FCNTcpIpServerClientTest4::RunTest(const FString& Parameters)
 }
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCNTcpIpServerClientTest5, "ObjectDeliverer.ProtocolTest.CNTcpIpServerClientTest5", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest5, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest5", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FCNTcpIpServerClientTest5::RunTest(const FString& Parameters)
+bool FProtocolTcpIpServerClientTest5::RunTest(const FString& Parameters)
 {
 
 	// don't connected client to server.(not retry)
@@ -208,7 +208,7 @@ bool FCNTcpIpServerClientTest5::RunTest(const FString& Parameters)
 	auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
 	ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9099, false), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9013, false), UPacketRuleFactory::CreatePacketRuleSizeBody());
 	auto serverHelper = NewObject<UObjectDelivererManagerTestHelper>();
 
 	auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
@@ -218,7 +218,7 @@ bool FCNTcpIpServerClientTest5::RunTest(const FString& Parameters)
 	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(2.0f));
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererServer]()
 	{
-		ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+		ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 		return true;
 	}));
 	
@@ -244,9 +244,9 @@ bool FCNTcpIpServerClientTest5::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCNTcpIpServerClientTest6, "ObjectDeliverer.ProtocolTest.CNTcpIpServerClientTest6", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest6, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest6", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FCNTcpIpServerClientTest6::RunTest(const FString& Parameters)
+bool FProtocolTcpIpServerClientTest6::RunTest(const FString& Parameters)
 {
 
 	// connected client to server.(success retry)
@@ -255,7 +255,7 @@ bool FCNTcpIpServerClientTest6::RunTest(const FString& Parameters)
 	auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
 	ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9099, true), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9013, true), UPacketRuleFactory::CreatePacketRuleSizeBody());
 	auto serverHelper = NewObject<UObjectDelivererManagerTestHelper>();
 
 	auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
@@ -265,7 +265,7 @@ bool FCNTcpIpServerClientTest6::RunTest(const FString& Parameters)
 	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(2.0f));
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererServer]()
 	{
-		ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+		ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 		return true;
 	}));
 	
@@ -293,9 +293,9 @@ bool FCNTcpIpServerClientTest6::RunTest(const FString& Parameters)
 }
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCNTcpIpServerClientTest7, "ObjectDeliverer.ProtocolTest.CNTcpIpServerClientTest7", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest7, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest7", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FCNTcpIpServerClientTest7::RunTest(const FString& Parameters)
+bool FProtocolTcpIpServerClientTest7::RunTest(const FString& Parameters)
 {
 
 	// send and receive.
@@ -304,14 +304,14 @@ bool FCNTcpIpServerClientTest7::RunTest(const FString& Parameters)
 	ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
 	ObjectDelivererServer->ReceiveData.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnReceive);
-	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
 
 	auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
 	ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9099, true), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", 9013, true), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
 

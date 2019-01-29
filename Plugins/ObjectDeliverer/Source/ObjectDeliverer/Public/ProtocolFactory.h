@@ -22,4 +22,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|Protocol")
 	static class UProtocolUdpSocketReceiver* CreateProtocolUdpSocketReceiver(int32 BoundPort);
+
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|Protocol")
+	static class UProtocolSharedMemory* CreateProtocolSharedMemory(FString SharedMemoryName = "SharedMemory", int32 SharedMemorySize = 1024);
 };

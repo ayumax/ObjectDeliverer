@@ -26,6 +26,11 @@ void UProtocolUdpSocketReceiver::Start_Implementation()
 	Receiver = new FUdpSocketReceiver(InnerSocket, FTimespan::FromMilliseconds(10), TEXT("UProtocolUdpSocketReceiver"));
 	Receiver->OnDataReceived().BindUObject(this, &UProtocolUdpSocketReceiver::UdpReceivedCallback);
 	Receiver->Start();
+
+	if (InnerSocket)
+	{
+		DispatchConnected(this);
+	}
 }
 
 void UProtocolUdpSocketReceiver::Close_Implementation()
