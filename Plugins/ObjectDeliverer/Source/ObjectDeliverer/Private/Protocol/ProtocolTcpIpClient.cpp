@@ -1,6 +1,6 @@
 #include "ProtocolTcpIpClient.h"
 #include "TcpSocketBuilder.h"
-#include "Engine/World.h"
+#include "Utils/WorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 
 UProtocolTcpIpClient::UProtocolTcpIpClient()
@@ -37,29 +37,37 @@ void UProtocolTcpIpClient::Start_Implementation()
 	ConnectEndPoint = endPoint.Get<1>();
 	InnerSocket = socket;
 
-	GWorld->GetTimerManager().SetTimer(ConnectTimerHandle, this, &UProtocolTcpIpClient::TryConnect, 0.1f, false, 0.1f);
+	ConnectInnerThread = new FWorkerThread([this] { return TryConnect(); }, 1.0f);
+	ConnectThread = FRunnableThread::Create(ConnectInnerThread, TEXT("ObjectDeliverer UProtocolTcpIpClient ConnectThread"));
 }
 
-void UProtocolTcpIpClient::TryConnect()
+bool UProtocolTcpIpClient::TryConnect()
 {
 	if (InnerSocket->Connect(ConnectEndPoint.ToInternetAddr().Get()))
 	{
 		DispatchConnected(this);
 
-		OnConnected(InnerSocket);
+		OnConnected(InnerSocket);		
 	}
-	else if(RetryConnect)
+	else if (RetryConnect)
 	{
-		GWorld->GetTimerManager().SetTimer(ConnectTimerHandle, this, &UProtocolTcpIpClient::TryConnect, 1.0f, false, 1.0f);
+		return true;
 	}
+
+	return false;
 }
 
 void UProtocolTcpIpClient::Close_Implementation()
 {
 	Super::Close_Implementation();
 
-	if (GWorld)
-	{
-		GWorld->GetTimerManager().ClearTimer(ConnectTimerHandle);
-	}
+	if (!ConnectThread) return;
+	ConnectThread->Kill(true);
+
+	delete ConnectThread;
+	ConnectThread = nullptr;
+
+	if (!ConnectInnerThread) return;
+	delete ConnectInnerThread;
+	ConnectInnerThread = nullptr;
 }
