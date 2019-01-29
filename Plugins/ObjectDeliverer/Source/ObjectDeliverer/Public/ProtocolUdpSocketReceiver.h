@@ -20,8 +20,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
 	void InitializeWithReceiver(int32 BoundPort = 8001);
 
-	virtual void Start_Implementation() override;
-	virtual void Close_Implementation() override;
+	virtual void Start() override;
+	virtual void Close() override;
 
 protected:
 	void UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip);

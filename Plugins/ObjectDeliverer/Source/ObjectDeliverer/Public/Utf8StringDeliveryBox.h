@@ -19,7 +19,7 @@ public:
 	void Send(const FString& message);
 
 
-	virtual void NotifyReceiveBuffer_Implementation(const TArray<uint8>& buffer) override;
+	virtual void NotifyReceiveBuffer(const TArray<uint8>& buffer) override;
 
 	UPROPERTY(BlueprintAssignable, Category = "ObjectDeliverer|DeliveryBox")
 	FCNUtf8StringDeliveryBoxReceived Received;

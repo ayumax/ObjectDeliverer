@@ -20,7 +20,7 @@ void UProtocolUdpSocketSender::Initialize(const FString& IpAddress, int32 Port)
 	DestinationPort = Port;
 }
 
-void UProtocolUdpSocketSender::Start_Implementation()
+void UProtocolUdpSocketSender::Start()
 {
 	auto endPoint = GetIP4EndPoint(DestinationIpAddress, DestinationPort);
 	if (!endPoint.Get<0>()) return;
@@ -37,12 +37,12 @@ void UProtocolUdpSocketSender::Start_Implementation()
 	}
 }
 
-void UProtocolUdpSocketSender::Close_Implementation()
+void UProtocolUdpSocketSender::Close()
 {
 	CloseInnerSocket();
 }
 
-void UProtocolUdpSocketSender::Send_Implementation(const TArray<uint8>& DataBuffer)
+void UProtocolUdpSocketSender::Send(const TArray<uint8>& DataBuffer)
 {
 	PacketRule->MakeSendPacket(DataBuffer);
 }

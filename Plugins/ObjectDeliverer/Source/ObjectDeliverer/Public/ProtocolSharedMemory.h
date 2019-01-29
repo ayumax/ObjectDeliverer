@@ -22,9 +22,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
 	void Initialize(const FString& SharedMemoryName = "SharedMemory", int32 SharedMemorySize = 1024);
 
-	virtual void Start_Implementation() override;
-	virtual void Close_Implementation() override;
-	virtual void Send_Implementation(const TArray<uint8>& DataBuffer) override;
+	virtual void Start() override;
+	virtual void Close() override;
+	virtual void Send(const TArray<uint8>& DataBuffer) override;
 
 	virtual void RequestSend(const TArray<uint8>& DataBuffer) override;
 	

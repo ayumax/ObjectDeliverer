@@ -16,7 +16,7 @@ void UProtocolUdpSocketReceiver::InitializeWithReceiver(int32 _BoundPort)
 	BoundPort = _BoundPort;
 }
 
-void UProtocolUdpSocketReceiver::Start_Implementation()
+void UProtocolUdpSocketReceiver::Start()
 {
 	InnerSocket = FUdpSocketBuilder(TEXT("ObjectDeliverer UdpSocket"))
 		.WithReceiveBufferSize(1024 * 1024)
@@ -33,7 +33,7 @@ void UProtocolUdpSocketReceiver::Start_Implementation()
 	}
 }
 
-void UProtocolUdpSocketReceiver::Close_Implementation()
+void UProtocolUdpSocketReceiver::Close()
 {
 	if (Receiver)
 	{

@@ -18,7 +18,12 @@ UObjectDeliveryBoxUsingJson::~UObjectDeliveryBoxUsingJson()
 {
 }
 
-void UObjectDeliveryBoxUsingJson::Send_Implementation(const UObject* message)
+void UObjectDeliveryBoxUsingJson::Initialize(UClass* _TargetClass)
+{
+	TargetClass = _TargetClass;
+}
+
+void UObjectDeliveryBoxUsingJson::Send(const UObject* message)
 {
 	auto jsonObject = CreateJsonObject(message);
 
@@ -32,7 +37,7 @@ void UObjectDeliveryBoxUsingJson::Send_Implementation(const UObject* message)
 	RequestSend.ExecuteIfBound(buffer);
 }
 
-void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer_Implementation(const TArray<uint8>& buffer)
+void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer(const TArray<uint8>& buffer)
 {
 	TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(UStringUtil::BufferToString(buffer));
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());

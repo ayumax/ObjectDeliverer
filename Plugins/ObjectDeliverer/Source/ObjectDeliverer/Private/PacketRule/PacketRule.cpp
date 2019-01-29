@@ -9,25 +9,25 @@ UPacketRule::~UPacketRule()
 {
 }
 
-void UPacketRule::Initialize_Implementation()
+void UPacketRule::Initialize()
 {
 
 }
 
-void UPacketRule::MakeSendPacket_Implementation(const TArray<uint8>& BodyBuffer)
+void UPacketRule::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 {
 }
 
-void UPacketRule::NotifyReceiveData_Implementation(const TArray<uint8>& DataBuffer)
+void UPacketRule::NotifyReceiveData(const TArray<uint8>& DataBuffer)
 {
 }
 
-int32 UPacketRule::GetWantSize_Implementation()
+int32 UPacketRule::GetWantSize()
 {
 	return 0;
 }
 
-UPacketRule* UPacketRule::Clone_Implementation()
+UPacketRule* UPacketRule::Clone()
 {
 	return nullptr;
 }

@@ -20,7 +20,7 @@ void UProtocolTcpIpServer::Initialize(int32 Port)
 	ListenPort = Port;
 }
 
-void UProtocolTcpIpServer::Start_Implementation()
+void UProtocolTcpIpServer::Start()
 {
 	Close();
 
@@ -38,7 +38,7 @@ void UProtocolTcpIpServer::Start_Implementation()
 	ListenThread = FRunnableThread::Create(ListenInnerThread, TEXT("ObjectDeliverer TcpIpSocket ListenThread"));
 }
 
-void UProtocolTcpIpServer::Close_Implementation()
+void UProtocolTcpIpServer::Close()
 {
 	for (auto clientSocket : ConnectedSockets)
 	{
@@ -66,7 +66,7 @@ void UProtocolTcpIpServer::Close_Implementation()
 
 }
 
-void UProtocolTcpIpServer::Send_Implementation(const TArray<uint8>& DataBuffer)
+void UProtocolTcpIpServer::Send(const TArray<uint8>& DataBuffer)
 {
 	for (auto clientSocket : ConnectedSockets)
 	{

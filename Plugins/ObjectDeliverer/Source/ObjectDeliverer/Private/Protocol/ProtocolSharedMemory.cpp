@@ -29,7 +29,7 @@ void UProtocolSharedMemory::Initialize(const FString& _SharedMemoryName/* = "Sha
 	SharedMemorySize = _SharedMemorySize;
 }
 
-void UProtocolSharedMemory::Start_Implementation()
+void UProtocolSharedMemory::Start()
 {
 #ifdef PLATFORM_WINDOWS
 	/*  Create a named mutex for inter-process protection of data */
@@ -82,7 +82,7 @@ void UProtocolSharedMemory::Start_Implementation()
 	DispatchConnected(this);
 }
 
-void UProtocolSharedMemory::Close_Implementation()
+void UProtocolSharedMemory::Close()
 {
 	MutexLock::Lock(SharedMemoryMutex, [this]()
 	{
@@ -153,7 +153,7 @@ bool UProtocolSharedMemory::ReceivedData()
 	
 }
 
-void UProtocolSharedMemory::Send_Implementation(const TArray<uint8>& DataBuffer)
+void UProtocolSharedMemory::Send(const TArray<uint8>& DataBuffer)
 {
 	if (!SharedMemoryHandle) return;
 

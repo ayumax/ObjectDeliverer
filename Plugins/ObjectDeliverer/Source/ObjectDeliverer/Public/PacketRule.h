@@ -24,34 +24,16 @@ public:
 	UPacketRule();
 	~UPacketRule();
 
-	UFUNCTION(BlueprintNativeEvent, Category = "ObjectDeliverer|PacketRule")
-	void Initialize();
-	virtual void Initialize_Implementation();
-
-
-	UFUNCTION(BlueprintNativeEvent, Category = "ObjectDeliverer|PacketRule")
-	void MakeSendPacket(const TArray<uint8>& BodyBuffer);
-	virtual void MakeSendPacket_Implementation(const TArray<uint8>& BodyBuffer);
-
-	UFUNCTION(BlueprintNativeEvent, Category = "ObjectDeliverer|PacketRule")
-	void NotifyReceiveData(const TArray<uint8>& DataBuffer);
-	virtual void NotifyReceiveData_Implementation(const TArray<uint8>& DataBuffer);
-
-	UFUNCTION(BlueprintNativeEvent, Category = "ObjectDeliverer|PacketRule")
-	int32 GetWantSize();
-	virtual int32 GetWantSize_Implementation();
-
-	UFUNCTION(BlueprintNativeEvent, Category = "ObjectDeliverer|PacketRule")
-	UPacketRule* Clone();
-	virtual UPacketRule* Clone_Implementation();
+	virtual void Initialize();
+	virtual void MakeSendPacket(const TArray<uint8>& BodyBuffer);
+	virtual void NotifyReceiveData(const TArray<uint8>& DataBuffer);
+	virtual int32 GetWantSize();
+	virtual UPacketRule* Clone();
 	
 	FCNPacketRuleMadeSendBuffer MadeSendBuffer;
 	FCNPacketRuleMadeReceiveBuffer MadeReceiveBuffer;
 
 protected:
-	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|PacketRule")
 	void DispatchMadeSendBuffer(const TArray<uint8>& SendBuffer);
-
-	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|PacketRule")
 	void DispatchMadeReceiveBuffer(const TArray<uint8>& ReceiveBuffer);
 };

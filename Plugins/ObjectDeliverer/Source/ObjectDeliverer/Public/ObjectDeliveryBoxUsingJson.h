@@ -1,14 +1,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ObjectDeliveryBox.h"
 #include "JsonReader.h"
 #include "JsonSerializer.h"
+#include "DeliveryBox.h"
 #include "ObjectDeliveryBoxUsingJson.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCNObjectDeliveryBoxReceived, UObject*, ReceivedObject);
 
 UCLASS(BlueprintType, Blueprintable)
-class OBJECTDELIVERER_API UObjectDeliveryBoxUsingJson : public UObjectDeliveryBox
+class OBJECTDELIVERER_API UObjectDeliveryBoxUsingJson : public UDeliveryBox
 {
 	GENERATED_BODY()
 
@@ -16,11 +17,23 @@ public:
 	UObjectDeliveryBoxUsingJson();
 	~UObjectDeliveryBoxUsingJson();
 
-	virtual void Send_Implementation(const UObject* message);
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
+		void Initialize(UClass* TargetClass);
 
-	virtual void NotifyReceiveBuffer_Implementation(const TArray<uint8>& buffer) override;
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
+		virtual void Send(const UObject* message);
+
+	virtual void NotifyReceiveBuffer(const TArray<uint8>& buffer) override;
 
 	static TSharedPtr<FJsonValue> ObjectJsonCallback(UProperty* Property, const void* Value);
+
+
+	UPROPERTY(BlueprintAssignable, Category = "ObjectDeliverer|DeliveryBox")
+		FCNObjectDeliveryBoxReceived Received;
+
+protected:
+	UPROPERTY()
+		UClass* TargetClass;
 
 private:
 	static TSharedPtr<FJsonObject> CreateJsonObject(const UObject* Obj);

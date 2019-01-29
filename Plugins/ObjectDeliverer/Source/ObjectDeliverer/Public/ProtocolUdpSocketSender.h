@@ -21,9 +21,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
 	virtual void Initialize(const FString& IpAddress = "localhost", int32 Port = 8000);
 
-	virtual void Start_Implementation() override;
-	virtual void Close_Implementation() override;
-	virtual void Send_Implementation(const TArray<uint8>& DataBuffer) override;
+	virtual void Start() override;
+	virtual void Close() override;
+	virtual void Send(const TArray<uint8>& DataBuffer) override;
 
 	virtual void RequestSend(const TArray<uint8>& DataBuffer) override;
 
