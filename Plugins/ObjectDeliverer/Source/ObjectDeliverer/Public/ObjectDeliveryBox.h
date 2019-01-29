@@ -6,7 +6,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCNObjectDeliveryBoxReceived, UObject*, ReceivedObject);
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UObjectDeliveryBox : public UDeliveryBox
 {
 	GENERATED_BODY()

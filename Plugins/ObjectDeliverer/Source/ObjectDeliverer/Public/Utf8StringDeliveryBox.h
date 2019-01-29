@@ -6,7 +6,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCNUtf8StringDeliveryBoxReceived, FString, ReceivedString);
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UUtf8StringDeliveryBox : public UDeliveryBox
 {
 	GENERATED_BODY()

@@ -5,7 +5,7 @@
 #include "PacketRuleTerminate.generated.h"
 
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UPacketRuleTerminate : public UPacketRule
 {
 	GENERATED_BODY()

@@ -6,7 +6,7 @@
 
 
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UPacketRuleSizeBody : public UPacketRule
 {
 	GENERATED_BODY()

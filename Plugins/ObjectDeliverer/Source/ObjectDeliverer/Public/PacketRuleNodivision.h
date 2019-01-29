@@ -5,7 +5,7 @@
 #include "PacketRuleNodivision.generated.h"
 
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UPacketRuleNodivision : public UPacketRule
 {
 	GENERATED_BODY()
