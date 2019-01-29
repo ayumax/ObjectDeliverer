@@ -5,7 +5,7 @@
 
 DECLARE_DELEGATE_OneParam(FUDeliveryBoxRequestSend, const TArray<uint8>&);
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UDeliveryBox : public UObject
 {
 	GENERATED_BODY()

@@ -5,7 +5,7 @@
 #include "PacketRuleFixedLength.generated.h"
 
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UPacketRuleFixedLength : public UPacketRule
 {
 	GENERATED_BODY()

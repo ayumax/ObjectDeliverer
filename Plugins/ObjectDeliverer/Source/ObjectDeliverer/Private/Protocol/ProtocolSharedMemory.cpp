@@ -84,17 +84,20 @@ void UProtocolSharedMemory::Start_Implementation()
 
 void UProtocolSharedMemory::Close_Implementation()
 {
-	if (!CurrentThread) return;
-	CurrentThread->Kill(true);
+	MutexLock::Lock(SharedMemoryMutex, [this]()
+	{
+		if (!CurrentThread) return;
+		CurrentThread->Kill(true);
 
-	delete CurrentThread;
-	CurrentThread = nullptr;
+		delete CurrentThread;
+		CurrentThread = nullptr;
 
-	if (!CurrentInnerThread) return;
-	delete CurrentInnerThread;
-	CurrentInnerThread = nullptr;
+		if (!CurrentInnerThread) return;
+		delete CurrentInnerThread;
+		CurrentInnerThread = nullptr;
 
-	CloseSharedMemory();
+		CloseSharedMemory();
+	});
 }
 
 
@@ -121,7 +124,7 @@ bool UProtocolSharedMemory::ReceivedData()
 
 	if (Size == 0) return true;
 	
-	uint32 wantSize = PacketRule->GetWantSize();
+	uint32 wantSize = PacketRule->GetWantSize_Implementation();
 
 	if (wantSize > 0)
 	{
@@ -131,7 +134,7 @@ bool UProtocolSharedMemory::ReceivedData()
 	int32 Offset = 0;
 	while (Size > 0)
 	{
-		wantSize = PacketRule->GetWantSize();
+		wantSize = PacketRule->GetWantSize_Implementation();
 		auto receiveSize = wantSize == 0 ? Size : wantSize;
 
 		ReceiveBuffer.SetNum(receiveSize, false);

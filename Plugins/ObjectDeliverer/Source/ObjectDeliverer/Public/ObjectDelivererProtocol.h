@@ -9,7 +9,7 @@ DECLARE_DELEGATE_TwoParams(FObjectDelivererProtocolReceiveData, UObjectDeliverer
 
 class UPacketRule;
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UObjectDelivererProtocol : public UObject
 {
 	GENERATED_BODY()

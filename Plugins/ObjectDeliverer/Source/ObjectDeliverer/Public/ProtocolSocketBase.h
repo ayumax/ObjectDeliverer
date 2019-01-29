@@ -6,7 +6,7 @@
 #include "ObjectDelivererProtocol.h"
 #include "ProtocolSocketBase.generated.h"
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UProtocolSocketBase : public UObjectDelivererProtocol
 {
 	GENERATED_BODY()

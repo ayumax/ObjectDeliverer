@@ -15,7 +15,7 @@ enum class ECNBufferEndian : uint8
 DECLARE_DELEGATE_OneParam(FCNPacketRuleMadeSendBuffer, const TArray<uint8>&);
 DECLARE_DELEGATE_OneParam(FCNPacketRuleMadeReceiveBuffer, const TArray<uint8>&);
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UPacketRule : public UObject
 {
 	GENERATED_BODY()

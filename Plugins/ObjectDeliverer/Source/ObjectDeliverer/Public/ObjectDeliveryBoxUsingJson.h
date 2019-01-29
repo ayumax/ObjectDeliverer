@@ -7,7 +7,7 @@
 #include "ObjectDeliveryBoxUsingJson.generated.h"
 
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UObjectDeliveryBoxUsingJson : public UObjectDeliveryBox
 {
 	GENERATED_BODY()
