@@ -20,7 +20,7 @@ void UProtocolTcpIpClient::Initialize(const FString& IpAddress, int32 Port, bool
 	RetryConnect = Retry;
 }
 
-void UProtocolTcpIpClient::Start_Implementation()
+void UProtocolTcpIpClient::Start()
 {
 	CloseSocket(true);
 
@@ -57,9 +57,9 @@ bool UProtocolTcpIpClient::TryConnect()
 	return false;
 }
 
-void UProtocolTcpIpClient::Close_Implementation()
+void UProtocolTcpIpClient::Close()
 {
-	Super::Close_Implementation();
+	Super::Close();
 
 	if (!ConnectThread) return;
 	ConnectThread->Kill(true);

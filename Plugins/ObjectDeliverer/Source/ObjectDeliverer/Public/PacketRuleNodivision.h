@@ -14,10 +14,10 @@ public:
 	UPacketRuleNodivision();
 	~UPacketRuleNodivision();
 
-	virtual void Initialize_Implementation() override;
-	virtual void MakeSendPacket_Implementation(const TArray<uint8>& BodyBuffer) override;
-	virtual void NotifyReceiveData_Implementation(const TArray<uint8>& DataBuffer) override;
-	virtual int32 GetWantSize_Implementation() override;
-	virtual UPacketRule* Clone_Implementation() override;
+	virtual void Initialize() override;
+	virtual void MakeSendPacket(const TArray<uint8>& BodyBuffer) override;
+	virtual void NotifyReceiveData(const TArray<uint8>& DataBuffer) override;
+	virtual int32 GetWantSize() override;
+	virtual UPacketRule* Clone() override;
 
 };

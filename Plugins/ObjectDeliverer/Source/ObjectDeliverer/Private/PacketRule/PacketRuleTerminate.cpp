@@ -12,14 +12,14 @@ UPacketRuleTerminate::~UPacketRuleTerminate()
 {
 }
 
-void UPacketRuleTerminate::Initialize_Implementation()
+void UPacketRuleTerminate::Initialize()
 {
 	BufferForSend.Reset(1024);
 	ReceiveTempBuffer.Reset(1024);
 	BufferForReceive.Reset(1024);
 }
 
-void UPacketRuleTerminate::MakeSendPacket_Implementation(const TArray<uint8>& BodyBuffer)
+void UPacketRuleTerminate::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 {
 	BufferForSend.SetNum(BodyBuffer.Num() + Terminate.Num(), false);
 
@@ -29,7 +29,7 @@ void UPacketRuleTerminate::MakeSendPacket_Implementation(const TArray<uint8>& Bo
 	DispatchMadeSendBuffer(BufferForSend);
 }
 
-void UPacketRuleTerminate::NotifyReceiveData_Implementation(const TArray<uint8>& DataBuffer)
+void UPacketRuleTerminate::NotifyReceiveData(const TArray<uint8>& DataBuffer)
 {
 	ReceiveTempBuffer += DataBuffer;
 
@@ -71,12 +71,12 @@ void UPacketRuleTerminate::NotifyReceiveData_Implementation(const TArray<uint8>&
 	}
 }
 
-int32 UPacketRuleTerminate::GetWantSize_Implementation()
+int32 UPacketRuleTerminate::GetWantSize()
 {
 	return 0;
 }
 
-UPacketRule* UPacketRuleTerminate::Clone_Implementation()
+UPacketRule* UPacketRuleTerminate::Clone()
 {
 	return UPacketRuleFactory::CreatePacketRuleTerminate(Terminate);
 }

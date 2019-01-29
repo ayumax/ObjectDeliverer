@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "ProtocolTcpIpSocket.h"
-#include "TimerManager.h"
 #include "ProtocolTcpIpClient.generated.h"
 
 
@@ -24,8 +23,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
 	void Initialize(const FString& IpAddress = "localhost", int32 Port = 8000, bool Retry = false);
 
-	virtual void Start_Implementation() override;
-	virtual void Close_Implementation() override;
+	virtual void Start() override;
+	virtual void Close() override;
 
 private:
 	bool TryConnect();

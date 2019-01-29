@@ -53,8 +53,15 @@ void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketR
 
 void UObjectDelivererManager::Close()
 {
-	if (!CurrentProtocol) return;
 	if (!IsValid(CurrentProtocol)) return;
+
+	if (DeliveryBox)
+	{
+		if (DeliveryBox->RequestSend.IsBound())
+		{
+			DeliveryBox->RequestSend.Unbind();
+		}
+	}
 
 	if (CurrentProtocol->Connected.IsBound())
 	{
@@ -86,7 +93,8 @@ void UObjectDelivererManager::Send(const TArray<uint8>& DataBuffer)
 
 void UObjectDelivererManager::BeginDestroy()
 {
+	Close();
+
 	Super::BeginDestroy();
 
-	Close();
 }

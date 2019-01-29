@@ -14,9 +14,7 @@ public:
 	UDeliveryBox();
 	~UDeliveryBox();
 
-	UFUNCTION(BlueprintNativeEvent, Category = "ObjectDeliverer|DeliveryBox")
-	void NotifyReceiveBuffer(const TArray<uint8>& buffer);
-	virtual void NotifyReceiveBuffer_Implementation(const TArray<uint8>& buffer);
+	virtual void NotifyReceiveBuffer(const TArray<uint8>& buffer);
 
 	FUDeliveryBoxRequestSend RequestSend;
 

@@ -14,7 +14,7 @@ UProtocolTcpIpSocket::~UProtocolTcpIpSocket()
 }
 
 
-void UProtocolTcpIpSocket::Close_Implementation()
+void UProtocolTcpIpSocket::Close()
 {
 	CloseSocket(true);
 }
@@ -40,7 +40,7 @@ void UProtocolTcpIpSocket::CloseSocket(bool Wait)
 
 }
 
-void UProtocolTcpIpSocket::Send_Implementation(const TArray<uint8>& DataBuffer)
+void UProtocolTcpIpSocket::Send(const TArray<uint8>& DataBuffer)
 {
 	if (!InnerSocket) return;
 

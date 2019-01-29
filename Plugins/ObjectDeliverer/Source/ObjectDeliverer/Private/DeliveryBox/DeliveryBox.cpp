@@ -9,7 +9,7 @@ UDeliveryBox::~UDeliveryBox()
 {
 }
 
-void UDeliveryBox::NotifyReceiveBuffer_Implementation(const TArray<uint8>& buffer)
+void UDeliveryBox::NotifyReceiveBuffer(const TArray<uint8>& buffer)
 {
 
 }

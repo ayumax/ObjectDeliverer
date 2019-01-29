@@ -11,14 +11,14 @@ UPacketRuleSizeBody::~UPacketRuleSizeBody()
 {
 }
 
-void UPacketRuleSizeBody::Initialize_Implementation()
+void UPacketRuleSizeBody::Initialize()
 {
 	BufferForSend.SetNum(1024);
 	ReceiveMode = EReceiveMode::Size;
 	BodySize = 0;
 }
 
-void UPacketRuleSizeBody::MakeSendPacket_Implementation(const TArray<uint8>& BodyBuffer)
+void UPacketRuleSizeBody::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 {
 	auto BodyBufferNum = BodyBuffer.Num();
 	auto SendSize = BodyBufferNum + SizeLength;
@@ -45,7 +45,7 @@ void UPacketRuleSizeBody::MakeSendPacket_Implementation(const TArray<uint8>& Bod
 
 }
 
-void UPacketRuleSizeBody::NotifyReceiveData_Implementation(const TArray<uint8>& DataBuffer)
+void UPacketRuleSizeBody::NotifyReceiveData(const TArray<uint8>& DataBuffer)
 {
 	if (ReceiveMode == EReceiveMode::Size)
 	{
@@ -85,7 +85,7 @@ void UPacketRuleSizeBody::OnReceivedBody(const TArray<uint8>& DataBuffer)
 	ReceiveMode = EReceiveMode::Size;
 }
 
-int32 UPacketRuleSizeBody::GetWantSize_Implementation()
+int32 UPacketRuleSizeBody::GetWantSize()
 {
 	if (ReceiveMode == EReceiveMode::Size)
 	{
@@ -95,7 +95,7 @@ int32 UPacketRuleSizeBody::GetWantSize_Implementation()
 	return BodySize;
 }
 
-UPacketRule* UPacketRuleSizeBody::Clone_Implementation()
+UPacketRule* UPacketRuleSizeBody::Clone()
 {
 	return UPacketRuleFactory::CreatePacketRuleSizeBody(SizeLength, SizeBufferEndian);
 }

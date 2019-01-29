@@ -10,16 +10,16 @@ UObjectDelivererProtocol::~UObjectDelivererProtocol()
 {
 }
 
-void UObjectDelivererProtocol::Start_Implementation()
+void UObjectDelivererProtocol::Start()
 {
 }
 
-void UObjectDelivererProtocol::Close_Implementation()
+void UObjectDelivererProtocol::Close()
 {
 
 }
 
-void UObjectDelivererProtocol::Send_Implementation(const TArray<uint8>& DataBuffer)
+void UObjectDelivererProtocol::Send(const TArray<uint8>& DataBuffer)
 {
 
 }
@@ -41,9 +41,9 @@ void UObjectDelivererProtocol::DispatchReceiveData(UObjectDelivererProtocol* Fro
 
 void UObjectDelivererProtocol::BeginDestroy()
 {
-	Super::BeginDestroy();
-
 	Close();
+
+	Super::BeginDestroy();
 }
 
 void UObjectDelivererProtocol::SetPacketRule(UPacketRule* _PacketRule)
