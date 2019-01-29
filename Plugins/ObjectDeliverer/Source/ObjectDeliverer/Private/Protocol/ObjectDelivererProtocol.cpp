@@ -43,7 +43,7 @@ void UObjectDelivererProtocol::BeginDestroy()
 {
 	Super::BeginDestroy();
 
-	Close_Implementation();
+	Close();
 }
 
 void UObjectDelivererProtocol::SetPacketRule(UPacketRule* _PacketRule)

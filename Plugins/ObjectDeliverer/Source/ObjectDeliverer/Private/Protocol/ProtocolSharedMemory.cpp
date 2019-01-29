@@ -124,7 +124,7 @@ bool UProtocolSharedMemory::ReceivedData()
 
 	if (Size == 0) return true;
 	
-	uint32 wantSize = PacketRule->GetWantSize_Implementation();
+	uint32 wantSize = PacketRule->GetWantSize();
 
 	if (wantSize > 0)
 	{
@@ -134,7 +134,7 @@ bool UProtocolSharedMemory::ReceivedData()
 	int32 Offset = 0;
 	while (Size > 0)
 	{
-		wantSize = PacketRule->GetWantSize_Implementation();
+		wantSize = PacketRule->GetWantSize();
 		auto receiveSize = wantSize == 0 ? Size : wantSize;
 
 		ReceiveBuffer.SetNum(receiveSize, false);

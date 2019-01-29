@@ -49,6 +49,9 @@ public:
 	FCNPacketRuleMadeReceiveBuffer MadeReceiveBuffer;
 
 protected:
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|PacketRule")
 	void DispatchMadeSendBuffer(const TArray<uint8>& SendBuffer);
+
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|PacketRule")
 	void DispatchMadeReceiveBuffer(const TArray<uint8>& ReceiveBuffer);
 };
