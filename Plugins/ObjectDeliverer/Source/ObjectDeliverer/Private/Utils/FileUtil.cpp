@@ -59,8 +59,9 @@ FileReaderUtil::FileReaderUtil()
 
 FileReaderUtil::FileReaderUtil(const FString& FilePath, uint32 ReadFlags)
 {
-
+	Open(FilePath, ReadFlags);
 }
+
 FileReaderUtil::~FileReaderUtil()
 {
 	Close();
@@ -89,6 +90,17 @@ void FileReaderUtil::Read(TArray<uint8>& Buffer, int32 Length)
 	if (!Ar) return;
 
 	Ar->Serialize(Buffer.GetData(), Length);
+}
+
+double FileReaderUtil::ReadDouble()
+{
+	if (!Ar) return 0;
+
+	double retValue = 0;
+
+	Ar->Serialize(&retValue, sizeof(double));
+
+	return retValue;
 }
 
 void FileReaderUtil::Close()

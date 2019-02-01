@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "ObjectDelivererProtocol.h"
-#include "ProtocolLogWriter.generated.h"
+#include "ProtocolLogReader.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)
-class OBJECTDELIVERER_API UProtocolLogWriter : public UObjectDelivererProtocol
+class OBJECTDELIVERER_API UProtocolLogReader : public UObjectDelivererProtocol
 {
 	GENERATED_BODY()
 
 public:
-	UProtocolLogWriter();
-	~UProtocolLogWriter();
+	UProtocolLogReader();
+	~UProtocolLogReader();
 
 	/**
 	 * Initialize UDP.
@@ -27,6 +27,8 @@ public:
 
 	virtual void RequestSend(const TArray<uint8>& DataBuffer) override;
 
+private:
+	bool ReadData();
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
@@ -36,6 +38,13 @@ public:
 	bool PathIsAblolute = false;
 
 private:
-	class FileWriterUtil* Writer;
+	class FileReaderUtil* Reader;
+
+	class FWorkerThread* CurrentInnerThread = nullptr;
+	class FRunnableThread* CurrentThread = nullptr;
+
+	double CurrentLogTime;
+	TArray<uint8> ReadBuffer;
+
 	FDateTime StartTime;
 };
