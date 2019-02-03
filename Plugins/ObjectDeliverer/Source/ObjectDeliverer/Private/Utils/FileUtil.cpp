@@ -110,3 +110,17 @@ void FileReaderUtil::Close()
 	delete Ar;
 	Ar = nullptr;
 }
+
+bool FileReaderUtil::IsEnd()
+{
+	if (!Ar) return true;
+
+	return Ar->AtEnd();
+}
+
+int64 FileReaderUtil::RemainSize()
+{
+	if (!Ar) return 0;
+
+	return Ar->TotalSize() - Ar->Tell();
+}

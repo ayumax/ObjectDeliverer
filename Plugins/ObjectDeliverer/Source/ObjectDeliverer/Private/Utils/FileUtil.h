@@ -50,6 +50,9 @@ public:
 	}
 
 	void Close();
+	
+	bool IsEnd();
+	int64 RemainSize();
 
 public:
 	int64 FileSize;

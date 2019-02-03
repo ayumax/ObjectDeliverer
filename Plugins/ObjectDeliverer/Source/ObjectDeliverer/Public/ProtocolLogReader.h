@@ -29,6 +29,7 @@ public:
 
 private:
 	bool ReadData();
+	void ReadEnd();
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
@@ -45,6 +46,9 @@ private:
 
 	double CurrentLogTime;
 	TArray<uint8> ReadBuffer;
+	TArray<uint8> ReceiveBuffer;
 
 	FDateTime StartTime;
+
+	int64 FilePosition;
 };

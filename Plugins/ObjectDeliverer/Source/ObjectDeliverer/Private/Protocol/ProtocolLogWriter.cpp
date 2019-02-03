@@ -1,7 +1,7 @@
 #include "ProtocolLogWriter.h"
 #include "PacketRule.h"
 #include "Utils/FileUtil.h"
-
+#include "Misc/Paths.h"
 
 UProtocolLogWriter::UProtocolLogWriter()
 	: Writer(nullptr)
@@ -24,10 +24,18 @@ void UProtocolLogWriter::Start()
 {
 	if (Writer) delete Writer;
 
+	auto writePath = FilePath;
+	if (!PathIsAblolute)
+	{
+		writePath = FPaths::Combine(FPaths::ProjectContentDir(), FilePath);
+	}
+		
 	Writer = new FileWriterUtil();
-	Writer->Open(FilePath, 0);
+	Writer->Open(writePath, 0);
 
 	StartTime = FDateTime::Now();
+
+	DispatchConnected(this);
 }
 
 void UProtocolLogWriter::Close()
