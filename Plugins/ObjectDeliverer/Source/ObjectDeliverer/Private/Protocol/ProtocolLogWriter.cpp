@@ -27,7 +27,7 @@ void UProtocolLogWriter::Start()
 	auto writePath = FilePath;
 	if (!PathIsAblolute)
 	{
-		writePath = FPaths::Combine(FPaths::ProjectContentDir(), FilePath);
+		writePath = FPaths::Combine(FPaths::ProjectLogDir(), FilePath);
 	}
 		
 	Writer = new FileWriterUtil();

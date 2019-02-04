@@ -19,7 +19,7 @@ public:
 	 * @param Port - The port number of the destination.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
-	virtual void Initialize(const FString& FilePath = "log.bin", bool PathIsAblolute = false);
+	virtual void Initialize(const FString& FilePath = "log.bin", bool PathIsAblolute = false, bool CutFirstInterval = true);
 
 	virtual void Start() override;
 	virtual void Close() override;
@@ -38,8 +38,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
 	bool PathIsAblolute = false;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
+	bool CutFirstInterval = false;
+
 private:
-	class FileReaderUtil* Reader;
+	class FileReaderUtil* Reader = nullptr;
 
 	class FWorkerThread* CurrentInnerThread = nullptr;
 	class FRunnableThread* CurrentThread = nullptr;
@@ -51,4 +54,6 @@ private:
 	FDateTime StartTime;
 
 	int64 FilePosition;
+
+	bool IsFirst;
 };

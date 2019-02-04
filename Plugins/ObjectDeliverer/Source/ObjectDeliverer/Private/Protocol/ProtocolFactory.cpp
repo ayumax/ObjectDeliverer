@@ -49,9 +49,9 @@ UProtocolLogWriter* UProtocolFactory::CreateProtocolLogWriter(const FString& Fil
 	return protocol;
 }
 
-UProtocolLogReader* UProtocolFactory::CreateProtocolLogReader(const FString& FilePath /*= "log.bin"*/, bool PathIsAblolute /*= false*/)
+UProtocolLogReader* UProtocolFactory::CreateProtocolLogReader(const FString& FilePath /*= "log.bin"*/, bool PathIsAblolute /*= false*/, bool CutFirstInterval /*= true*/)
 {
 	auto protocol = NewObject<UProtocolLogReader>();
-	protocol->Initialize(FilePath, PathIsAblolute);
+	protocol->Initialize(FilePath, PathIsAblolute, CutFirstInterval);
 	return protocol;
 }

@@ -9,6 +9,8 @@
 UProtocolLogReader::UProtocolLogReader()
 	: Reader(nullptr)
 	, CurrentLogTime(-1)
+	, FilePosition(0)
+	, IsFirst(true)
 {
 
 }
@@ -18,10 +20,11 @@ UProtocolLogReader::~UProtocolLogReader()
 
 }
 
-void UProtocolLogReader::Initialize(const FString& _FilePath, bool _PathIsAblolute)
+void UProtocolLogReader::Initialize(const FString& _FilePath, bool _PathIsAblolute, bool _CutFirstInterval)
 {
 	FilePath = _FilePath;
 	PathIsAblolute = _PathIsAblolute;
+	CutFirstInterval = _CutFirstInterval;
 
 	ReceiveBuffer.SetNum(1024);
 }
@@ -33,7 +36,7 @@ void UProtocolLogReader::Start()
 	auto readPath = FilePath;
 	if (!PathIsAblolute)
 	{
-		readPath = FPaths::Combine(FPaths::ProjectContentDir(), FilePath);
+		readPath = FPaths::Combine(FPaths::ProjectLogDir(), FilePath);
 	}
 
 	Reader = new FileReaderUtil();
@@ -41,6 +44,7 @@ void UProtocolLogReader::Start()
 
 	StartTime = FDateTime::Now();
 	CurrentLogTime = -1;
+	IsFirst = true;
 
 	CurrentInnerThread = new FWorkerThread([this] { return ReadData(); }, [this] { return ReadEnd(); }, 0.001);
 	CurrentThread = FRunnableThread::Create(CurrentInnerThread, TEXT("ObjectDeliverer ProtocolLogReader PollingThread"));
@@ -123,6 +127,11 @@ bool UProtocolLogReader::ReadData()
 		if (Reader->RemainSize() < sizeof(double)) return false;
 
 		CurrentLogTime = Reader->Read<double>();
+		if (IsFirst && CutFirstInterval)
+		{
+			StartTime -= FTimespan::FromMilliseconds(CurrentLogTime);
+		}
+		IsFirst = false;
 
 		if (Reader->RemainSize() < sizeof(int32)) return false;
 

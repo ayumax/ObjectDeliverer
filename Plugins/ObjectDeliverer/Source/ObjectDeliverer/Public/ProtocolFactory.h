@@ -30,6 +30,6 @@ public:
 	static class UProtocolLogWriter* CreateProtocolLogWriter(const FString& FilePath = "log.bin", bool PathIsAblolute = false);
 
 	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|Protocol")
-	static class UProtocolLogReader* CreateProtocolLogReader(const FString& FilePath = "log.bin", bool PathIsAblolute = false);
+	static class UProtocolLogReader* CreateProtocolLogReader(const FString& FilePath = "log.bin", bool PathIsAblolute = false, bool CutFirstInterval = true);
 
 };
