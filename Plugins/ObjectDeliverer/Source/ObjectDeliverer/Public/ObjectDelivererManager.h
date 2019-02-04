@@ -84,6 +84,11 @@ public:
 		ReceiveSocket = ClientSocket;
 		ReceiveBuffers.Add(Buffer);
 	}
+	UFUNCTION()
+		void OnReceiveString(FString StringValue)
+	{
+		ReceiveStrings.Add(StringValue);
+	}
 
 	UPROPERTY()
 	TArray<UObjectDelivererProtocol*> ConnectedSocket;
@@ -95,5 +100,5 @@ public:
 	UObjectDelivererProtocol* ReceiveSocket;
 
 	TArray<TArray<uint8>> ReceiveBuffers;
-
+	TArray<FString> ReceiveStrings;
 };

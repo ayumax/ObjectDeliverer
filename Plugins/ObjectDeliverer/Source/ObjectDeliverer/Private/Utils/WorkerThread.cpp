@@ -5,6 +5,16 @@ FWorkerThread::FWorkerThread(TFunction<bool()> InWork, float WaitSeconds)
 	: Work(InWork)
 	, Seconds(WaitSeconds)
 	, ContinueRun(true)
+	, End([]() {})
+{
+
+}
+
+FWorkerThread::FWorkerThread(TFunction<bool()> InWork, TFunction<void()> InEnd, float WaitSeconds)
+	: Work(InWork)
+	, Seconds(WaitSeconds)
+	, ContinueRun(true)
+	, End(InEnd)
 {
 
 }
@@ -42,4 +52,6 @@ void FWorkerThread::Stop()
 void FWorkerThread::Exit()
 {
 	ContinueRun = false;
+
+	End();
 }
