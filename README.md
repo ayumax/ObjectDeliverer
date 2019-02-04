@@ -14,6 +14,8 @@ You can also add your own protocol.
 + UDP(Sender)
 + UDP(Receiver)
 + Shared Memory(Windows Only)
++ LogFile Writer
++ LogFile Reader
 
 ## Data division rule
 The following rules are available for built-in split rules of transmitted and received data.
@@ -102,6 +104,14 @@ deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099),
 // Shared Memory
 deliverer->Start(UProtocolFactory::CreateProtocolSharedMemory("memory_test", 1024),
                  UPacketRuleFactory::CreatePacketRuleSizeBody());
+		 
+// LogFile Writer
+deliverer->Start(UProtocolFactory::CreateProtocolLogWriter("log.bin", false),
+                 UPacketRuleFactory::CreatePacketRuleSizeBody());	
+		 
+// LogFile Reader
+deliverer->Start(UProtocolFactory::CreateProtocolLogReader("log.bin", false, true),
+                 UPacketRuleFactory::CreatePacketRuleSizeBody());		 
 ```
 
 
