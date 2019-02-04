@@ -18,7 +18,7 @@ public:
 	~UProtocolUdpSocketReceiver();
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
-	void InitializeWithReceiver(int32 BoundPort = 8001);
+	void InitializeWithReceiver(int32 BoundPort = 8000);
 
 	virtual void Start() override;
 	virtual void Close() override;
@@ -31,5 +31,5 @@ private:
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
-	int32 BoundPort = 8001;
+	int32 BoundPort = 8000;
 };
