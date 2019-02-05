@@ -119,7 +119,7 @@ bool UProtocolSharedMemory::ReceivedData()
 
 		TempBuffer.SetNum(Size, false);
 
-		FMemory::Memcpy(TempBuffer.GetData(), SharedMemoryData + sizeof(uint8) + sizeof(uint32), Size);
+		FMemory::Memcpy(TempBuffer.GetData(), SharedMemoryData + sizeof(uint8) + sizeof(uint32), FMath::Min((uint32)SharedMemorySize, Size));
 	});
 
 	if (Size == 0) return true;
