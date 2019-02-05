@@ -55,11 +55,19 @@ public:
 
 	virtual void BeginDestroy() override;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer")
+	bool IsEventWithGameThread;
+
+private:
+	void DispatchEvent(TFunction<void()> EventAction);
+
 private:
 	UPROPERTY(Transient)
 	UObjectDelivererProtocol* CurrentProtocol;
 	UPROPERTY(Transient)
 	UDeliveryBox* DeliveryBox;
+
+	bool IsDestorying;
 };
 
 UCLASS()

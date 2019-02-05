@@ -2,8 +2,14 @@
 #include "ObjectDelivererProtocol.h"
 #include "PacketRule.h"
 #include "DeliveryBox.h"
+#include "Async.h"
+#include "Misc/ScopeLock.h"
+
+static FCriticalSection LockObj;
 
 UObjectDelivererManager::UObjectDelivererManager()
+	: IsDestorying(false)
+	, IsEventWithGameThread(true)
 {
 
 }
@@ -25,30 +31,54 @@ void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketR
 			Send(Buffer);
 		});
 	}
-	
 
 	CurrentProtocol->Connected.BindLambda([this](UObjectDelivererProtocol* ConnectedObject) 
 	{
-		Connected.Broadcast(ConnectedObject);
+		DispatchEvent([this, ConnectedObject]()
+		{
+			Connected.Broadcast(ConnectedObject);
+		});
 	});
 
 	CurrentProtocol->Disconnected.BindLambda([this](UObjectDelivererProtocol* DisconnectedObject)
 	{
-		Disconnected.Broadcast(DisconnectedObject);
+		DispatchEvent([this, DisconnectedObject]()
+		{
+			Disconnected.Broadcast(DisconnectedObject);
+		});
+		
 	});
 
 	CurrentProtocol->ReceiveData.BindLambda([this](UObjectDelivererProtocol* FromObject, const TArray<uint8>& Buffer)
 	{
-		ReceiveData.Broadcast(FromObject, Buffer);
+		DispatchEvent([this, FromObject, Buffer]() {
+			ReceiveData.Broadcast(FromObject, Buffer);
 
-		if (DeliveryBox)
-		{
-			DeliveryBox->NotifyReceiveBuffer(Buffer);
-		}
+			if (DeliveryBox)
+			{
+				DeliveryBox->NotifyReceiveBuffer(Buffer);
+			}
+		});
 	});
 
-
 	CurrentProtocol->Start();
+}
+
+void UObjectDelivererManager::DispatchEvent(TFunction<void()> EventAction)
+{
+	if (IsDestorying) return;
+
+	if (IsEventWithGameThread)
+	{
+		AsyncTask(ENamedThreads::GameThread, [this, EventAction]() {
+			if (IsDestorying) return;
+			EventAction();
+		});
+	}
+	else
+	{
+		EventAction();
+	}
 }
 
 void UObjectDelivererManager::Close()
@@ -93,6 +123,8 @@ void UObjectDelivererManager::Send(const TArray<uint8>& DataBuffer)
 
 void UObjectDelivererManager::BeginDestroy()
 {
+	IsDestorying = true;
+
 	Close();
 
 	Super::BeginDestroy();
