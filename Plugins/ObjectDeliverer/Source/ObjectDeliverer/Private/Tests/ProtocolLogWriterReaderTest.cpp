@@ -1,6 +1,6 @@
 #include "CoreMinimal.h"
-#include "AutomationTest.h"
-#include "AutomationCommon.h"
+#include "Misc/AutomationTest.h"
+#include "Tests/AutomationCommon.h"
 #include "ProtocolLogReader.h"
 #include "ProtocolLogWriter.h"
 #include "PacketRuleSizeBody.h"
@@ -8,8 +8,9 @@
 #include "ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
 #include "Utf8StringDeliveryBox.h"
+#if WITH_DEV_AUTOMATION_TESTS
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolLogWrierReaderTest, "ObjectDeliverer.ProtocolTest.ProtocolLogWrierReaderTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolLogWrierReaderTest, "ObjectDeliverer.ProtocolTest.ProtocolLogWrierReaderTest1", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
 
 bool FProtocolLogWrierReaderTest::RunTest(const FString& Parameters)
 {
@@ -70,3 +71,4 @@ bool FProtocolLogWrierReaderTest::RunTest(const FString& Parameters)
 
 	return true;
 }
+#endif
