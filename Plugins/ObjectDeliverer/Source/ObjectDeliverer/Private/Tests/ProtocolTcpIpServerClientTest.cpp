@@ -1,6 +1,6 @@
 #include "CoreMinimal.h"
-#include "AutomationTest.h"
-#include "AutomationCommon.h"
+#include "Misc/AutomationTest.h"
+#include "Tests/AutomationCommon.h"
 #include "ProtocolTcpIpClient.h"
 #include "ProtocolTcpIpServer.h"
 #include "PacketRuleSizeBody.h"
@@ -8,8 +8,9 @@
 #include "ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
 
+#if WITH_DEV_AUTOMATION_TESTS
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest1, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest1, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest1", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
 
 bool FProtocolTcpIpServerClientTest1::RunTest(const FString& Parameters)
 {
@@ -55,7 +56,7 @@ bool FProtocolTcpIpServerClientTest1::RunTest(const FString& Parameters)
 }
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest2, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest2", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest2, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest2", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
 
 bool FProtocolTcpIpServerClientTest2::RunTest(const FString& Parameters)
 {
@@ -103,7 +104,7 @@ bool FProtocolTcpIpServerClientTest2::RunTest(const FString& Parameters)
 
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest3, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest3", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest3, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest3", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
 
 bool FProtocolTcpIpServerClientTest3::RunTest(const FString& Parameters)
 {
@@ -145,7 +146,7 @@ bool FProtocolTcpIpServerClientTest3::RunTest(const FString& Parameters)
 }
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest4, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest4", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest4, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest4", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
 
 bool FProtocolTcpIpServerClientTest4::RunTest(const FString& Parameters)
 {
@@ -197,7 +198,7 @@ bool FProtocolTcpIpServerClientTest4::RunTest(const FString& Parameters)
 }
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest5, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest5", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest5, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest5", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
 
 bool FProtocolTcpIpServerClientTest5::RunTest(const FString& Parameters)
 {
@@ -244,7 +245,7 @@ bool FProtocolTcpIpServerClientTest5::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest6, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest6", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest6, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest6", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
 
 bool FProtocolTcpIpServerClientTest6::RunTest(const FString& Parameters)
 {
@@ -293,7 +294,7 @@ bool FProtocolTcpIpServerClientTest6::RunTest(const FString& Parameters)
 }
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest7, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest7", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolTcpIpServerClientTest7, "ObjectDeliverer.ProtocolTest.ProtocolTcpIpServerClientTest7", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
 
 bool FProtocolTcpIpServerClientTest7::RunTest(const FString& Parameters)
 {
@@ -348,3 +349,5 @@ bool FProtocolTcpIpServerClientTest7::RunTest(const FString& Parameters)
 
 	return true;
 }
+
+#endif

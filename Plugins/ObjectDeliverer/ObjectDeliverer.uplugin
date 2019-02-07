@@ -1,9 +1,9 @@
 {
   "FileVersion": 3,
   "Version": 1,
-  "VersionName": "0.0.1",
+  "VersionName": "1.0.0",
   "FriendlyName": "ObjectDeliverer",
-  "Description": "Socket communication library for Unreal Engine.",
+  "Description": "ObjectDeliverer is a data transmission / reception library for Unreal Engine (C ++, Blueprint). ",
   "Category": "Programming",
   "CreatedBy": "ayumax",
   "CreatedByURL": "https://github.com/ayumax",
@@ -18,7 +18,11 @@
     {
       "Name": "ObjectDeliverer",
       "Type": "Runtime",
-      "LoadingPhase": "Default"
+      "LoadingPhase": "Default",
+      "WhitelistPlatforms": [
+        "Win64",
+        "Win32"
+      ]
     }
   ]
 }

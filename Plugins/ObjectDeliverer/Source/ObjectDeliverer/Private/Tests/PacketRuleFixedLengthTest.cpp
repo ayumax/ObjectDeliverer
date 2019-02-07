@@ -1,4 +1,4 @@
-#include "AutomationTest.h"
+#include "Misc/AutomationTest.h"
 #include "PacketRuleFixedLength.h"
 #include "PacketRuleFactory.h"
 

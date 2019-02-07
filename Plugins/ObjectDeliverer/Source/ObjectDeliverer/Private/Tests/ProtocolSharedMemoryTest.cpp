@@ -1,13 +1,14 @@
 #include "CoreMinimal.h"
-#include "AutomationTest.h"
-#include "AutomationCommon.h"
+#include "Misc/AutomationTest.h"
+#include "Tests/AutomationCommon.h"
 #include "ProtocolSharedMemory.h"
 #include "PacketRuleSizeBody.h"
 #include "PacketRuleFactory.h"
 #include "ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
+#if WITH_DEV_AUTOMATION_TESTS
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolSharedMemoryTest, "ObjectDeliverer.ProtocolTest.ProtocolSharedMemoryTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolSharedMemoryTest, "ObjectDeliverer.ProtocolTest.ProtocolSharedMemoryTest1", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
 
 bool FProtocolSharedMemoryTest::RunTest(const FString& Parameters)
 {
@@ -62,3 +63,4 @@ bool FProtocolSharedMemoryTest::RunTest(const FString& Parameters)
 
 	return true;
 }
+#endif

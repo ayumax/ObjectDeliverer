@@ -1,14 +1,15 @@
 #include "CoreMinimal.h"
-#include "AutomationTest.h"
-#include "AutomationCommon.h"
+#include "Misc/AutomationTest.h"
+#include "Tests/AutomationCommon.h"
 #include "ProtocolUdpSocketSender.h"
 #include "ProtocolUdpSocketReceiver.h"
 #include "PacketRuleSizeBody.h"
 #include "PacketRuleFactory.h"
 #include "ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
+#if WITH_DEV_AUTOMATION_TESTS
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolUdpTest1, "ObjectDeliverer.ProtocolTest.ProtocolUdpTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolUdpTest1, "ObjectDeliverer.ProtocolTest.ProtocolUdpTest1", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
 
 bool FProtocolUdpTest1::RunTest(const FString& Parameters)
 {
@@ -61,3 +62,4 @@ bool FProtocolUdpTest1::RunTest(const FString& Parameters)
 
 	return true;
 }
+#endif
