@@ -7,13 +7,13 @@
   "Category": "Programming",
   "CreatedBy": "ayumax",
   "CreatedByURL": "https://github.com/ayumax",
-  "DocsURL": "",
+  "DocsURL": "https://github.com/ayumax/ObjectDeliverer",
   "MarketplaceURL": "",
-  "SupportURL": "https://github.com/ayumax/ObjectDeliverer",
+  "SupportURL": "",
   "EnabledByDefault": false,
   "CanContainContent": false,
   "IsBetaVersion": false,
-  "Installed": false,
+  "Installed": true,
   "Modules": [
     {
       "Name": "ObjectDeliverer",

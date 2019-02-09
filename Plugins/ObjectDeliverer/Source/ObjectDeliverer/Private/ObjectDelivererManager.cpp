@@ -67,6 +67,7 @@ void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketR
 void UObjectDelivererManager::DispatchEvent(TFunction<void()> EventAction)
 {
 	if (IsDestorying) return;
+	if (!IsValid(this)) return;
 
 	if (IsEventWithGameThread)
 	{
@@ -116,6 +117,7 @@ void UObjectDelivererManager::Close()
 void UObjectDelivererManager::Send(const TArray<uint8>& DataBuffer)
 {
 	if (!CurrentProtocol) return;
+	if (IsDestorying) return;
 
 	CurrentProtocol->Send(DataBuffer);
 }

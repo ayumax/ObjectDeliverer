@@ -35,6 +35,8 @@ void UProtocolUdpSocketReceiver::Start()
 
 void UProtocolUdpSocketReceiver::Close()
 {
+	FScopeLock lock(&ct);
+
 	if (Receiver)
 	{
 		Receiver->Stop();
@@ -47,6 +49,8 @@ void UProtocolUdpSocketReceiver::Close()
 
 void UProtocolUdpSocketReceiver::UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip)
 {
+	FScopeLock lock(&ct);
+
 	int64 receivedSize = data->TotalSize();
 	TArray<uint8>& receiveBuffer = *(data.Get());
 

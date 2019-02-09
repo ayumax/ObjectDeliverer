@@ -21,7 +21,7 @@ public:
 	virtual void RequestSend(const TArray<uint8>& DataBuffer) override;
 
 protected:
-	void CloseSocket(bool Wait);
+	void CloseSocket();
 	void StartPollilng();
 	bool ReceivedData();
 
@@ -30,4 +30,6 @@ protected:
 	class FRunnableThread* CurrentThread = nullptr;
 
 	TArray<uint8> ReceiveBuffer;
+	FCriticalSection ct;
+	bool IsSelfClose = false;
 };
