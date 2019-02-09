@@ -38,14 +38,12 @@ The following rules are available for built-in split rules of transmitted and re
 1. Create a DeliveryBox(If you wish to send and receive data other than binary)
 1. Set the send / receive protocol and PacketRule, then start the ObjectDelivererManager
 
-![blueprint_0](https://user-images.githubusercontent.com/8191970/51612470-de671900-1f64-11e9-83eb-993b6e8c2a12.PNG)
-![blueprint_1](https://user-images.githubusercontent.com/8191970/51612551-08b8d680-1f65-11e9-87c4-820cdaa40195.PNG)
-![blueprint_2](https://user-images.githubusercontent.com/8191970/51612572-12423e80-1f65-11e9-9734-d46a3277cc98.PNG)
-![blueprint_3](https://user-images.githubusercontent.com/8191970/51612581-1706f280-1f65-11e9-8581-c87cba39ea44.PNG)
+![gallery 1](https://user-images.githubusercontent.com/8191970/52522069-f9a38980-2cc3-11e9-943b-2014184e6e1e.png)
+
 ```cpp
 void UMyClass::Start()
 {
-    auto deliverer = NewObject<UObjectDelivererManager>();
+    auto deliverer = UObjectDelivererManager::CreateObjectDelivererManager();
 
     // bind connected event
     deliverer->Connected.AddDynamic(this, &UMyClass::OnConnect);
@@ -84,6 +82,8 @@ void UMyClass::OnReceive(UObjectDelivererProtocol* ClientSocket, const TArray<ui
 # Change of communication protocol
 You can switch to a different communication protocol by replacing the transmission / reception protocol set in ObjectDelivererManager.
 
+![gallery 2](https://user-images.githubusercontent.com/8191970/52522072-00320100-2cc4-11e9-862e-885e0ecc576d.png)
+
 ```cpp
 // TCP/IP Server
 deliverer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099),
@@ -118,6 +118,7 @@ deliverer->Start(UProtocolFactory::CreateProtocolLogReader("log.bin", false, tru
 # Change of data division rule
 You can easily change the packet splitting rule.
 
+![gallery 3](https://user-images.githubusercontent.com/8191970/52522075-04f6b500-2cc4-11e9-832d-3c684bdcac74.png)
 ```cpp
 // FixedSize
 deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099),
@@ -139,9 +140,11 @@ deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099),
 # Change of Serialization method
 Using DeliveryBox enables sending and receiving of non-binary data (character strings and objects).
 
+![gallery 4](https://user-images.githubusercontent.com/8191970/52522078-088a3c00-2cc4-11e9-90f5-9cc29fe938e4.png)
+
 ```cpp
 // UTF-8 string
-auto deliverybox = NewObject<UUtf8StringDeliveryBox>();
+auto deliverybox = UDeliveryBoxFactory::CreateUtf8StringDeliveryBox();
 deliverybox->Received.AddDynamic(this, &UMyClass::OnReceiveString);
 deliverer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099),
                  UPacketRuleFactory::CreatePacketRuleSizeBody(),
@@ -157,7 +160,7 @@ void UMyClass::OnReceiveString(FString ReceivedString)
 
 ```cpp
 // Object(Json)
-auto deliverybox = NewObject<UObjectDeliveryBoxUsingJson>();
+auto deliverybox = UDeliveryBoxFactory::CreateObjectDeliveryBoxUsingJson>(SampleObject::StaticClass());
 deliverybox->Received.AddDynamic(this, &UMyClass::OnReceiveObject);
 deliverer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099),
                  UPacketRuleFactory::CreatePacketRuleSizeBody(),
@@ -168,7 +171,7 @@ deliverybox->Send(obj);
 
 void UMyClass::OnReceiveObject(UObject* ReceivedObject)
 {
-	// received data object
+    // received data object
     USampleObject* obj = Cast<USampleObject>(ReceivedObject);
 }
 ```
