@@ -22,7 +22,11 @@ UPacketRuleSizeBody* UPacketRuleFactory::CreatePacketRuleSizeBody(int32 SizeLeng
 UPacketRuleTerminate* UPacketRuleFactory::CreatePacketRuleTerminate(const TArray<uint8>& Terminate)
 {
 	auto PacketRule = NewObject<UPacketRuleTerminate>();
-	PacketRule->Terminate = Terminate;
+
+	if (Terminate.Num() > 0)
+	{
+		PacketRule->Terminate = Terminate;
+	}
 	return PacketRule;
 }
 

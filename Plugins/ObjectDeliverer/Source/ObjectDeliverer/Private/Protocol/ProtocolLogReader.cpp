@@ -20,10 +20,10 @@ UProtocolLogReader::~UProtocolLogReader()
 
 }
 
-void UProtocolLogReader::Initialize(const FString& _FilePath, bool _PathIsAblolute, bool _CutFirstInterval)
+void UProtocolLogReader::Initialize(const FString& _FilePath, bool _PathIsAbsolute, bool _CutFirstInterval)
 {
 	FilePath = _FilePath;
-	PathIsAblolute = _PathIsAblolute;
+	PathIsAbsolute = _PathIsAbsolute;
 	CutFirstInterval = _CutFirstInterval;
 
 	ReceiveBuffer.SetNum(1024);
@@ -34,7 +34,7 @@ void UProtocolLogReader::Start()
 	if (Reader) delete Reader;
 
 	auto readPath = FilePath;
-	if (!PathIsAblolute)
+	if (!PathIsAbsolute)
 	{
 		readPath = FPaths::Combine(FPaths::ProjectLogDir(), FilePath);
 	}

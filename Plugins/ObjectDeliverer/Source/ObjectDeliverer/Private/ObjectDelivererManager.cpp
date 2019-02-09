@@ -7,6 +7,13 @@
 
 static FCriticalSection LockObj;
 
+UObjectDelivererManager* UObjectDelivererManager::CreateObjectDelivererManager(bool _IsEventWithGameThread /* = true*/)
+{
+	auto manager = NewObject<UObjectDelivererManager>();
+	manager->IsEventWithGameThread = _IsEventWithGameThread;
+	return manager;
+}
+
 UObjectDelivererManager::UObjectDelivererManager()
 	: IsDestorying(false)
 	, IsEventWithGameThread(true)

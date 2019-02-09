@@ -24,7 +24,17 @@ public:
 	~UObjectDelivererManager();
 
 	/**
+	 * create ObjectDelivererManager
+	 * @param IsEventWithGameThread - Process events with GameThread
+	 */
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer")
+	static UObjectDelivererManager* CreateObjectDelivererManager(bool IsEventWithGameThread = true);
+
+	/**
 	 * start communication protocol.
+	 * @param Protocol - Communication protocol
+	 * @param PacketRule - Data division rule
+	 * @param DeliveryBox - Serialization method(optional)
 	 */
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer")
 	void Start(UObjectDelivererProtocol* Protocol, UPacketRule* PacketRule, UDeliveryBox* DeliveryBox = nullptr);
@@ -43,18 +53,29 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer")
 	void Send(const TArray<uint8>& DataBuffer);
 
-
+	/**
+	* Preparation for transmission / reception is completed
+	*/
 	UPROPERTY(BlueprintAssignable, Category = "ObjectDeliverer")
 	FObjectDelivererManagerConnected Connected;
 
+	/**
+	* lost my connection
+	*/
 	UPROPERTY(BlueprintAssignable, Category = "ObjectDeliverer")
 	FObjectDelivererManagerDisconnected Disconnected;
 
+	/**
+	* Received data
+	*/
 	UPROPERTY(BlueprintAssignable, Category = "ObjectDeliverer")
 	FObjectDelivererManagerReceiveData ReceiveData;
 
 	virtual void BeginDestroy() override;
 
+	/**
+	* Process events with GameThread
+	*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer")
 	bool IsEventWithGameThread;
 
