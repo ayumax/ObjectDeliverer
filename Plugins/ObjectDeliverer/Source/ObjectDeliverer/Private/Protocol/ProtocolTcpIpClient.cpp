@@ -22,7 +22,7 @@ void UProtocolTcpIpClient::Initialize(const FString& IpAddress, int32 Port, bool
 
 void UProtocolTcpIpClient::Start()
 {
-	CloseSocket(true);
+	CloseSocket();
 
 	auto socket = FTcpSocketBuilder(TEXT("ObjectDeliverer TcpIpClient"))
 		.AsBlocking()

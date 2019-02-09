@@ -28,6 +28,7 @@ protected:
 
 private:
 	FUdpSocketReceiver* Receiver = nullptr;
+	FCriticalSection ct;
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")

@@ -16,20 +16,22 @@ UProtocolTcpIpSocket::~UProtocolTcpIpSocket()
 
 void UProtocolTcpIpSocket::Close()
 {
-	CloseSocket(true);
+	CloseSocket();
 }
 
 
-void UProtocolTcpIpSocket::CloseSocket(bool Wait)
+void UProtocolTcpIpSocket::CloseSocket()
 {
 	if (!InnerSocket) return;
 
-	if (!InnerSocket) return;
+	IsSelfClose = true;
 
-	CloseInnerSocket();
+	InnerSocket->Close();
+
+	FScopeLock lock(&ct);
 
 	if (!CurrentThread) return;
-	CurrentThread->Kill(Wait);
+	CurrentThread->Kill(true);
 
 	delete CurrentThread;
 	CurrentThread = nullptr;
@@ -38,6 +40,8 @@ void UProtocolTcpIpSocket::CloseSocket(bool Wait)
 	delete CurrentInnerThread;
 	CurrentInnerThread = nullptr;
 
+	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(InnerSocket);
+	InnerSocket = nullptr;
 }
 
 void UProtocolTcpIpSocket::Send(const TArray<uint8>& DataBuffer)
@@ -56,7 +60,11 @@ void UProtocolTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
 void UProtocolTcpIpSocket::StartPollilng()
 {
 	ReceiveBuffer.SetNum(1024);
-	CurrentInnerThread = new FWorkerThread([this] { return ReceivedData(); });
+	CurrentInnerThread = new FWorkerThread([this] 
+	{ 
+		FScopeLock lock(&ct);
+		return ReceivedData();
+	});
 	CurrentThread = FRunnableThread::Create(CurrentInnerThread, TEXT("ObjectDeliverer TcpIpSocket PollingThread"));
 }
 
@@ -74,8 +82,12 @@ bool UProtocolTcpIpSocket::ReceivedData()
 		uint8 Dummy;
 		if (!InnerSocket->Recv(&Dummy, 1, BytesRead, ESocketReceiveFlags::Peek))
 		{
-			CloseInnerSocket();
-			DispatchDisconnected(this);
+			if (!IsSelfClose)
+			{
+				CloseInnerSocket();
+				DispatchDisconnected(this);
+			}
+			
 			return false;
 		}
 	}
@@ -85,8 +97,11 @@ bool UProtocolTcpIpSocket::ReceivedData()
 	{
 		if (InnerSocket->GetConnectionState() == SCS_ConnectionError)
 		{
-			CloseInnerSocket();
-			DispatchDisconnected(this);
+			if (!IsSelfClose)
+			{
+				CloseInnerSocket();
+				DispatchDisconnected(this);
+			}
 			return false;
 		}
 		return true;
@@ -109,8 +124,11 @@ bool UProtocolTcpIpSocket::ReceivedData()
 		int32 Read = 0;
 		if (!InnerSocket->Recv(ReceiveBuffer.GetData(), ReceiveBuffer.Num(), Read, ESocketReceiveFlags::WaitAll))
 		{
-			CloseInnerSocket();
-			DispatchDisconnected(this);
+			if (!IsSelfClose)
+			{
+				CloseInnerSocket();
+				DispatchDisconnected(this);
+			}
 			return false;
 		}
 
