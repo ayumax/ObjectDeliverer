@@ -130,7 +130,7 @@ deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099),
 
 // Split by terminal symbol
 deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099),
-                 UPacketRuleFactory::CreatePacketRuleTerminate({ TEXT('\r'), TEXT('\n') }));
+                 UPacketRuleFactory::CreatePacketRuleTerminate({ 0x00 }));
 
 // Nodivision
 deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099),
