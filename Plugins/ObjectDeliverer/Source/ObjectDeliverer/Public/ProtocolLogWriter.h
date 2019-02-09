@@ -13,13 +13,8 @@ public:
 	UProtocolLogWriter();
 	~UProtocolLogWriter();
 
-	/**
-	 * Initialize UDP.
-	 * @param IpAddress - The ip address of the destination.
-	 * @param Port - The port number of the destination.
-	 */
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
-	virtual void Initialize(const FString& FilePath = "log.bin", bool PathIsAblolute = false);
+	virtual void Initialize(const FString& FilePath = "log.bin", bool PathIsAbsolute = false);
 
 	virtual void Start() override;
 	virtual void Close() override;
@@ -33,7 +28,7 @@ public:
 	FString FilePath = "log.bin";
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
-	bool PathIsAblolute = false;
+	bool PathIsAbsolute = false;
 
 private:
 	class FileWriterUtil* Writer;

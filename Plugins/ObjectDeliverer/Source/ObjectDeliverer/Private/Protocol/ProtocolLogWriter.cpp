@@ -14,10 +14,10 @@ UProtocolLogWriter::~UProtocolLogWriter()
 
 }
 
-void UProtocolLogWriter::Initialize(const FString& _FilePath, bool _PathIsAblolute)
+void UProtocolLogWriter::Initialize(const FString& _FilePath, bool _PathIsAbsolute)
 {
 	FilePath = _FilePath;
-	PathIsAblolute = _PathIsAblolute;
+	PathIsAbsolute = _PathIsAbsolute;
 }
 
 void UProtocolLogWriter::Start()
@@ -25,7 +25,7 @@ void UProtocolLogWriter::Start()
 	if (Writer) delete Writer;
 
 	auto writePath = FilePath;
-	if (!PathIsAblolute)
+	if (!PathIsAbsolute)
 	{
 		writePath = FPaths::Combine(FPaths::ProjectLogDir(), FilePath);
 	}

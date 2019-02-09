@@ -19,7 +19,7 @@ public:
 	 * @param Port - The port number of the destination.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
-	virtual void Initialize(const FString& FilePath = "log.bin", bool PathIsAblolute = false, bool CutFirstInterval = true);
+	virtual void Initialize(const FString& FilePath = "log.bin", bool PathIsAbsolute = false, bool CutFirstInterval = true);
 
 	virtual void Start() override;
 	virtual void Close() override;
@@ -36,7 +36,7 @@ public:
 	FString FilePath = "log.bin";
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
-	bool PathIsAblolute = false;
+	bool PathIsAbsolute = false;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
 	bool CutFirstInterval = false;
