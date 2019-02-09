@@ -38,7 +38,9 @@ The following rules are available for built-in split rules of transmitted and re
 1. Create a DeliveryBox(If you wish to send and receive data other than binary)
 1. Set the send / receive protocol and PacketRule, then start the ObjectDelivererManager
 
-![gallery 1](https://user-images.githubusercontent.com/8191970/52522069-f9a38980-2cc3-11e9-943b-2014184e6e1e.png)
+![gallery 1](https://user-images.githubusercontent.com/8191970/52522481-48075700-2cc9-11e9-92a0-067992f56042.png)
+
+
 
 ```cpp
 void UMyClass::Start()
@@ -82,7 +84,7 @@ void UMyClass::OnReceive(UObjectDelivererProtocol* ClientSocket, const TArray<ui
 # Change of communication protocol
 You can switch to a different communication protocol by replacing the transmission / reception protocol set in ObjectDelivererManager.
 
-![gallery 2](https://user-images.githubusercontent.com/8191970/52522072-00320100-2cc4-11e9-862e-885e0ecc576d.png)
+![gallery 2](https://user-images.githubusercontent.com/8191970/52522483-4d64a180-2cc9-11e9-9bda-2f9f4fc5ff65.png)
 
 ```cpp
 // TCP/IP Server
@@ -118,7 +120,8 @@ deliverer->Start(UProtocolFactory::CreateProtocolLogReader("log.bin", false, tru
 # Change of data division rule
 You can easily change the packet splitting rule.
 
-![gallery 3](https://user-images.githubusercontent.com/8191970/52522075-04f6b500-2cc4-11e9-832d-3c684bdcac74.png)
+![gallery 3](https://user-images.githubusercontent.com/8191970/52522485-4fc6fb80-2cc9-11e9-866d-a92c09657be8.png)
+
 ```cpp
 // FixedSize
 deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099),
@@ -140,7 +143,7 @@ deliverer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099),
 # Change of Serialization method
 Using DeliveryBox enables sending and receiving of non-binary data (character strings and objects).
 
-![gallery 4](https://user-images.githubusercontent.com/8191970/52522078-088a3c00-2cc4-11e9-90f5-9cc29fe938e4.png)
+![gallery 4](https://user-images.githubusercontent.com/8191970/52522486-52295580-2cc9-11e9-9218-d633e68b922f.png)
 
 ```cpp
 // UTF-8 string
