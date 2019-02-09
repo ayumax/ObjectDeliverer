@@ -4,7 +4,6 @@ It has the following features.
 
 + Communication protocol, data division rule, serialization method can be switched by part replacement.
 + Available for both C ++ and Blueprint
-+ It is also possible to add your own customized parts(protocol, data division rule, serialization method)
 
 ## Communication protocol
 The following protocols can be used with built-in.
