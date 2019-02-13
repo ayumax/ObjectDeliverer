@@ -162,7 +162,7 @@ void UMyClass::OnReceiveString(FString ReceivedString)
 
 ```cpp
 // Object(Json)
-auto deliverybox = UDeliveryBoxFactory::CreateObjectDeliveryBoxUsingJson>(SampleObject::StaticClass());
+auto deliverybox = UDeliveryBoxFactory::CreateObjectDeliveryBoxUsingJson(SampleObject::StaticClass());
 deliverybox->Received.AddDynamic(this, &UMyClass::OnReceiveObject);
 deliverer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099),
                  UPacketRuleFactory::CreatePacketRuleSizeBody(),
