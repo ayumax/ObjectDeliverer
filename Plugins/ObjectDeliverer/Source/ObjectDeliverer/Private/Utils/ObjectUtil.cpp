@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "ObjectUtil.h"
 
 EUPropertyType UObjectUtil::GetUPropertyType(UProperty* Property)

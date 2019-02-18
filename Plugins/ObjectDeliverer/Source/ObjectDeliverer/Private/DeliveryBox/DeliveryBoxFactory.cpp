@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "DeliveryBoxFactory.h"
 #include "ObjectDeliveryBoxUsingJson.h"
 #include "Utf8StringDeliveryBox.h"

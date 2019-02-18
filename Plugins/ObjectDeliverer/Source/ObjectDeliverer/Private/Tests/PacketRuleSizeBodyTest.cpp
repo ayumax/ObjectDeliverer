@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "Misc/AutomationTest.h"
 #include "PacketRuleSizeBody.h"
 #include "PacketRuleFactory.h"

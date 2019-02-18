@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "ObjectDeliveryBoxUsingJson.h"
 #include "Utils/ObjectUtil.h"
 #include "Utils/StringUtil.h"
