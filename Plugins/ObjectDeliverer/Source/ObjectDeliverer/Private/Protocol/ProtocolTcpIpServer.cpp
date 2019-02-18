@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "ProtocolTcpIpServer.h"
 #include "Common/TcpSocketBuilder.h"
 #include "ProtocolTcpIpSocket.h"

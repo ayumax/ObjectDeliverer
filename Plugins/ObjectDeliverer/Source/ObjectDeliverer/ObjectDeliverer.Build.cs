@@ -1,4 +1,4 @@
-// Copyright 1998-2018 Epic Games, Inc. All Rights Reserved.
+// Copyright 2019 ayumax. All Rights Reserved.
 using System.IO;
 
 namespace UnrealBuildTool.Rules
@@ -27,14 +27,12 @@ namespace UnrealBuildTool.Rules
 			PrivateDependencyModuleNames.AddRange(
 				new string[]
 				{
-					// ... add private dependencies that you statically link with here ...
 				}
 				);
 
 			DynamicallyLoadedModuleNames.AddRange(
 				new string[]
 				{
-					// ... add any modules that your module loads dynamically here ...
 				}
 				);
 		}

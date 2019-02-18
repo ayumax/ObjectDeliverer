@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "MutexLock.h"
 #if PLATFORM_WINDOWS
 #include "Windows/WindowsHWrapper.h"

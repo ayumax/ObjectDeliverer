@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "PacketRuleTerminate.h"
 #include "ObjectDelivererProtocol.h"
 #include "PacketRuleFactory.h"

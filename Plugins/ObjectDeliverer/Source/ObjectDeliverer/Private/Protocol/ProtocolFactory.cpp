@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "ProtocolFactory.h"
 #include "ProtocolTcpIpClient.h"
 #include "ProtocolTcpIpServer.h"

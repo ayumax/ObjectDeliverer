@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "PacketRuleNodivision.h"
 #include "ObjectDelivererProtocol.h"
 #include "PacketRuleFactory.h"

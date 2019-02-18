@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "ProtocolUdpSocketSender.h"
 #include "Common/UdpSocketBuilder.h"
 #include "Utils/WorkerThread.h"

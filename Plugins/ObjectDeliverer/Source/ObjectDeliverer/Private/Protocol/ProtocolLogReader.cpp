@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "ProtocolLogReader.h"
 #include "PacketRule.h"
 #include "Utils/FileUtil.h"

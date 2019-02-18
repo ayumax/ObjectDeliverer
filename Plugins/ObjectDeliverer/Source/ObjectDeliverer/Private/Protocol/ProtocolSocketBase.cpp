@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "ProtocolSocketBase.h"
 #include "Misc/OutputDeviceRedirector.h"
 #include "Sockets.h"
