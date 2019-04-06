@@ -11,9 +11,8 @@
 
 UProtocolSharedMemory::UProtocolSharedMemory()
 	: SharedMemoryHandle(nullptr)
-	, SharedMemoryMutex(nullptr)
 	, SharedMemoryData(nullptr)
-	, SharedMemorySize(0)
+	, SharedMemoryMutex(nullptr)
 	, NowCounter(0)
 {
 
