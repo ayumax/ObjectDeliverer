@@ -4,18 +4,18 @@
 
 FWorkerThread::FWorkerThread(TFunction<bool()> InWork, float WaitSeconds)
 	: Work(InWork)
+	, End([]() {})
 	, Seconds(WaitSeconds)
 	, ContinueRun(true)
-	, End([]() {})
 {
 
 }
 
 FWorkerThread::FWorkerThread(TFunction<bool()> InWork, TFunction<void()> InEnd, float WaitSeconds)
 	: Work(InWork)
+	, End(InEnd)
 	, Seconds(WaitSeconds)
 	, ContinueRun(true)
-	, End(InEnd)
 {
 
 }
