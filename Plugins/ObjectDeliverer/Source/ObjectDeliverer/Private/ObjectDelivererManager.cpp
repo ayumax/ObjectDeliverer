@@ -16,8 +16,8 @@ UObjectDelivererManager* UObjectDelivererManager::CreateObjectDelivererManager(b
 }
 
 UObjectDelivererManager::UObjectDelivererManager()
-	: IsDestorying(false)
-	, IsEventWithGameThread(true)
+	: IsEventWithGameThread(true)
+	, IsDestorying(false)
 {
 
 }
