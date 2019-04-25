@@ -1,0 +1,1 @@
+"C:\Program Files\Epic Games\UE_4.22\Engine\Binaries\Win64\UE4Editor-Cmd.exe" "%~dp0\ObjectDelivererTest.uproject" -ExecCmds="Automation RunTests ObjectDeliverer" -unattended -NullRHI -nopause -testexit="Automation Test Queue Empty" -log

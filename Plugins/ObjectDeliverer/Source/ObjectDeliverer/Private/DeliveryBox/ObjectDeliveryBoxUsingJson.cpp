@@ -26,6 +26,11 @@ void UObjectDeliveryBoxUsingJson::Initialize(UClass* _TargetClass)
 
 void UObjectDeliveryBoxUsingJson::Send(const UObject* message)
 {
+	SendTo(message, nullptr);
+}
+
+void UObjectDeliveryBoxUsingJson::SendTo(const UObject* message, const UObjectDelivererProtocol* Destination)
+{
 	auto jsonObject = CreateJsonObject(message);
 
 	FString OutputString;
@@ -35,7 +40,7 @@ void UObjectDeliveryBoxUsingJson::Send(const UObject* message)
 	TArray<uint8> buffer;
 	UStringUtil::StringToBuffer(OutputString, buffer);
 
-	RequestSend.ExecuteIfBound(buffer);
+	RequestSend.ExecuteIfBound(Destination, buffer);
 }
 
 void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer)
