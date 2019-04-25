@@ -19,10 +19,13 @@ public:
 	~UObjectDeliveryBoxUsingJson();
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
-		void Initialize(UClass* TargetClass);
+	void Initialize(UClass* TargetClass);
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
-		virtual void Send(const UObject* message);
+	virtual void Send(const UObject* message);
+
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
+	virtual void SendTo(const UObject* message, const UObjectDelivererProtocol* Destination);
 
 	virtual void NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer) override;
 

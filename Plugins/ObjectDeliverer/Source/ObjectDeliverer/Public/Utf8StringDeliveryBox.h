@@ -19,6 +19,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
 	void Send(const FString& message);
 
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
+	void SendTo(const FString& message, const UObjectDelivererProtocol* Destination);
 
 	virtual void NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer) override;
 

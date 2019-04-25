@@ -36,9 +36,17 @@ void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketR
 	DeliveryBox = _DeliveryBox;
 	if (DeliveryBox)
 	{
-		DeliveryBox->RequestSend.BindLambda([this](const TArray<uint8>& Buffer)
+		DeliveryBox->RequestSend.BindLambda([this](const UObjectDelivererProtocol* Destination, const TArray<uint8>& Buffer)
 		{
-			Send(Buffer);
+			if (Destination)
+			{
+				SendTo(Buffer, Destination);
+			}
+			else
+			{
+				Send(Buffer);
+			}
+			
 		});
 	}
 
