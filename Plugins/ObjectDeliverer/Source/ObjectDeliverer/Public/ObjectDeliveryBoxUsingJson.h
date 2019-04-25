@@ -7,7 +7,7 @@
 #include "DeliveryBox.h"
 #include "ObjectDeliveryBoxUsingJson.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCNObjectDeliveryBoxReceived, UObject*, ReceivedObject);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCNObjectDeliveryBoxReceived, UObject*, ReceivedObject, const UObjectDelivererProtocol*, FromObject);
 
 UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UObjectDeliveryBoxUsingJson : public UDeliveryBox
@@ -24,7 +24,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
 		virtual void Send(const UObject* message);
 
-	virtual void NotifyReceiveBuffer(const TArray<uint8>& buffer) override;
+	virtual void NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer) override;
 
 	static TSharedPtr<FJsonValue> ObjectJsonCallback(UProperty* Property, const void* Value);
 

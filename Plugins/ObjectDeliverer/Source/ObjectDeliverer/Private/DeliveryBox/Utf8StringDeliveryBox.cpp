@@ -19,7 +19,7 @@ void UUtf8StringDeliveryBox::Send(const FString& message)
 	RequestSend.ExecuteIfBound(buffer);
 }
 
-void UUtf8StringDeliveryBox::NotifyReceiveBuffer(const TArray<uint8>& buffer)
+void UUtf8StringDeliveryBox::NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer)
 {
-	Received.Broadcast(UStringUtil::BufferToString(buffer));
+	Received.Broadcast(UStringUtil::BufferToString(buffer), FromObject);
 }

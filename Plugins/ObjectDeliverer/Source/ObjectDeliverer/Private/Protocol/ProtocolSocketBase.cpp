@@ -25,7 +25,7 @@ void UProtocolSocketBase::CloseInnerSocket()
 	InnerSocket = nullptr;
 }
 
-void UProtocolSocketBase::SendTo(const TArray<uint8>& DataBuffer, const FIPv4Endpoint& EndPoint)
+void UProtocolSocketBase::SendTo(const TArray<uint8>& DataBuffer, const FIPv4Endpoint& EndPoint) const 
 {
 	if (!InnerSocket) return;
 
@@ -33,7 +33,7 @@ void UProtocolSocketBase::SendTo(const TArray<uint8>& DataBuffer, const FIPv4End
 	InnerSocket->SendTo(DataBuffer.GetData(), DataBuffer.Num(), BytesSent, EndPoint.ToInternetAddr().Get());
 }
 
-void UProtocolSocketBase::SendToConnected(const TArray<uint8>& DataBuffer)
+void UProtocolSocketBase::SendToConnected(const TArray<uint8>& DataBuffer) const
 {
 	if (!InnerSocket) return;
 

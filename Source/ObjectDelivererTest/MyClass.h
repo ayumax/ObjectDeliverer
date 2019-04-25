@@ -31,13 +31,13 @@ public:
 	void Start();
 
 	UFUNCTION()
-	void OnConnect(UObjectDelivererProtocol* ClientSocket);
+	void OnConnect(const UObjectDelivererProtocol* ClientSocket);
 	UFUNCTION()
-	void OnDisConnect(UObjectDelivererProtocol* ClientSocket);
+	void OnDisConnect(const UObjectDelivererProtocol* ClientSocket);
 	UFUNCTION()
-	void OnReceive(UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer);
+	void OnReceive(const UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer);
 	UFUNCTION()
-	void OnReceiveString(FString ReceivedString);
+	void OnReceiveString(const FString& ReceivedString, const UObjectDelivererProtocol* FromObject);
 	UFUNCTION()
-	void OnReceiveObject(UObject* ReceivedObject);
+	void OnReceiveObject(UObject* ReceivedObject, const UObjectDelivererProtocol* FromObject);
 };

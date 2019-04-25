@@ -38,7 +38,7 @@ void UObjectDeliveryBoxUsingJson::Send(const UObject* message)
 	RequestSend.ExecuteIfBound(buffer);
 }
 
-void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer(const TArray<uint8>& buffer)
+void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer)
 {
 	TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(UStringUtil::BufferToString(buffer));
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
@@ -49,7 +49,7 @@ void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer(const TArray<uint8>& buffe
 
 	JsonObjectToUObject(JsonObject, createdObj);
 
-	Received.Broadcast(createdObj);
+	Received.Broadcast(createdObj, FromObject);
 }
 
 

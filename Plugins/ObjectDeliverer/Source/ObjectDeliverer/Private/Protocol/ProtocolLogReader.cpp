@@ -72,7 +72,7 @@ void UProtocolLogReader::Close()
 	Reader = nullptr;
 }
 
-void UProtocolLogReader::Send(const TArray<uint8>& DataBuffer)
+void UProtocolLogReader::Send(const TArray<uint8>& DataBuffer) const
 {
 	
 }

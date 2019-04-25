@@ -153,7 +153,7 @@ bool UProtocolSharedMemory::ReceivedData()
 	
 }
 
-void UProtocolSharedMemory::Send(const TArray<uint8>& DataBuffer)
+void UProtocolSharedMemory::Send(const TArray<uint8>& DataBuffer) const
 {
 	if (!SharedMemoryHandle) return;
 

@@ -4,6 +4,8 @@
 #include "CoreMinimal.h"
 #include "DeliveryBox.generated.h"
 
+class UObjectDelivererProtocol;
+
 DECLARE_DELEGATE_OneParam(FUDeliveryBoxRequestSend, const TArray<uint8>&);
 
 UCLASS(BlueprintType, Blueprintable)
@@ -15,7 +17,7 @@ public:
 	UDeliveryBox();
 	~UDeliveryBox();
 
-	virtual void NotifyReceiveBuffer(const TArray<uint8>& buffer);
+	virtual void NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer);
 
 	FUDeliveryBoxRequestSend RequestSend;
 

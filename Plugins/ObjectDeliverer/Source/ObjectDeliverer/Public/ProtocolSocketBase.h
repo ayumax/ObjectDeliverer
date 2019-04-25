@@ -18,9 +18,9 @@ public:
 
 	void CloseInnerSocket();
 
-	void SendTo(const TArray<uint8>& DataBuffer, const FIPv4Endpoint& EndPoint);
+	void SendTo(const TArray<uint8>& DataBuffer, const FIPv4Endpoint& EndPoint) const;
 
-	void SendToConnected(const TArray<uint8>& DataBuffer);
+	void SendToConnected(const TArray<uint8>& DataBuffer) const;
 
 protected:
 	bool FormatIP4ToNumber(const FString& IpAddress, uint8(&Out)[4]);

@@ -10,7 +10,7 @@ UDeliveryBox::~UDeliveryBox()
 {
 }
 
-void UDeliveryBox::NotifyReceiveBuffer(const TArray<uint8>& buffer)
+void UDeliveryBox::NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer)
 {
 
 }

@@ -20,22 +20,22 @@ void UObjectDelivererProtocol::Close()
 
 }
 
-void UObjectDelivererProtocol::Send(const TArray<uint8>& DataBuffer)
+void UObjectDelivererProtocol::Send(const TArray<uint8>& DataBuffer) const
 {
 
 }
 
-void UObjectDelivererProtocol::DispatchConnected(UObjectDelivererProtocol* ConnectedObject)
+void UObjectDelivererProtocol::DispatchConnected(const UObjectDelivererProtocol* ConnectedObject)
 {
 	Connected.ExecuteIfBound(ConnectedObject);
 }
 
-void UObjectDelivererProtocol::DispatchDisconnected(UObjectDelivererProtocol* DisconnectedObject)
+void UObjectDelivererProtocol::DispatchDisconnected(const UObjectDelivererProtocol* DisconnectedObject)
 {
 	Disconnected.ExecuteIfBound(DisconnectedObject);
 }
 
-void UObjectDelivererProtocol::DispatchReceiveData(UObjectDelivererProtocol* FromObject, const TArray<uint8>& Buffer)
+void UObjectDelivererProtocol::DispatchReceiveData(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& Buffer)
 {
 	ReceiveData.ExecuteIfBound(FromObject, Buffer);
 }

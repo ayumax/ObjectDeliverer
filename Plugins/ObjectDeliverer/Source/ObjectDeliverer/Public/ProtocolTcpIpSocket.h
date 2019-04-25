@@ -15,7 +15,7 @@ public:
 	virtual ~UProtocolTcpIpSocket();
 
 	virtual void Close() override;
-	virtual void Send(const TArray<uint8>& DataBuffer) override;
+	virtual void Send(const TArray<uint8>& DataBuffer) const override;
 
 	void OnConnected(FSocket* ConnectionSocket);
 
