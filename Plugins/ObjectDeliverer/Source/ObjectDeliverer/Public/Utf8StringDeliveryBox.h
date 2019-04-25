@@ -5,7 +5,7 @@
 #include "DeliveryBox.h"
 #include "Utf8StringDeliveryBox.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCNUtf8StringDeliveryBoxReceived, FString, ReceivedString);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCNUtf8StringDeliveryBoxReceived, const FString&, ReceivedString, const UObjectDelivererProtocol*, FromObject);
 
 UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UUtf8StringDeliveryBox : public UDeliveryBox
@@ -20,7 +20,7 @@ public:
 	void Send(const FString& message);
 
 
-	virtual void NotifyReceiveBuffer(const TArray<uint8>& buffer) override;
+	virtual void NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer) override;
 
 	UPROPERTY(BlueprintAssignable, Category = "ObjectDeliverer|DeliveryBox")
 	FCNUtf8StringDeliveryBoxReceived Received;

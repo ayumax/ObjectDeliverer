@@ -28,16 +28,16 @@ public:
 
 	virtual void Start() override;
 	virtual void Close() override;
-	virtual void Send(const TArray<uint8>& DataBuffer) override;
+	virtual void Send(const TArray<uint8>& DataBuffer) const override;
 
 protected:
 	bool OnListen();
 
 	UFUNCTION()
-	void DisconnectedClient(UObjectDelivererProtocol* ClientSocket);
+	void DisconnectedClient(const UObjectDelivererProtocol* ClientSocket);
 
 	UFUNCTION()
-	void ReceiveDataFromClient(UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer);
+	void ReceiveDataFromClient(const UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer);
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")

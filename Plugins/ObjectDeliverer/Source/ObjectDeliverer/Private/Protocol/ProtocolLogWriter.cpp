@@ -48,7 +48,7 @@ void UProtocolLogWriter::Close()
 	Writer = nullptr;
 }
 
-void UProtocolLogWriter::Send(const TArray<uint8>& DataBuffer)
+void UProtocolLogWriter::Send(const TArray<uint8>& DataBuffer) const
 {
 	PacketRule->MakeSendPacket(DataBuffer);
 }

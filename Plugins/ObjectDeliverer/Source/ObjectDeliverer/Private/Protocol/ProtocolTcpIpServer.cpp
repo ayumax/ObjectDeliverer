@@ -67,7 +67,7 @@ void UProtocolTcpIpServer::Close()
 
 }
 
-void UProtocolTcpIpServer::Send(const TArray<uint8>& DataBuffer)
+void UProtocolTcpIpServer::Send(const TArray<uint8>& DataBuffer) const
 {
 	for (auto clientSocket : ConnectedSockets)
 	{
@@ -104,9 +104,9 @@ bool UProtocolTcpIpServer::OnListen()
 	return true;
 }
 
-void UProtocolTcpIpServer::DisconnectedClient(UObjectDelivererProtocol* ClientSocket)
+void UProtocolTcpIpServer::DisconnectedClient(const UObjectDelivererProtocol* ClientSocket)
 {
-	auto _clientSocket = Cast< UProtocolTcpIpSocket>(ClientSocket);
+	auto _clientSocket = (UProtocolTcpIpSocket*)(ClientSocket);
 	if (!IsValid(_clientSocket)) return;
 
 	auto foundIndex = ConnectedSockets.Find(_clientSocket);
@@ -121,7 +121,7 @@ void UProtocolTcpIpServer::DisconnectedClient(UObjectDelivererProtocol* ClientSo
 	}
 }
 
-void UProtocolTcpIpServer::ReceiveDataFromClient(UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer)
+void UProtocolTcpIpServer::ReceiveDataFromClient(const UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer)
 {
 	DispatchReceiveData(ClientSocket, Buffer);
 }

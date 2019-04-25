@@ -28,6 +28,8 @@ UObjectDelivererManager::~UObjectDelivererManager()
 
 void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketRule* PacketRule, UDeliveryBox* _DeliveryBox)
 {
+	if (!Protocol || !PacketRule) return;
+
 	CurrentProtocol = Protocol;
 	CurrentProtocol->SetPacketRule(PacketRule);
 
@@ -40,7 +42,7 @@ void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketR
 		});
 	}
 
-	CurrentProtocol->Connected.BindLambda([this](UObjectDelivererProtocol* ConnectedObject) 
+	CurrentProtocol->Connected.BindLambda([this](const UObjectDelivererProtocol* ConnectedObject) 
 	{
 		DispatchEvent([this, ConnectedObject]()
 		{
@@ -48,7 +50,7 @@ void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketR
 		});
 	});
 
-	CurrentProtocol->Disconnected.BindLambda([this](UObjectDelivererProtocol* DisconnectedObject)
+	CurrentProtocol->Disconnected.BindLambda([this](const UObjectDelivererProtocol* DisconnectedObject)
 	{
 		DispatchEvent([this, DisconnectedObject]()
 		{
@@ -57,14 +59,14 @@ void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketR
 		
 	});
 
-	CurrentProtocol->ReceiveData.BindLambda([this](UObjectDelivererProtocol* FromObject, const TArray<uint8>& Buffer)
+	CurrentProtocol->ReceiveData.BindLambda([this](const UObjectDelivererProtocol* FromObject, const TArray<uint8>& Buffer)
 	{
 		DispatchEvent([this, FromObject, Buffer]() {
 			ReceiveData.Broadcast(FromObject, Buffer);
 
 			if (DeliveryBox)
 			{
-				DeliveryBox->NotifyReceiveBuffer(Buffer);
+				DeliveryBox->NotifyReceiveBuffer(FromObject, Buffer);
 			}
 		});
 	});
@@ -130,6 +132,13 @@ void UObjectDelivererManager::Send(const TArray<uint8>& DataBuffer)
 	CurrentProtocol->Send(DataBuffer);
 }
 
+void UObjectDelivererManager::SendTo(const TArray<uint8>& DataBuffer, const UObjectDelivererProtocol* Target)
+{
+	if (!CurrentProtocol) return;
+	if (IsDestorying) return;
+
+	Target->Send(DataBuffer);
+}
 
 void UObjectDelivererManager::BeginDestroy()
 {

@@ -94,30 +94,30 @@ void UMyClass::Start()
 	deliverybox2->Send(obj);
 }
 
-void UMyClass::OnConnect(UObjectDelivererProtocol* ClientSocket)
+void UMyClass::OnConnect(const UObjectDelivererProtocol* ClientSocket)
 {
 	// send data
 	TArray<uint8> buffer;
 	//deliverer->Send(buffer);
 }
 
-void UMyClass::OnDisConnect(UObjectDelivererProtocol* ClientSocket)
+void UMyClass::OnDisConnect(const UObjectDelivererProtocol* ClientSocket)
 {
 	// closed
 	UE_LOG(LogTemp, Log, TEXT("closed"));
 }
 
-void UMyClass::OnReceive(UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer)
+void UMyClass::OnReceive(const UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer)
 {
 	// received data buffer
 }
 
-void UMyClass::OnReceiveString(FString ReceivedString)
+void UMyClass::OnReceiveString(const FString& ReceivedString, const UObjectDelivererProtocol* FromObject)
 {
 	// received data string
 }
 
-void UMyClass::OnReceiveObject(UObject* ReceivedObject)
+void UMyClass::OnReceiveObject(UObject* ReceivedObject, const UObjectDelivererProtocol* FromObject)
 {
 	// received data object
 	USampleObject* obj = Cast<USampleObject>(ReceivedObject);

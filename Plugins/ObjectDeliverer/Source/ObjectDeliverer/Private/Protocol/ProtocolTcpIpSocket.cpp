@@ -45,7 +45,7 @@ void UProtocolTcpIpSocket::CloseSocket()
 	InnerSocket = nullptr;
 }
 
-void UProtocolTcpIpSocket::Send(const TArray<uint8>& DataBuffer)
+void UProtocolTcpIpSocket::Send(const TArray<uint8>& DataBuffer) const
 {
 	if (!InnerSocket) return;
 

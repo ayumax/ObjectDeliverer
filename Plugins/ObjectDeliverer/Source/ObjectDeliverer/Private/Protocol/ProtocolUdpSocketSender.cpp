@@ -43,7 +43,7 @@ void UProtocolUdpSocketSender::Close()
 	CloseInnerSocket();
 }
 
-void UProtocolUdpSocketSender::Send(const TArray<uint8>& DataBuffer)
+void UProtocolUdpSocketSender::Send(const TArray<uint8>& DataBuffer) const
 {
 	PacketRule->MakeSendPacket(DataBuffer);
 }
