@@ -8,6 +8,7 @@
 #include "PacketRuleFactory.h"
 #include "ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
+#include "Private/Tests/ObjectDelivererManagerTestHelper.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 

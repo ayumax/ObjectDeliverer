@@ -9,6 +9,8 @@
 #include "ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
 #include "Utf8StringDeliveryBox.h"
+#include "Private/Tests/ObjectDelivererManagerTestHelper.h"
+
 #if WITH_DEV_AUTOMATION_TESTS
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolLogWrierReaderTest, "ObjectDeliverer.ProtocolTest.ProtocolLogWrierReaderTest1", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
