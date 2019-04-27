@@ -8,6 +8,8 @@
 #include "PacketRuleFactory.h"
 #include "ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
+#include "Private/Tests/ObjectDelivererManagerTestHelper.h"
+
 #if WITH_DEV_AUTOMATION_TESTS
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolUdpTest1, "ObjectDeliverer.ProtocolTest.ProtocolUdpTest1", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)

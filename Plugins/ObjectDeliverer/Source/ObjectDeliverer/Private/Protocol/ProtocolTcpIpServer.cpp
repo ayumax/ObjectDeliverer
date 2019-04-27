@@ -3,7 +3,7 @@
 #include "Common/TcpSocketBuilder.h"
 #include "ProtocolTcpIpSocket.h"
 #include "Utils/WorkerThread.h"
-#include "PacketRule.h"
+#include "PacketRule/PacketRule.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 
 UProtocolTcpIpServer::UProtocolTcpIpServer()

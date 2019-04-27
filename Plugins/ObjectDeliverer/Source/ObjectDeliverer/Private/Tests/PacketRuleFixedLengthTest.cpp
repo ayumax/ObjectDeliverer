@@ -1,7 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "Misc/AutomationTest.h"
-#include "PacketRuleFixedLength.h"
-#include "PacketRuleFactory.h"
+#include "PacketRule/PacketRuleFixedLength.h"
+#include "PacketRule/PacketRuleFactory.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCNPacketRuleFixedLengthTest_MakeSendPacket, "ObjectDeliverer.PacketRuleTests.CNPacketRuleFixedLengthTest.MakeSendPacket", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
