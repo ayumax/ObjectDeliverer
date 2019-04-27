@@ -1,7 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "Misc/AutomationTest.h"
-#include "PacketRuleTerminate.h"
-#include "PacketRuleFactory.h"
+#include "PacketRule/PacketRuleTerminate.h"
+#include "PacketRule/PacketRuleFactory.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPacketRuleTerminateTest_MakeSendPacket, "ObjectDeliverer.PacketRuleTests.PacketRuleTerminateTest.MakeSendPacket", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 

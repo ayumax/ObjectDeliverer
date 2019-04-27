@@ -1,7 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "ProtocolTcpIpServer.h"
+#include "Protocol/ProtocolTcpIpServer.h"
+#include "Protocol/ProtocolTcpIpSocket.h"
 #include "Common/TcpSocketBuilder.h"
-#include "ProtocolTcpIpSocket.h"
 #include "Utils/WorkerThread.h"
 #include "PacketRule/PacketRule.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"

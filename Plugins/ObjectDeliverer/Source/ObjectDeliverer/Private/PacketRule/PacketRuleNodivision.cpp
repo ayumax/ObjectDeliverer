@@ -1,6 +1,6 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "PacketRuleNodivision.h"
-#include "PacketRuleFactory.h"
+#include "PacketRule/PacketRuleNodivision.h"
+#include "PacketRule/PacketRuleFactory.h"
 
 UPacketRuleNodivision::UPacketRuleNodivision()
 {

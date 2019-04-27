@@ -1,6 +1,6 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "PacketRuleFixedLength.h"
-#include "PacketRuleFactory.h"
+#include "PacketRule/PacketRuleFixedLength.h"
+#include "PacketRule/PacketRuleFactory.h"
 
 UPacketRuleFixedLength::UPacketRuleFixedLength()
 {

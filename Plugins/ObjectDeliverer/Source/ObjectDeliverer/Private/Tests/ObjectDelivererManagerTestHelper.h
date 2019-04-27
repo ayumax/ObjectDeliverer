@@ -4,7 +4,7 @@
 #include "CoreMinimal.h"
 #include "PacketRule/PacketRuleFactory.h"
 #include "Protocol/ProtocolFactory.h"
-#include "DeliveryBoxFactory.h"
+#include "DeliveryBox/DeliveryBoxFactory.h"
 #include "UObject/GCObject.h"
 #include "ObjectDelivererManagerTestHelper.generated.h"
 

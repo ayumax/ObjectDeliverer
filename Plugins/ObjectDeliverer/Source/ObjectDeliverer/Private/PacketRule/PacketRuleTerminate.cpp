@@ -1,6 +1,6 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "PacketRuleTerminate.h"
-#include "PacketRuleFactory.h"
+#include "PacketRule/PacketRuleTerminate.h"
+#include "PacketRule/PacketRuleFactory.h"
 
 UPacketRuleTerminate::UPacketRuleTerminate()
 {

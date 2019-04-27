@@ -2,12 +2,12 @@
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "Tests/AutomationCommon.h"
-#include "ProtocolSharedMemory.h"
-#include "PacketRuleSizeBody.h"
-#include "PacketRuleFactory.h"
-#include "ProtocolFactory.h"
+#include "Protocol/ProtocolSharedMemory.h"
+#include "PacketRule/PacketRuleSizeBody.h"
+#include "PacketRule/PacketRuleFactory.h"
+#include "Protocol/ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
-#include "Private/Tests/ObjectDelivererManagerTestHelper.h"
+#include "Tests/ObjectDelivererManagerTestHelper.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 

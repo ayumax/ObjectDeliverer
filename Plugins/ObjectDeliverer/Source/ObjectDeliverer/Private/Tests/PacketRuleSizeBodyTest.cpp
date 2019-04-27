@@ -1,7 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "Misc/AutomationTest.h"
-#include "PacketRuleSizeBody.h"
-#include "PacketRuleFactory.h"
+#include "PacketRule/PacketRuleSizeBody.h"
+#include "PacketRule/PacketRuleFactory.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPacketRuleSizeBodyTest_MakeSendPacket, "ObjectDeliverer.PacketRuleTests.FPacketRuleSizeBodyTest.MakeSendPacket", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
