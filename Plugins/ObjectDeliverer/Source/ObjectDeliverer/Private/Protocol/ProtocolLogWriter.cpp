@@ -1,6 +1,6 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "ProtocolLogWriter.h"
-#include "PacketRule.h"
+#include "PacketRule/PacketRule.h"
 #include "Utils/FileUtil.h"
 #include "Misc/Paths.h"
 

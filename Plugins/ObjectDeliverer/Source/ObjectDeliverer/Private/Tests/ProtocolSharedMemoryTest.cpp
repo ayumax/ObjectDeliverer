@@ -7,6 +7,8 @@
 #include "PacketRuleFactory.h"
 #include "ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
+#include "Private/Tests/ObjectDelivererManagerTestHelper.h"
+
 #if WITH_DEV_AUTOMATION_TESTS
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolSharedMemoryTest, "ObjectDeliverer.ProtocolTest.ProtocolSharedMemoryTest1", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
