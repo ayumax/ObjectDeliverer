@@ -17,7 +17,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FObjectDelivererManagerConnected, co
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FObjectDelivererManagerDisconnected, const UObjectDelivererProtocol*, ClientSocket);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FObjectDelivererManagerReceiveData, const UObjectDelivererProtocol*, ClientSocket, const TArray<uint8>&, Buffer);
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UObjectDelivererManager : public UObject
 {
 	GENERATED_BODY()

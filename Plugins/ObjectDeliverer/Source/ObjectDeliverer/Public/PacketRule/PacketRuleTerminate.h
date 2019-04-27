@@ -23,11 +23,14 @@ public:
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|PacketRule")
-		TArray<uint8> Terminate;
+	TArray<uint8> Terminate;
 
 private:
+	UPROPERTY(Transient)
 	TArray<uint8> BufferForSend;
+	UPROPERTY(Transient)
 	TArray<uint8> ReceiveTempBuffer;
+	UPROPERTY(Transient)
 	TArray<uint8> BufferForReceive;
 
 };
