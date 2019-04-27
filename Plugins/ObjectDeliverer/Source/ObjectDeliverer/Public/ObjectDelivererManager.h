@@ -2,8 +2,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PacketRuleFactory.h"
-#include "ProtocolFactory.h"
+#include "PacketRule/PacketRuleFactory.h"
+#include "Protocol/ProtocolFactory.h"
 #include "DeliveryBoxFactory.h"
 #include "UObject/GCObject.h"
 #include "Delegates/DelegateCombinations.h"
@@ -64,6 +64,13 @@ public:
 	void SendTo(const TArray<uint8>& DataBuffer, const UObjectDelivererProtocol* Target);
 
 	/**
+	* Whether connected
+	* @return true:connected, false:disconnected
+	*/
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer")
+	bool IsConnected();
+
+	/**
 	* Preparation for transmission / reception is completed
 	*/
 	UPROPERTY(BlueprintAssignable, Category = "ObjectDeliverer")
@@ -89,6 +96,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer")
 	bool IsEventWithGameThread;
 
+	/**
+	* Connected list
+	*/
+	UPROPERTY(BlueprintReadOnly, Category = "ObjectDeliverer")
+	TArray<const UObjectDelivererProtocol*> ConnectedList;
+
 private:
 	void DispatchEvent(TFunction<void()> EventAction);
 
@@ -101,43 +114,3 @@ private:
 	bool IsDestorying;
 };
 
-UCLASS()
-class OBJECTDELIVERER_API UObjectDelivererManagerTestHelper : public UObject
-{
-	GENERATED_BODY()
-
-public:
-	UFUNCTION()
-	void OnConnect(const UObjectDelivererProtocol* ClientSocket)
-	{
-		ConnectedSocket.Add(ClientSocket);
-	}
-	UFUNCTION()
-	void OnDisConnect(const UObjectDelivererProtocol* ClientSocket)
-	{
-		DisconnectedSocket.Add(ClientSocket);
-	}
-	UFUNCTION()
-	void OnReceive(const UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer)
-	{
-		ReceiveSocket = ClientSocket;
-		ReceiveBuffers.Add(Buffer);
-	}
-	UFUNCTION()
-	void OnReceiveString(const FString& StringValue, const UObjectDelivererProtocol* FromObject)
-	{
-		ReceiveStrings.Add(StringValue);
-	}
-
-	UPROPERTY()
-	TArray<const UObjectDelivererProtocol*> ConnectedSocket;
-
-	UPROPERTY()
-	TArray<const UObjectDelivererProtocol*> DisconnectedSocket;
-
-	UPROPERTY()
-	const UObjectDelivererProtocol* ReceiveSocket;
-
-	TArray<TArray<uint8>> ReceiveBuffers;
-	TArray<FString> ReceiveStrings;
-};

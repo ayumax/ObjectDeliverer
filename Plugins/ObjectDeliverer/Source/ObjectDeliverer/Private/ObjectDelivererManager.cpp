@@ -1,8 +1,8 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "ObjectDelivererManager.h"
-#include "ObjectDelivererProtocol.h"
-#include "PacketRule.h"
-#include "DeliveryBox.h"
+#include "Protocol/ObjectDelivererProtocol.h"
+#include "PacketRule/PacketRule.h"
+#include "DeliveryBox/DeliveryBox.h"
 #include "Async/Async.h"
 #include "Misc/ScopeLock.h"
 
@@ -52,6 +52,8 @@ void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketR
 
 	CurrentProtocol->Connected.BindLambda([this](const UObjectDelivererProtocol* ConnectedObject) 
 	{
+		ConnectedList.Add(ConnectedObject);
+
 		DispatchEvent([this, ConnectedObject]()
 		{
 			Connected.Broadcast(ConnectedObject);
@@ -78,6 +80,8 @@ void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketR
 			}
 		});
 	});
+
+	ConnectedList.SetNum(0);
 
 	CurrentProtocol->Start();
 }
@@ -146,6 +150,11 @@ void UObjectDelivererManager::SendTo(const TArray<uint8>& DataBuffer, const UObj
 	if (IsDestorying) return;
 
 	Target->Send(DataBuffer);
+}
+
+bool UObjectDelivererManager::IsConnected()
+{
+	return ConnectedList.Num() > 0;
 }
 
 void UObjectDelivererManager::BeginDestroy()
