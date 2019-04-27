@@ -26,5 +26,6 @@ public:
 	int32 FixedSize = 128;
 
 private:
+	UPROPERTY(Transient)
 	TArray<uint8> BufferForSend;
 };

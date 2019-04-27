@@ -36,6 +36,7 @@ private:
 	uint32 BodySize;
 	int32 ReceiveBufferPosition;
 
+	UPROPERTY(Transient)
 	TArray<uint8> BufferForSend;
 
 public:
