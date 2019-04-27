@@ -1,6 +1,6 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "PacketRuleSizeBody.h"
-#include "PacketRuleFactory.h"
+#include "PacketRule/PacketRuleSizeBody.h"
+#include "PacketRule/PacketRuleFactory.h"
 
 UPacketRuleSizeBody::UPacketRuleSizeBody()
 {

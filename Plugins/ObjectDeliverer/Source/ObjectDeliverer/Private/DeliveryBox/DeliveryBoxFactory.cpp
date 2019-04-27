@@ -1,7 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "DeliveryBoxFactory.h"
-#include "ObjectDeliveryBoxUsingJson.h"
-#include "Utf8StringDeliveryBox.h"
+#include "DeliveryBox/DeliveryBoxFactory.h"
+#include "DeliveryBox/ObjectDeliveryBoxUsingJson.h"
+#include "DeliveryBox/Utf8StringDeliveryBox.h"
 
 UObjectDeliveryBoxUsingJson* UDeliveryBoxFactory::CreateObjectDeliveryBoxUsingJson(UClass* TargetClass)
 {

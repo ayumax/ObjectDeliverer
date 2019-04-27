@@ -1,7 +1,7 @@
 {
   "FileVersion": 3,
-  "Version": 1,
-  "VersionName": "1.0.0",
+  "Version": 110,
+  "VersionName": "1.1.0",
   "FriendlyName": "ObjectDeliverer",
   "Description": "ObjectDeliverer is a data transmission / reception library for Unreal Engine (C ++, Blueprint). ",
   "Category": "Programming",

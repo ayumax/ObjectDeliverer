@@ -1,12 +1,12 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "ProtocolFactory.h"
-#include "ProtocolTcpIpClient.h"
-#include "ProtocolTcpIpServer.h"
-#include "ProtocolUdpSocketSender.h"
-#include "ProtocolUdpSocketReceiver.h"
-#include "ProtocolSharedMemory.h"
-#include "ProtocolLogWriter.h"
-#include "ProtocolLogReader.h"
+#include "Protocol/ProtocolFactory.h"
+#include "Protocol/ProtocolTcpIpClient.h"
+#include "Protocol/ProtocolTcpIpServer.h"
+#include "Protocol/ProtocolUdpSocketSender.h"
+#include "Protocol/ProtocolUdpSocketReceiver.h"
+#include "Protocol/ProtocolSharedMemory.h"
+#include "Protocol/ProtocolLogWriter.h"
+#include "Protocol/ProtocolLogReader.h"
 
 UProtocolTcpIpClient* UProtocolFactory::CreateProtocolTcpIpClient(const FString& IpAddress /*= "localhost"*/, int32 Port /*= 8000*/, bool Retry/* = false*/)
 {

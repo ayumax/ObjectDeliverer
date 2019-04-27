@@ -1,7 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "Misc/AutomationTest.h"
-#include "PacketRuleNodivision.h"
-#include "PacketRuleFactory.h"
+#include "PacketRule/PacketRuleNodivision.h"
+#include "PacketRule/PacketRuleFactory.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPacketRuleNodivisionTest_MakeSendPacket, "ObjectDeliverer.PacketRuleTests.PacketRuleNodivisionTest.MakeSendPacket", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 

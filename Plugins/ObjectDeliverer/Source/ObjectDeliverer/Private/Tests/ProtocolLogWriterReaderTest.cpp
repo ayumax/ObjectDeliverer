@@ -2,14 +2,14 @@
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "Tests/AutomationCommon.h"
-#include "ProtocolLogReader.h"
-#include "ProtocolLogWriter.h"
-#include "PacketRuleSizeBody.h"
-#include "PacketRuleFactory.h"
-#include "ProtocolFactory.h"
+#include "Protocol/ProtocolLogReader.h"
+#include "Protocol/ProtocolLogWriter.h"
+#include "PacketRule/PacketRuleSizeBody.h"
+#include "PacketRule/PacketRuleFactory.h"
+#include "Protocol/ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
-#include "Utf8StringDeliveryBox.h"
-#include "Private/Tests/ObjectDelivererManagerTestHelper.h"
+#include "DeliveryBox/Utf8StringDeliveryBox.h"
+#include "Tests/ObjectDelivererManagerTestHelper.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 
