@@ -2,8 +2,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PacketRuleFactory.h"
-#include "ProtocolFactory.h"
+#include "PacketRule/PacketRuleFactory.h"
+#include "Protocol/ProtocolFactory.h"
 #include "DeliveryBoxFactory.h"
 #include "UObject/GCObject.h"
 #include "Delegates/DelegateCombinations.h"
