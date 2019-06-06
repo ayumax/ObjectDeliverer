@@ -1,6 +1,8 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "TextureUtil.h"
-
+#include "Engine/Texture2D.h"
+#include "Engine/TextureRenderTarget2D.h"
+#include "UnrealClient.h"
 
 UTextureUtil::UTextureUtil()
 {
@@ -23,3 +25,13 @@ void UTextureUtil::UpdateTexture(UTexture2D* Texture, const TArray<uint8>& Pixel
 	auto Region = new FUpdateTextureRegion2D(0, 0, 0, 0, Texture->GetSizeX(), Texture->GetSizeY());
 	Texture->UpdateTextureRegions(0, 1, Region, 4 * Texture->GetSizeX(), 4, (uint8*)PixelsBuffer.GetData());
 }
+
+void UTextureUtil::GetPixelBufferFromRenderTarget(UTextureRenderTarget2D* TextureRenderTarget, TArray<uint8>& Buffer)
+{
+	TArray<FColor> SurfData;
+	FRenderTarget* RenderTarget = TextureRenderTarget->GameThread_GetRenderTargetResource();
+	RenderTarget->ReadPixels(SurfData);
+	
+	FMemory::Memcpy(Buffer.GetData(), SurfData.GetData(), Buffer.Num());
+}
+

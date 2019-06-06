@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/ObjectMacros.h"
 #include "TextureUtil.generated.h"
 
 /**
@@ -22,4 +23,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer Test")
 	static void UpdateTexture(UTexture2D* Texture, const TArray<uint8>& PixelsBuffer);
+
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer Test")
+	static void GetPixelBufferFromRenderTarget(class UTextureRenderTarget2D* TextureRenderTarget, UPARAM(ref)TArray<uint8>& Buffer);
+
 };
