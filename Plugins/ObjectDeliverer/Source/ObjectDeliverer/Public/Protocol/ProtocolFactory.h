@@ -16,9 +16,10 @@ public:
 	 * @param IpAddress - ip address of server
 	 * @param Port - Connected port number
 	 * @param Retry - true:If connection fails, try retry until connection
+	 * @param AutoConnectAfterDisconnect - true: Automatic connection attempt after disconnection
 	 */
 	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|Protocol")
-	static class UProtocolTcpIpClient* CreateProtocolTcpIpClient(const FString& IpAddress = "localhost", int32 Port = 8000, bool Retry = false);
+	static class UProtocolTcpIpClient* CreateProtocolTcpIpClient(const FString& IpAddress = "localhost", int32 Port = 8000, bool Retry = false, bool AutoConnectAfterDisconnect = false);
 
 	/**
 	 * create protocol (TCP/IP server)

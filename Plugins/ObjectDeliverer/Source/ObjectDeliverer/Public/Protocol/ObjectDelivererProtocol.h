@@ -42,9 +42,9 @@ public:
 	virtual void RequestSend(const TArray<uint8>& DataBuffer);
 
 protected:
-	void DispatchConnected(const UObjectDelivererProtocol* ConnectedObject);
-	void DispatchDisconnected(const UObjectDelivererProtocol* DisconnectedObject);
-	void DispatchReceiveData(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& Buffer);
+	virtual void DispatchConnected(const UObjectDelivererProtocol* ConnectedObject);
+	virtual void DispatchDisconnected(const UObjectDelivererProtocol* DisconnectedObject);
+	virtual void DispatchReceiveData(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& Buffer);
 
 	UPROPERTY(Transient)
 	UPacketRule* PacketRule;
