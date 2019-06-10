@@ -14,11 +14,12 @@ UProtocolTcpIpClient::~UProtocolTcpIpClient()
 
 }
 
-void UProtocolTcpIpClient::Initialize(const FString& IpAddress, int32 Port, bool Retry/* = false*/)
+void UProtocolTcpIpClient::Initialize(const FString& IpAddress, int32 Port, bool Retry/* = false*/, bool _AutoConnectAfterDisconnect/* = false*/)
 {
 	ServerIpAddress = IpAddress;
 	ServerPort = Port;
 	RetryConnect = Retry;
+	AutoConnectAfterDisconnect = _AutoConnectAfterDisconnect;
 }
 
 void UProtocolTcpIpClient::Start()
@@ -71,4 +72,15 @@ void UProtocolTcpIpClient::Close()
 	if (!ConnectInnerThread) return;
 	delete ConnectInnerThread;
 	ConnectInnerThread = nullptr;
+}
+
+
+void UProtocolTcpIpClient::DispatchDisconnected(const UObjectDelivererProtocol* DisconnectedObject)
+{
+	Super::DispatchDisconnected(DisconnectedObject);
+
+	if (AutoConnectAfterDisconnect)
+	{
+		Start();
+	}
 }

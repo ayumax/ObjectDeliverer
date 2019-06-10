@@ -8,10 +8,10 @@
 #include "Protocol/ProtocolLogWriter.h"
 #include "Protocol/ProtocolLogReader.h"
 
-UProtocolTcpIpClient* UProtocolFactory::CreateProtocolTcpIpClient(const FString& IpAddress /*= "localhost"*/, int32 Port /*= 8000*/, bool Retry/* = false*/)
+UProtocolTcpIpClient* UProtocolFactory::CreateProtocolTcpIpClient(const FString& IpAddress /*= "localhost"*/, int32 Port /*= 8000*/, bool Retry/* = false*/, bool AutoConnectAfterDisconnect/* = false*/)
 {
 	auto protocol = NewObject<UProtocolTcpIpClient>();
-	protocol->Initialize(IpAddress, Port, Retry);
+	protocol->Initialize(IpAddress, Port, Retry, AutoConnectAfterDisconnect);
 	return protocol;
 }
 

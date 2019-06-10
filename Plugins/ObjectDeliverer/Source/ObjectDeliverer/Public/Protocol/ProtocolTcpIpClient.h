@@ -22,13 +22,16 @@ public:
 	 * @param Retry - If connection fails, try connection again
 	 */
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
-	void Initialize(const FString& IpAddress = "localhost", int32 Port = 8000, bool Retry = false);
+	void Initialize(const FString& IpAddress = "localhost", int32 Port = 8000, bool Retry = false, bool AutoConnectAfterDisconnect = false);
 
 	virtual void Start() override;
 	virtual void Close() override;
 
 private:
 	bool TryConnect();
+
+protected:
+	virtual void DispatchDisconnected(const UObjectDelivererProtocol* DisconnectedObject) override;
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
@@ -39,6 +42,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
 	bool RetryConnect = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
+	bool AutoConnectAfterDisconnect = false;
 
 protected:
 	class FWorkerThread* ConnectInnerThread = nullptr;
