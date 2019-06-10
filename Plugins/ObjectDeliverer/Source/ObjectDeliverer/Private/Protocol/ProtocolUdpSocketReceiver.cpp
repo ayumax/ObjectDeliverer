@@ -56,20 +56,24 @@ void UProtocolUdpSocketReceiver::UdpReceivedCallback(const FArrayReaderPtr& data
 	TArray<uint8>& receiveBuffer = *(data.Get());
 
 	auto wantSize = PacketRule->GetWantSize();
+	if (wantSize == 0)
+	{
+		wantSize = receivedSize;
+	}
 
 	TArray<uint8> BodyBuffer;
 
-	if (wantSize < receivedSize)
+	if (wantSize <= receivedSize)
 	{
 		TArray<uint8> SplitBuffer;
 		int64 nowSize = receivedSize;
 
-		while (nowSize >= PacketRule->GetWantSize())
+		while (nowSize >= wantSize)
 		{
-			SplitBuffer.SetNum(PacketRule->GetWantSize(), false);
+			SplitBuffer.SetNum(wantSize, false);
 			FMemory::Memcpy(SplitBuffer.GetData(), receiveBuffer.GetData() + (receivedSize - nowSize), SplitBuffer.Num());
 
-			nowSize -= PacketRule->GetWantSize();
+			nowSize -= wantSize;
 
 			PacketRule->NotifyReceiveData(SplitBuffer);
 		}
