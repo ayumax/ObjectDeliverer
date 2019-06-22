@@ -24,12 +24,12 @@ void UProtocolUdpSocketReceiver::Start()
 		.BoundToPort(BoundPort)
 		.Build();
 
-	Receiver = new FUdpSocketReceiver(InnerSocket, FTimespan::FromMilliseconds(10), TEXT("UProtocolUdpSocketReceiver"));
-	Receiver->OnDataReceived().BindUObject(this, &UProtocolUdpSocketReceiver::UdpReceivedCallback);
-	Receiver->Start();
-
 	if (InnerSocket)
 	{
+		Receiver = new FUdpSocketReceiver(InnerSocket, FTimespan::FromMilliseconds(10), TEXT("UProtocolUdpSocketReceiver"));
+		Receiver->OnDataReceived().BindUObject(this, &UProtocolUdpSocketReceiver::UdpReceivedCallback);
+		Receiver->Start();
+
 		DispatchConnected(this);
 	}
 }
