@@ -3,9 +3,9 @@
 #include "Utils/WorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 #include "PacketRule/PacketRule.h"
-#include "Utils/MutexLock.h"
 
 #if PLATFORM_WINDOWS
+#include "Utils/MutexLock.h"
 #include "Windows/WindowsHWrapper.h"
 #endif
 
@@ -31,7 +31,7 @@ void UProtocolSharedMemory::Initialize(const FString& _SharedMemoryName/* = "Sha
 
 void UProtocolSharedMemory::Start()
 {
-#ifdef PLATFORM_WINDOWS
+#if PLATFORM_WINDOWS
 	/*  Create a named mutex for inter-process protection of data */
 	FString mutexName = SharedMemoryName + "MUTEX";
 	SharedMemoryTotalSize = SharedMemorySize + sizeof(uint8) + sizeof(int32);
@@ -84,6 +84,7 @@ void UProtocolSharedMemory::Start()
 
 void UProtocolSharedMemory::Close()
 {
+#if PLATFORM_WINDOWS
 	MutexLock::Lock(SharedMemoryMutex, [this]()
 	{
 		if (!CurrentThread) return;
@@ -98,12 +99,14 @@ void UProtocolSharedMemory::Close()
 
 		CloseSharedMemory();
 	});
+#endif
+
 }
 
 
 bool UProtocolSharedMemory::ReceivedData()
 {
-#ifdef PLATFORM_WINDOWS
+#if PLATFORM_WINDOWS
 
 	uint32 Size = 0;
 
@@ -155,14 +158,16 @@ bool UProtocolSharedMemory::ReceivedData()
 
 void UProtocolSharedMemory::Send(const TArray<uint8>& DataBuffer) const
 {
+#if PLATFORM_WINDOWS
 	if (!SharedMemoryHandle) return;
 
 	PacketRule->MakeSendPacket(DataBuffer);
+#endif
 }
 
 void UProtocolSharedMemory::RequestSend(const TArray<uint8>& DataBuffer)
 {
-#ifdef PLATFORM_WINDOWS
+#if PLATFORM_WINDOWS
 	if (DataBuffer.Num() > SharedMemorySize)
 		return;
 
@@ -192,7 +197,7 @@ void UProtocolSharedMemory::RequestSend(const TArray<uint8>& DataBuffer)
 
 void UProtocolSharedMemory::CloseSharedMemory()
 {
-#ifdef PLATFORM_WINDOWS
+#if PLATFORM_WINDOWS
 	if (SharedMemoryMutex != nullptr)
 	{
 		ReleaseMutex(SharedMemoryMutex);
