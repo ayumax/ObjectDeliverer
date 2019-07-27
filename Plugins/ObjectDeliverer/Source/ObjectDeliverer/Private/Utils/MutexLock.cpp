@@ -7,7 +7,7 @@
 
 void MutexLock::Lock(void* Mutex, TFunction<void()> InWork)
 {
-#ifdef PLATFORM_WINDOWS
+#if PLATFORM_WINDOWS
 	if (Mutex)
 	{
 		WaitForSingleObject(Mutex, INFINITE);
