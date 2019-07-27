@@ -36,6 +36,10 @@ void UProtocolUdpSocketReceiver::Start()
 
 void UProtocolUdpSocketReceiver::Close()
 {
+	if (!InnerSocket) return;
+
+	InnerSocket->Close();
+
 	FScopeLock lock(&ct);
 
 	if (Receiver)
@@ -45,7 +49,8 @@ void UProtocolUdpSocketReceiver::Close()
 		Receiver = nullptr;
 	}
 
-	CloseInnerSocket();	
+	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(InnerSocket);
+	InnerSocket = nullptr;
 }
 
 void UProtocolUdpSocketReceiver::UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip)
