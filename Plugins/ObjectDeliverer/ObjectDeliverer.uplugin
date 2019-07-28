@@ -18,12 +18,7 @@
     {
       "Name": "ObjectDeliverer",
       "Type": "Runtime",
-      "LoadingPhase": "Default",
-      "WhitelistPlatforms": [
-        "Win64",
-        "Win32",
-        "Android"        
-      ]
+      "LoadingPhase": "Default"
     }
   ]
 }
