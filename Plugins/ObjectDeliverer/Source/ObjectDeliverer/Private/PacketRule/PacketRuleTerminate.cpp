@@ -40,7 +40,7 @@ void UPacketRuleTerminate::NotifyReceiveData(const TArray<uint8>& DataBuffer)
 		for (int i = 0; i <= ReceiveTempBuffer.Num() - Terminate.Num(); ++i)
 		{
 			bool notEqual = false;
-			for (int j = 0; j <= Terminate.Num() - Terminate.Num(); ++j)
+			for (int j = 0; j <= Terminate.Num(); ++j)
 			{
 				if (ReceiveTempBuffer[i + j] != Terminate[j])
 				{
