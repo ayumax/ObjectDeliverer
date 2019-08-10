@@ -62,11 +62,15 @@ void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketR
 
 	CurrentProtocol->Disconnected.BindLambda([this](const UObjectDelivererProtocol* DisconnectedObject)
 	{
+		if (ConnectedList.Contains(DisconnectedObject))
+		{
+			ConnectedList.Remove(DisconnectedObject);
+		}
+
 		DispatchEvent([this, DisconnectedObject]()
 		{
 			Disconnected.Broadcast(DisconnectedObject);
 		});
-		
 	});
 
 	CurrentProtocol->ReceiveData.BindLambda([this](const UObjectDelivererProtocol* FromObject, const TArray<uint8>& Buffer)
