@@ -143,3 +143,51 @@ void UProtocolTcpIpSocket::RequestSend(const TArray<uint8>& DataBuffer)
 {
 	SendToConnected(DataBuffer);
 }
+
+bool UProtocolTcpIpSocket::GetIPAddress(TArray<uint8>& IPAddress)
+{
+	if (InnerSocket == nullptr) return false;
+
+	TSharedPtr<FInternetAddr> Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+	InnerSocket->GetAddress(*Addr);
+	IPAddress.SetNum(0);
+	IPAddress = Addr->GetRawIp();
+
+	return true;
+}
+
+bool UProtocolTcpIpSocket::GetIPAddressInString(FString& IPAddress)
+{
+	if (InnerSocket == nullptr) return false;
+
+	TSharedPtr<FInternetAddr> Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+	InnerSocket->GetAddress(*Addr);
+
+	IPAddress = Addr->ToString(false);
+
+	return true;
+}
+
+bool UProtocolTcpIpSocket::GetIPAddressAndPortInString(FString& IPAddressAndPort)
+{
+	if (InnerSocket == nullptr) return false;
+
+	TSharedPtr<FInternetAddr> Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+	InnerSocket->GetAddress(*Addr);
+
+	IPAddressAndPort = Addr->ToString(true);
+
+	return true;
+}
+
+bool UProtocolTcpIpSocket::GetPortNumber(int32& Port)
+{
+	if (InnerSocket == nullptr) return false;
+
+	TSharedPtr<FInternetAddr> Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+	InnerSocket->GetAddress(*Addr);
+
+	Addr->GetPort(Port);
+
+	return true;
+}
