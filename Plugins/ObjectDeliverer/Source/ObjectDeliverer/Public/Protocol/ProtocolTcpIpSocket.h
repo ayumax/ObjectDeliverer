@@ -21,6 +21,18 @@ public:
 
 	virtual void RequestSend(const TArray<uint8>& DataBuffer) override;
 
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer")
+	bool GetIPAddress(TArray<uint8>& IPAddress);
+
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer")
+	bool GetIPAddressInString(FString& IPAddress);
+
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer")
+	bool GetIPAddressAndPortInString(FString& IPAddressAndPort);
+
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer")
+	bool GetPortNumber(int32& Port);
+
 protected:
 	void CloseSocket();
 	void StartPollilng();
