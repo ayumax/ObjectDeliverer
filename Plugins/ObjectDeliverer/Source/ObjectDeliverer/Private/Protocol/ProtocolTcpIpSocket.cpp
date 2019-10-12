@@ -167,27 +167,3 @@ bool UProtocolTcpIpSocket::GetIPAddressInString(FString& IPAddress)
 
 	return true;
 }
-
-bool UProtocolTcpIpSocket::GetIPAddressAndPortInString(FString& IPAddressAndPort)
-{
-	if (InnerSocket == nullptr) return false;
-
-	TSharedPtr<FInternetAddr> Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
-	InnerSocket->GetAddress(*Addr);
-
-	IPAddressAndPort = Addr->ToString(true);
-
-	return true;
-}
-
-bool UProtocolTcpIpSocket::GetPortNumber(int32& Port)
-{
-	if (InnerSocket == nullptr) return false;
-
-	TSharedPtr<FInternetAddr> Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
-	InnerSocket->GetAddress(*Addr);
-
-	Addr->GetPort(Port);
-
-	return true;
-}

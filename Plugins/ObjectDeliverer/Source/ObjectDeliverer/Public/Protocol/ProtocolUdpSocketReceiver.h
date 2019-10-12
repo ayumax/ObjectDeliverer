@@ -8,6 +8,7 @@
 
 class FSocket;
 class FUdpSocketReceiver;
+class UProtocolUdpSocket;
 
 UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UProtocolUdpSocketReceiver : public UProtocolSocketBase
@@ -26,10 +27,14 @@ public:
 
 protected:
 	void UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip);
+	
+	UFUNCTION()
+	void ReceiveDataFromClient(const UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer);
 
 private:
 	FUdpSocketReceiver* Receiver = nullptr;
 	FCriticalSection ct;
+	TMap<FIPv4Endpoint, UProtocolUdpSocket*> ConnectedSockets;
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
