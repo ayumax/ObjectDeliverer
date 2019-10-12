@@ -3,10 +3,11 @@
 
 #include "CoreMinimal.h"
 #include "ProtocolSocketBase.h"
+#include "GetIPV4Info.h"
 #include "ProtocolTcpIpSocket.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)
-class OBJECTDELIVERER_API UProtocolTcpIpSocket : public UProtocolSocketBase
+class OBJECTDELIVERER_API UProtocolTcpIpSocket : public UProtocolSocketBase, public IGetIPV4Info
 {
 	GENERATED_BODY()
 
@@ -20,6 +21,9 @@ public:
 	void OnConnected(FSocket* ConnectionSocket);
 
 	virtual void RequestSend(const TArray<uint8>& DataBuffer) override;
+
+	bool GetIPAddress(TArray<uint8>& IPAddress) override;
+	bool GetIPAddressInString(FString& IPAddress) override;
 
 protected:
 	void CloseSocket();

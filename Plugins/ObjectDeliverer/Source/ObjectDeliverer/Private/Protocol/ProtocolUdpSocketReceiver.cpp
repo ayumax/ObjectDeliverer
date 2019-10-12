@@ -1,6 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "Protocol/ProtocolUdpSocketReceiver.h"
 #include "PacketRule/PacketRule.h"
+#include "Protocol/ProtocolUdpSocket.h"
 
 UProtocolUdpSocketReceiver::UProtocolUdpSocketReceiver()
 {
@@ -30,6 +31,8 @@ void UProtocolUdpSocketReceiver::Start()
 		Receiver->OnDataReceived().BindUObject(this, &UProtocolUdpSocketReceiver::UdpReceivedCallback);
 		Receiver->Start();
 
+		ConnectedSockets.Reset();
+
 		DispatchConnected(this);
 	}
 }
@@ -55,33 +58,23 @@ void UProtocolUdpSocketReceiver::Close()
 
 void UProtocolUdpSocketReceiver::UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip)
 {
+	if (!ConnectedSockets.Contains(ip))
+	{
+		auto udpSender = NewObject<UProtocolUdpSocket>(this);
+		udpSender->Initialize(ip);
+		udpSender->SetPacketRule(PacketRule->Clone());
+		udpSender->ReceiveData.BindUObject(this, &UProtocolUdpSocketReceiver::ReceiveDataFromClient);
+		ConnectedSockets.Add(ip, udpSender);
+	}
+
 	FScopeLock lock(&ct);
+	ConnectedSockets[ip]->NotifyReceived(data);
 
-	int64 receivedSize = data->TotalSize();
-	TArray<uint8>& receiveBuffer = *(data.Get());
-
-	auto wantSize = PacketRule->GetWantSize();
-	if (wantSize == 0)
-	{
-		wantSize = receivedSize;
-	}
-
-	TArray<uint8> BodyBuffer;
-
-	if (wantSize <= receivedSize)
-	{
-		TArray<uint8> SplitBuffer;
-		int64 nowSize = receivedSize;
-
-		while (nowSize >= wantSize)
-		{
-			SplitBuffer.SetNum(wantSize, false);
-			FMemory::Memcpy(SplitBuffer.GetData(), receiveBuffer.GetData() + (receivedSize - nowSize), SplitBuffer.Num());
-
-			nowSize -= wantSize;
-
-			PacketRule->NotifyReceiveData(SplitBuffer);
-		}
-
-	}
 }
+
+
+void UProtocolUdpSocketReceiver::ReceiveDataFromClient(const UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer)
+{
+	DispatchReceiveData(ClientSocket, Buffer);
+}
+
