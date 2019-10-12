@@ -149,7 +149,7 @@ bool UProtocolTcpIpSocket::GetIPAddress(TArray<uint8>& IPAddress)
 	if (InnerSocket == nullptr) return false;
 
 	TSharedPtr<FInternetAddr> Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
-	InnerSocket->GetAddress(*Addr);
+	InnerSocket->GetPeerAddress(*Addr);
 	IPAddress.SetNum(0);
 	IPAddress = Addr->GetRawIp();
 
@@ -161,7 +161,7 @@ bool UProtocolTcpIpSocket::GetIPAddressInString(FString& IPAddress)
 	if (InnerSocket == nullptr) return false;
 
 	TSharedPtr<FInternetAddr> Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
-	InnerSocket->GetAddress(*Addr);
+	InnerSocket->GetPeerAddress(*Addr);
 
 	IPAddress = Addr->ToString(false);
 
