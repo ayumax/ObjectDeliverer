@@ -34,5 +34,6 @@ public:
 
 	static EUPropertyType GetUPropertyType(UProperty* Property);
 
+  static bool FindClass(const FString& ClassName, UClass*& Class);
 
 };

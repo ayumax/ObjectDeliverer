@@ -9,32 +9,46 @@
 #include "UObject/TextProperty.h"
 #include "UObject/PropertyPortFlags.h"
 
+const FString UObjectJsonSerializer::objectClassNameKey  = "Class";
+const FString UObjectJsonSerializer::objectPropertiesKey = "Properties";
 
-
-TSharedPtr<FJsonObject> UObjectJsonSerializer::CreateJsonObject(const UObject* Obj)
+TSharedPtr<FJsonObject> UObjectJsonSerializer::CreateJsonObject(const UObject* Obj, int64 CheckFlags, int64 SkipFlags)
 {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 
 	if (!Obj) return JsonObject;
 
-	for (TFieldIterator<UProperty> PropIt(Obj->GetClass(), EFieldIteratorFlags::IncludeSuper); PropIt; ++PropIt)
-	{
-		UProperty* Property = *PropIt;
-		FString PropertyName = Property->GetName();
-		uint8* CurrentPropAddr = PropIt->ContainerPtrToValuePtr<uint8>((UObject*)Obj);
+  /* Serialize object class */
+  {
+    UClass* ObjClass = Obj->GetClass();
+    JsonObject->SetStringField(objectClassNameKey, ObjClass->GetName());
+  }
 
-		FJsonObjectConverter::CustomExportCallback CustomCB;
-		CustomCB.BindStatic(UObjectJsonSerializer::ObjectJsonCallback);
-		JsonObject->SetField(PropertyName, FJsonObjectConverter::UPropertyToJsonValue(Property, CurrentPropAddr, 0, 0, &CustomCB));
+  /* Serialize object properties */
+  {
+    TSharedPtr<FJsonObject> JsonPropertiesObject = MakeShareable(new FJsonObject());
 
-	}
+    for (TFieldIterator<UProperty> PropIt(Obj->GetClass(), EFieldIteratorFlags::IncludeSuper); PropIt; ++PropIt)
+    {
+      UProperty* Property = *PropIt;
+      FString PropertyName = Property->GetName();
+      uint8* CurrentPropAddr = PropIt->ContainerPtrToValuePtr<uint8>((UObject*)Obj);
+
+      FJsonObjectConverter::CustomExportCallback CustomCB;
+      CustomCB.BindStatic(UObjectJsonSerializer::ObjectJsonCallback);
+      JsonPropertiesObject->SetField(PropertyName, FJsonObjectConverter::UPropertyToJsonValue(Property, CurrentPropAddr, CheckFlags, SkipFlags, &CustomCB));
+
+    }
+
+    JsonObject->SetObjectField(objectPropertiesKey, JsonPropertiesObject);
+  }
 
 	return JsonObject;
 }
 
 TSharedPtr<FJsonValue> UObjectJsonSerializer::ObjectJsonCallback(UProperty* Property, const void* Value)
 {
-	if (UObjectProperty * ObjectProperty = Cast<UObjectProperty>(Property))
+	if (UObjectProperty* ObjectProperty = Cast<UObjectProperty>(Property))
 	{
 		if (!ObjectProperty->HasAnyFlags(RF_Transient)) // We are taking Transient to mean we don't want to serialize to Json either (could make a new flag if nessasary)
 		{
@@ -46,46 +60,86 @@ TSharedPtr<FJsonValue> UObjectJsonSerializer::ObjectJsonCallback(UProperty* Prop
 	return TSharedPtr<FJsonValue>();
 }
 
-bool UObjectJsonSerializer::JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UObject* OutObject)
+bool UObjectJsonSerializer::JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UObject*& OutObject)
 {
-	auto& JsonAttributes = JsonObject->Values;
+  OutObject = nullptr;
 
-	int32 NumUnclaimedProperties = JsonAttributes.Num();
-	if (NumUnclaimedProperties <= 0)
-	{
-		return true;
-	}
+  /* Create object with serialized class */
+  {
+    FString ObjClassName = JsonObject->GetStringField(objectClassNameKey);
+    UClass* ObjClass;
 
-	// iterate over the struct properties
-	for (TFieldIterator<UProperty> PropIt(OutObject->GetClass()); PropIt; ++PropIt)
-	{
-		UProperty* Property = *PropIt;
+    if (!UObjectUtil::FindClass(ObjClassName, ObjClass))
+    {
+      UE_LOG( LogJson, Error, 
+        TEXT("JsonObjectToUObject - Unable to find object class %s"), 
+        *ObjClassName
+      );
+      return false;
+    }
 
-		// find a json value matching this property name
-		const TSharedPtr<FJsonValue>* JsonValue = JsonAttributes.Find(Property->GetName());
-		if (!JsonValue)
-		{
-			// we allow values to not be found since this mirrors the typical UObject mantra that all the fields are optional when deserializing
-			continue;
-		}
+    OutObject = NewObject<UObject>((UObject*)GetTransientPackage(), ObjClass);
+    if (!OutObject)
+    {
+      UE_LOG( LogJson, Error, 
+        TEXT("JsonObjectToUObject - Unable to create object of class %s"), 
+        *ObjClassName
+      );
+      return false;
+    }
+  }
+    
+  /* Get serialized object properties */
+  {
+    TSharedPtr<FJsonObject> JsonPropertiesObject = JsonObject->GetObjectField(objectPropertiesKey);
+    if (!JsonPropertiesObject)
+    {
+      UE_LOG( LogJson, Error, 
+        TEXT("JsonObjectToUObject - Unable to find object properties in '%s' object field"), 
+        *objectPropertiesKey
+      );
+      return false;
+    }
 
-		if (JsonValue->IsValid() && !(*JsonValue)->IsNull())
-		{
-			void* Value = Property->ContainerPtrToValuePtr<uint8>(OutObject);
+    auto& JsonAttributes = JsonPropertiesObject->Values;
 
-			if (!JsonValueToUProperty(*JsonValue, Property, Value))
-			{
-				UE_LOG(LogJson, Error, TEXT("JsonObjectToUStruct - Unable to parse %s.%s from JSON"), *OutObject->GetClass()->GetName(), *Property->GetName());
-				return false;
-			}
-		}
+    int32 NumUnclaimedProperties = JsonAttributes.Num();
+    if (NumUnclaimedProperties <= 0)
+    {
+      return true;
+    }
 
-		if (--NumUnclaimedProperties <= 0)
-		{
-			// If we found all properties that were in the JsonAttributes map, there is no reason to keep looking for more.
-			break;
-		}
-	}
+    // iterate over the struct properties
+    for (TFieldIterator<UProperty> PropIt(OutObject->GetClass()); PropIt; ++PropIt)
+    {
+      UProperty* Property = *PropIt;
+
+      // find a json value matching this property name
+      const TSharedPtr<FJsonValue>* JsonValue = JsonAttributes.Find(Property->GetName());
+      if (!JsonValue)
+      {
+        // we allow values to not be found since this mirrors the typical UObject mantra that all the fields are optional when deserializing
+        continue;
+      }
+
+      if (JsonValue->IsValid() && !(*JsonValue)->IsNull())
+      {
+        void* Value = Property->ContainerPtrToValuePtr<uint8>(OutObject);
+
+        if (!JsonValueToUProperty(*JsonValue, Property, Value))
+        {
+          UE_LOG(LogJson, Error, TEXT("JsonObjectToUObject - Unable to parse %s.%s from JSON"), *OutObject->GetClass()->GetName(), *Property->GetName());
+          return false;
+        }
+      }
+
+      if (--NumUnclaimedProperties <= 0)
+      {
+        // If we found all properties that were in the JsonAttributes map, there is no reason to keep looking for more.
+        break;
+      }
+    }
+  }
 
 	return true;
 }
@@ -556,21 +610,35 @@ bool UObjectJsonSerializer::JsonValueToUStructProperty(const TSharedPtr<FJsonVal
 
 bool UObjectJsonSerializer::JsonValueToUObjectProperty(const TSharedPtr<FJsonValue>& JsonValue, UObjectProperty* ObjectProperty, void* OutValue)
 {
+  /* Dynamic nested object with serialized class */
 	if (JsonValue->Type == EJson::Object)
 	{
-		UClass* PropertyClass = ObjectProperty->PropertyClass;
-		UObject* createdObj = NewObject<UObject>((UObject*)GetTransientPackage(), PropertyClass);
-
-		ObjectProperty->SetObjectPropertyValue(OutValue, createdObj);
-
 		TSharedPtr<FJsonObject> Obj = JsonValue->AsObject();
 		check(Obj.IsValid()); // should not fail if Type == EJson::Object
+    UObject* createdObj;
 		if (!JsonObjectToUObject(Obj, createdObj))
 		{
-			UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - FJsonObjectConverter::JsonObjectToUStruct failed for property %s"), *ObjectProperty->GetNameCPP());
+			UE_LOG( LogJson, Error, 
+        TEXT("JsonValueToUProperty - FJsonObjectConverter::JsonValueToUObjectProperty failed for property %s"), 
+        *ObjectProperty->GetNameCPP()
+      );
 			return false;
 		}
+
+    UClass* PropertyClass = ObjectProperty->PropertyClass;
+    UClass* ObjectClass = createdObj->GetClass();
+    if (!ObjectClass->IsChildOf(PropertyClass))
+    {
+      UE_LOG( LogJson, Error, 
+        TEXT("JsonValueToUProperty - FJsonObjectConverter::JsonValueToUObjectProperty failed for property %s, property class %s != object class %s"), 
+        *ObjectProperty->GetNameCPP(), *PropertyClass->GetName(), *ObjectClass->GetName()
+      );
+      return false;
+    }
+
+    ObjectProperty->SetObjectPropertyValue(OutValue, createdObj);
 	}
+  /* Static nested object that should exist in the world with serialized name */
 	else if (JsonValue->Type == EJson::String)
 	{
 		// Default to expect a string for everything else

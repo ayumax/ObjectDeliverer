@@ -1,5 +1,6 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "ObjectUtil.h"
+#include "Package.h"
 
 EUPropertyType UObjectUtil::GetUPropertyType(UProperty* Property)
 {
@@ -64,4 +65,10 @@ EUPropertyType UObjectUtil::GetUPropertyType(UProperty* Property)
 	}
 
 	return EUPropertyType::None;
+}
+
+bool UObjectUtil::FindClass(const FString& ClassName, UClass*& Class)
+{
+  Class = FindObject<UClass>(ANY_PACKAGE, *ClassName);
+  return Class != nullptr;
 }

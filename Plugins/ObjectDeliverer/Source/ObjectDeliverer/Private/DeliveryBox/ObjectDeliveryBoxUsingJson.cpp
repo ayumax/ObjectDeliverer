@@ -47,6 +47,15 @@ void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer(const UObjectDelivererProt
 
 	UObjectJsonSerializer::JsonObjectToUObject(JsonObject, createdObj);
 
+  if (!createdObj)
+    return;
+
+  // With dynamic object class serialization it is not necessary to specify TargetClass */
+  // TODO: think of throwing away TargetClass
+  //       this will let user set more flexible object class checks
+  if (!createdObj->GetClass()->IsChildOf(TargetClass))
+    return
+
 	Received.Broadcast(createdObj, FromObject);
 }
 
