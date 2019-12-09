@@ -1,7 +1,13 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "ObjectUtil.h"
+#include "ODObjectUtil.h"
+#include "UObject/ObjectMacros.h"
+#include "UObject/Class.h"
+#include "UObject/UnrealType.h"
+#include "UObject/EnumProperty.h"
+#include "UObject/TextProperty.h"
+#include "UObject/PropertyPortFlags.h"
 
-EUPropertyType UObjectUtil::GetUPropertyType(UProperty* Property)
+EUPropertyType UODObjectUtil::GetUPropertyType(UProperty* Property)
 {
 	UClass* Class = Property->GetClass();
 
@@ -64,4 +70,15 @@ EUPropertyType UObjectUtil::GetUPropertyType(UProperty* Property)
 	}
 
 	return EUPropertyType::None;
+}
+
+void UODObjectUtil::EnumProperties(UObject* TargetObject, TFunction<bool(UProperty*)> EnumFunc)
+{
+	for (TFieldIterator<UProperty> PropIt(TargetObject->GetClass()); PropIt; ++PropIt)
+	{
+		if (!EnumFunc(*PropIt))
+		{
+			break;
+		}
+	}
 }
