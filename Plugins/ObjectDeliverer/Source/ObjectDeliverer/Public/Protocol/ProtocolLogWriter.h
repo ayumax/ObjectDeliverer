@@ -31,6 +31,6 @@ public:
 	bool PathIsAbsolute = false;
 
 private:
-	class FileWriterUtil* Writer;
+	class ODFileWriterUtil* Writer;
 	FDateTime StartTime;
 };

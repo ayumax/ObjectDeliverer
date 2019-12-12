@@ -1,8 +1,8 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "StringUtil.h"
+#include "ODStringUtil.h"
 #include <string>
 
-void UStringUtil::StringToBuffer(const FString& message, TArray<uint8>& DataBuffer)
+void UODStringUtil::StringToBuffer(const FString& message, TArray<uint8>& DataBuffer)
 {
 	std::string _str = TCHAR_TO_UTF8(*message);
 
@@ -13,7 +13,7 @@ void UStringUtil::StringToBuffer(const FString& message, TArray<uint8>& DataBuff
 
 }
 
-FString UStringUtil::BufferToString(const TArray<uint8>& DataBuffer)
+FString UODStringUtil::BufferToString(const TArray<uint8>& DataBuffer)
 {
 	if (DataBuffer[DataBuffer.Num() - 1] == 0x00)
 	{

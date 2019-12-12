@@ -48,7 +48,7 @@ public:
 
 protected:
 	FSocket* ListenerSocket = nullptr;
-	class FWorkerThread* ListenInnerThread = nullptr;
+	class FODWorkerThread* ListenInnerThread = nullptr;
 	class FRunnableThread* ListenThread = nullptr;
 
 	TArray<UProtocolTcpIpSocket*> ConnectedSockets;

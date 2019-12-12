@@ -1,5 +1,5 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "ObjectJsonSerializer.h"
+#include "ODJsonSerializer.h"
 #include "Utils/ODObjectUtil.h"
 #include "JsonObjectConverter.h"
 #include "UObject/ObjectMacros.h"
@@ -11,7 +11,7 @@
 
 
 
-TSharedPtr<FJsonObject> UObjectJsonSerializer::CreateJsonObject(const UObject* Obj)
+TSharedPtr<FJsonObject> ODJsonSerializer::CreateJsonObject(const UObject* Obj)
 {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 
@@ -24,7 +24,7 @@ TSharedPtr<FJsonObject> UObjectJsonSerializer::CreateJsonObject(const UObject* O
 		uint8* CurrentPropAddr = PropIt->ContainerPtrToValuePtr<uint8>((UObject*)Obj);
 
 		FJsonObjectConverter::CustomExportCallback CustomCB;
-		CustomCB.BindStatic(UObjectJsonSerializer::ObjectJsonCallback);
+		CustomCB.BindRaw(this, &ODJsonSerializer::ObjectJsonCallback);
 		JsonObject->SetField(PropertyName, FJsonObjectConverter::UPropertyToJsonValue(Property, CurrentPropAddr, 0, 0, &CustomCB));
 
 	}
@@ -32,7 +32,7 @@ TSharedPtr<FJsonObject> UObjectJsonSerializer::CreateJsonObject(const UObject* O
 	return JsonObject;
 }
 
-TSharedPtr<FJsonValue> UObjectJsonSerializer::ObjectJsonCallback(UProperty* Property, const void* Value)
+TSharedPtr<FJsonValue> ODJsonSerializer::ObjectJsonCallback(UProperty* Property, const void* Value)
 {
 	if (UObjectProperty * ObjectProperty = Cast<UObjectProperty>(Property))
 	{
@@ -46,7 +46,7 @@ TSharedPtr<FJsonValue> UObjectJsonSerializer::ObjectJsonCallback(UProperty* Prop
 	return TSharedPtr<FJsonValue>();
 }
 
-bool UObjectJsonSerializer::JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UObject* OutObject)
+bool ODJsonSerializer::JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UObject* OutObject)
 {
 
 	return true;

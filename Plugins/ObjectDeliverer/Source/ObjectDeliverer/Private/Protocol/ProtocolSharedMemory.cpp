@@ -1,11 +1,11 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "Protocol/ProtocolSharedMemory.h"
-#include "Utils/WorkerThread.h"
+#include "Utils/ODWorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 #include "PacketRule/PacketRule.h"
 
 #if PLATFORM_WINDOWS
-#include "Utils/MutexLock.h"
+#include "Utils/ODMutexLock.h"
 #include "Windows/WindowsHWrapper.h"
 #endif
 
@@ -64,7 +64,7 @@ void UProtocolSharedMemory::Start()
 		return;
 	}
 
-	MutexLock::Lock(SharedMemoryMutex, [this]()
+	ODMutexLock::Lock(SharedMemoryMutex, [this]()
 	{
 		FMemory::Memset(SharedMemoryData, 0, SharedMemoryTotalSize);
 	});
@@ -76,7 +76,7 @@ void UProtocolSharedMemory::Start()
 #endif
 
 	ReceiveBuffer.SetNum(SharedMemoryTotalSize);
-	CurrentInnerThread = new FWorkerThread([this] { return ReceivedData(); });
+	CurrentInnerThread = new FODWorkerThread([this] { return ReceivedData(); });
 	CurrentThread = FRunnableThread::Create(CurrentInnerThread, TEXT("ObjectDeliverer ProtocolSharedMemory PollingThread"));
 
 	DispatchConnected(this);
@@ -85,7 +85,7 @@ void UProtocolSharedMemory::Start()
 void UProtocolSharedMemory::Close()
 {
 #if PLATFORM_WINDOWS
-	MutexLock::Lock(SharedMemoryMutex, [this]()
+	ODMutexLock::Lock(SharedMemoryMutex, [this]()
 	{
 		if (!CurrentThread) return;
 		CurrentThread->Kill(true);
@@ -110,7 +110,7 @@ bool UProtocolSharedMemory::ReceivedData()
 
 	uint32 Size = 0;
 
-	MutexLock::Lock(SharedMemoryMutex, [this, &Size]()
+	ODMutexLock::Lock(SharedMemoryMutex, [this, &Size]()
 	{
 		uint8 counter = 0;
 		FMemory::Memcpy(&counter, SharedMemoryData, sizeof(uint8));
@@ -175,7 +175,7 @@ void UProtocolSharedMemory::RequestSend(const TArray<uint8>& DataBuffer)
 	{
 		int32 writeSize = DataBuffer.Num();
 
-		MutexLock::Lock(SharedMemoryMutex, [this, writeSize, &DataBuffer]()
+		ODMutexLock::Lock(SharedMemoryMutex, [this, writeSize, &DataBuffer]()
 		{
 			NowCounter++;
 			if (NowCounter == 0)

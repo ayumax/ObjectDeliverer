@@ -47,7 +47,7 @@ public:
 	bool AutoConnectAfterDisconnect = false;
 
 protected:
-	class FWorkerThread* ConnectInnerThread = nullptr;
+	class FODWorkerThread* ConnectInnerThread = nullptr;
 	class FRunnableThread* ConnectThread = nullptr;
 
 	FIPv4Endpoint ConnectEndPoint;
