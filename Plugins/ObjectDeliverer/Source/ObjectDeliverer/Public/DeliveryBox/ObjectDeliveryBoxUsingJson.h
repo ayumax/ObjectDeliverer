@@ -38,5 +38,6 @@ protected:
 	UPROPERTY()
 	UClass* TargetClass;
 
-
+	UPROPERTY()
+	class UODJsonSerializer* Serializer;
 };

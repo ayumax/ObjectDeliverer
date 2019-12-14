@@ -3,20 +3,30 @@
 
 #include "CoreMinimal.h"
 #include "Dom/JsonObject.h"
+#include "ODJsonSerializer.generated.h"
 
-class OBJECTDELIVERER_API ODJsonSerializer
+class UODOverrideJsonSerializer;
+
+UCLASS()
+class OBJECTDELIVERER_API UODJsonSerializer : public UObject
 {
-public:
+	GENERATED_BODY()
 
+public:
 	TSharedPtr<FJsonObject> CreateJsonObject(const UObject* Obj, int64 CheckFlags = 0, int64 SkipFlags = 0);
 
-	DECLARE_DELEGATE_RetVal_TwoParams(TSharedPtr<FJsonValue>, CustomExportCallback, UProperty* /* Property */, const void* /* Value */);
+	void AddJsonValue(TSharedPtr<FJsonObject> JsonObject, const UObject* Obj, UProperty* Property, int64 CheckFlags, int64 SkipFlags);
 
 private:
-
 	TSharedPtr<FJsonValue> ObjectJsonCallback(UProperty* Property, const void* Value);
-	
-	TSharedPtr<FJsonValue> UPropertyToJsonValue(UProperty* Property, const void* Value, int64 CheckFlags, int64 SkipFlags, const CustomExportCallback* ExportCb);
-	TSharedPtr<FJsonValue> ConvertScalarUPropertyToJsonValue(UProperty* Property, const void* Value, int64 CheckFlags, int64 SkipFlags, const CustomExportCallback* ExportCb);
 
+protected:
+	virtual TSharedPtr<FJsonObject> UObjectToJsonObject(const FName PropertyName, const UObject* Obj, int64 CheckFlags = 0, int64 SkipFlags = 0);
+
+private:
+	UPROPERTY(Transient)
+	UODOverrideJsonSerializer* DefaultObjectSerializer;
+
+	UPROPERTY(Transient)
+	TMap<UClass*, UODOverrideJsonSerializer*> ObjectSerializers;
 };

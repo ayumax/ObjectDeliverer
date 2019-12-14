@@ -24,8 +24,8 @@ bool ODJsonSerializer_Tests::RunTest(const FString& Parameters)
 		testObj->ArrayProperty[i]->IntProperty = i;
 	}
 
-	ODJsonSerializer serializer;
-	auto jsonObj = serializer.CreateJsonObject(testObj);
+	UODJsonSerializer* serializer = NewObject<UODJsonSerializer>();
+	auto jsonObj = serializer->CreateJsonObject(testObj);
 
 	ODJsonDeserializer deserializr;
 	UJsonSerializerTestObject* testObj2 = Cast<UJsonSerializerTestObject>(deserializr.JsonObjectToUObject(jsonObj, UJsonSerializerTestObject::StaticClass()));
@@ -56,8 +56,8 @@ bool ODJsonSerializer_ConvertPropertyNameTest::RunTest(const FString& Parameters
 	testObj->FloatProperty = 3.14f;
 	testObj->Uint8Property = 128;
 
-	ODJsonSerializer serializer;
-	auto jsonObj = serializer.CreateJsonObject(testObj);
+	UODJsonSerializer* serializer = NewObject<UODJsonSerializer>();
+	auto jsonObj = serializer->CreateJsonObject(testObj);
 
 	ODJsonDeserializer deserializr;
 	UJsonSerializeConvertNameTestObject* testObj2 = Cast<UJsonSerializeConvertNameTestObject>(deserializr.JsonObjectToUObject(jsonObj, UJsonSerializeConvertNameTestObject::StaticClass()));

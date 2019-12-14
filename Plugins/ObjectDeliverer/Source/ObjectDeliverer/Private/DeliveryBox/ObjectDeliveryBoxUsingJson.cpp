@@ -16,6 +16,8 @@ UObjectDeliveryBoxUsingJson::~UObjectDeliveryBoxUsingJson()
 void UObjectDeliveryBoxUsingJson::Initialize(UClass* _TargetClass)
 {
 	TargetClass = _TargetClass;
+
+	Serializer = NewObject<UODJsonSerializer>(this);
 }
 
 void UObjectDeliveryBoxUsingJson::Send(const UObject* message)
@@ -25,8 +27,7 @@ void UObjectDeliveryBoxUsingJson::Send(const UObject* message)
 
 void UObjectDeliveryBoxUsingJson::SendTo(const UObject* message, const UObjectDelivererProtocol* Destination)
 {
-	ODJsonSerializer serializer;
-	auto jsonObject = serializer.CreateJsonObject(message);
+	auto jsonObject = Serializer->CreateJsonObject(message);
 
 	FString OutputString;
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
