@@ -8,8 +8,7 @@
 #include "UObject/EnumProperty.h"
 #include "UObject/TextProperty.h"
 #include "UObject/PropertyPortFlags.h"
-
-
+#include "IODConvertPropertyName.h"
 
 bool ODJsonDeserializer::JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UObject* OutObject)
 {
@@ -25,7 +24,13 @@ bool ODJsonDeserializer::JsonObjectToUObject(const TSharedPtr<FJsonObject>& Json
 	{
 		UProperty* Property = *PropIt;
 
-		const TSharedPtr<FJsonValue>* JsonValue = JsonAttributes.Find(Property->GetName());
+		FString PropertyName = Property->GetName();
+		if (OutObject->GetClass()->ImplementsInterface(UODConvertPropertyName::StaticClass()))
+		{
+			PropertyName = IODConvertPropertyName::Execute_ConvertUPropertyName(OutObject, Property->GetFName());
+		}
+
+		const TSharedPtr<FJsonValue>* JsonValue = JsonAttributes.Find(PropertyName);
 		if (!JsonValue)
 		{
 			continue;
@@ -51,6 +56,18 @@ bool ODJsonDeserializer::JsonObjectToUObject(const TSharedPtr<FJsonObject>& Json
 	return true;
 }
 
+UObject* ODJsonDeserializer::JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UClass* TargetClass)
+{
+	UObject* createdObj = NewObject<UObject>((UObject*)GetTransientPackage(), TargetClass);
+
+	if (JsonObjectToUObject(JsonObject, createdObj))
+	{
+		return createdObj;
+	}
+
+	return nullptr;
+}
+
 bool ODJsonDeserializer::JsonObjectToUStruct(const TSharedPtr<FJsonObject>& JsonObject, const UStruct* StructDefinition, void* OutStruct)
 {
 	auto& JsonAttributes = JsonObject->Values;
@@ -61,16 +78,13 @@ bool ODJsonDeserializer::JsonObjectToUStruct(const TSharedPtr<FJsonObject>& Json
 		return true;
 	}
 
-	// iterate over the struct properties
 	for (TFieldIterator<UProperty> PropIt(StructDefinition); PropIt; ++PropIt)
 	{
 		UProperty* Property = *PropIt;
 
-		// find a json value matching this property name
 		const TSharedPtr<FJsonValue>* JsonValue = JsonAttributes.Find(Property->GetName());
 		if (!JsonValue)
 		{
-			// we allow values to not be found since this mirrors the typical UObject mantra that all the fields are optional when deserializing
 			continue;
 		}
 
@@ -87,7 +101,6 @@ bool ODJsonDeserializer::JsonObjectToUStruct(const TSharedPtr<FJsonObject>& Json
 
 		if (--NumUnclaimedProperties <= 0)
 		{
-			// If we found all properties that were in the JsonAttributes map, there is no reason to keep looking for more.
 			break;
 		}
 	}
@@ -122,21 +135,17 @@ bool ODJsonDeserializer::JsonValueToUProperty(const TSharedPtr<FJsonValue>& Json
 		return ConvertScalarJsonValueToUPropertyWithContainer(JsonValue, Property, OutValue);
 	}
 
-	// In practice, the ArrayDim == 1 check ought to be redundant, since nested arrays of UPropertys are not supported
 	if (bArrayOrSetProperty && Property->ArrayDim == 1)
 	{
-		// Read into TArray
 		return ConvertScalarJsonValueToUPropertyWithContainer(JsonValue, Property, OutValue);
 	}
 
-	// We're deserializing a JSON array
 	const auto& ArrayValue = JsonValue->AsArray();
 	if (Property->ArrayDim < ArrayValue.Num())
 	{
 		UE_LOG(LogJson, Warning, TEXT("Ignoring excess properties when deserializing %s"), *Property->GetName());
 	}
 
-	// Read into native array
 	int ItemsToRead = FMath::Clamp(ArrayValue.Num(), 0, Property->ArrayDim);
 	for (int Index = 0; Index != ItemsToRead; ++Index)
 	{
@@ -145,48 +154,49 @@ bool ODJsonDeserializer::JsonValueToUProperty(const TSharedPtr<FJsonValue>& Json
 			return false;
 		}
 	}
+
 	return true;
 }
 
 bool ODJsonDeserializer::ConvertScalarJsonValueToUPropertyWithContainer(const TSharedPtr<FJsonValue>& JsonValue, UProperty* Property, void* OutValue)
 {
-	if (UEnumProperty * EnumProperty = Cast<UEnumProperty>(Property))
+	if (UEnumProperty* EnumProperty = Cast<UEnumProperty>(Property))
 	{
 		JsonValueToUEnumProperty(JsonValue, EnumProperty, OutValue);
 	}
-	else if (UNumericProperty * NumericProperty = Cast<UNumericProperty>(Property))
+	else if (UNumericProperty* NumericProperty = Cast<UNumericProperty>(Property))
 	{
 		JsonValueToUNumericProperty(JsonValue, NumericProperty, OutValue);
 	}
-	else if (UBoolProperty * BoolProperty = Cast<UBoolProperty>(Property))
+	else if (UBoolProperty* BoolProperty = Cast<UBoolProperty>(Property))
 	{
 		JsonValueToUBoolProperty(JsonValue, BoolProperty, OutValue);
 	}
-	else if (UStrProperty * StringProperty = Cast<UStrProperty>(Property))
+	else if (UStrProperty* StringProperty = Cast<UStrProperty>(Property))
 	{
 		JsonValueToUStrProperty(JsonValue, StringProperty, OutValue);
 	}
-	else if (UArrayProperty * ArrayProperty = Cast<UArrayProperty>(Property))
+	else if (UArrayProperty* ArrayProperty = Cast<UArrayProperty>(Property))
 	{
 		JsonValueToUArrayProperty(JsonValue, ArrayProperty, OutValue);
 	}
-	else if (UMapProperty * MapProperty = Cast<UMapProperty>(Property))
+	else if (UMapProperty* MapProperty = Cast<UMapProperty>(Property))
 	{
 		JsonValueToUMapProperty(JsonValue, MapProperty, OutValue);
 	}
-	else if (USetProperty * SetProperty = Cast<USetProperty>(Property))
+	else if (USetProperty* SetProperty = Cast<USetProperty>(Property))
 	{
 		JsonValueToUSetProperty(JsonValue, SetProperty, OutValue);
 	}
-	else if (UTextProperty * TextProperty = Cast<UTextProperty>(Property))
+	else if (UTextProperty* TextProperty = Cast<UTextProperty>(Property))
 	{
 		JsonValueToUTextProperty(JsonValue, TextProperty, OutValue);
 	}
-	else if (UStructProperty * StructProperty = Cast<UStructProperty>(Property))
+	else if (UStructProperty* StructProperty = Cast<UStructProperty>(Property))
 	{
 		JsonValueToUStructProperty(JsonValue, StructProperty, OutValue);
 	}
-	else if (UObjectProperty * ObjectProperty = Cast<UObjectProperty>(Property))
+	else if (UObjectProperty* ObjectProperty = Cast<UObjectProperty>(Property))
 	{
 		JsonValueToUObjectProperty(JsonValue, ObjectProperty, OutValue);
 	}
@@ -428,6 +438,7 @@ bool ODJsonDeserializer::JsonValueToUStructProperty(const TSharedPtr<FJsonValue>
 	static const FName NAME_DateTime(TEXT("DateTime"));
 	static const FName NAME_Color(TEXT("Color"));
 	static const FName NAME_LinearColor(TEXT("LinearColor"));
+
 	if (JsonValue->Type == EJson::Object)
 	{
 		TSharedPtr<FJsonObject> Obj = JsonValue->AsObject();

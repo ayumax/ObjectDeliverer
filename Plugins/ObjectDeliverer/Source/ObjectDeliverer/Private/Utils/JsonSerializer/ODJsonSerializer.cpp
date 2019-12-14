@@ -8,10 +8,10 @@
 #include "UObject/EnumProperty.h"
 #include "UObject/TextProperty.h"
 #include "UObject/PropertyPortFlags.h"
+#include "IODConvertPropertyName.h"
 
 
-
-TSharedPtr<FJsonObject> ODJsonSerializer::CreateJsonObject(const UObject* Obj)
+TSharedPtr<FJsonObject> ODJsonSerializer::CreateJsonObject(const UObject* Obj, int64 CheckFlags /*= 0*/, int64 SkipFlags /*= 0*/)
 {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 
@@ -21,12 +21,16 @@ TSharedPtr<FJsonObject> ODJsonSerializer::CreateJsonObject(const UObject* Obj)
 	{
 		UProperty* Property = *PropIt;
 		FString PropertyName = Property->GetName();
+		if (Obj->GetClass()->ImplementsInterface(UODConvertPropertyName::StaticClass()))
+		{
+			PropertyName = IODConvertPropertyName::Execute_ConvertUPropertyName(Obj, Property->GetFName());
+		}
+
 		uint8* CurrentPropAddr = PropIt->ContainerPtrToValuePtr<uint8>((UObject*)Obj);
 
 		FJsonObjectConverter::CustomExportCallback CustomCB;
 		CustomCB.BindRaw(this, &ODJsonSerializer::ObjectJsonCallback);
-		JsonObject->SetField(PropertyName, FJsonObjectConverter::UPropertyToJsonValue(Property, CurrentPropAddr, 0, 0, &CustomCB));
-
+		JsonObject->SetField(PropertyName, FJsonObjectConverter::UPropertyToJsonValue(Property, CurrentPropAddr, CheckFlags, SkipFlags, &CustomCB));
 	}
 
 	return JsonObject;
@@ -34,7 +38,7 @@ TSharedPtr<FJsonObject> ODJsonSerializer::CreateJsonObject(const UObject* Obj)
 
 TSharedPtr<FJsonValue> ODJsonSerializer::ObjectJsonCallback(UProperty* Property, const void* Value)
 {
-	if (UObjectProperty * ObjectProperty = Cast<UObjectProperty>(Property))
+	if (UObjectProperty* ObjectProperty = Cast<UObjectProperty>(Property))
 	{
 		if (!ObjectProperty->HasAnyFlags(RF_Transient)) // We are taking Transient to mean we don't want to serialize to Json either (could make a new flag if nessasary)
 		{
@@ -44,10 +48,4 @@ TSharedPtr<FJsonValue> ODJsonSerializer::ObjectJsonCallback(UProperty* Property,
 
 	// invalid
 	return TSharedPtr<FJsonValue>();
-}
-
-bool ODJsonSerializer::JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UObject* OutObject)
-{
-
-	return true;
 }

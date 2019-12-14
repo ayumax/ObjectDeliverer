@@ -47,8 +47,8 @@ void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer(const UObjectDelivererProt
 
 	UObject* createdObj = NewObject<UObject>((UObject*)GetTransientPackage(), TargetClass);
 
-	ODJsonSerializer serializer;
-	serializer.JsonObjectToUObject(JsonObject, createdObj);
+	ODJsonDeserializer deserializer;
+	deserializer.JsonObjectToUObject(JsonObject, createdObj);
 
 	Received.Broadcast(createdObj, FromObject);
 }

@@ -4,10 +4,11 @@
 #include "CoreMinimal.h"
 #include "Dom/JsonObject.h"
 
-class ODJsonDeserializer
+class OBJECTDELIVERER_API ODJsonDeserializer
 {
 public:
 	virtual bool JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UObject* OutObject);
+	virtual UObject* JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UClass* TargetClass);
 
 protected:
 	virtual bool JsonValueToUProperty(const TSharedPtr<FJsonValue>& JsonValue, UProperty* Property, void* OutValue);
