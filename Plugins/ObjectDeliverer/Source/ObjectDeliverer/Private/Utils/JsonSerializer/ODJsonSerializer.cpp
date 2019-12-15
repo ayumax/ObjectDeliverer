@@ -11,6 +11,16 @@
 #include "IODConvertPropertyName.h"
 #include "ODOverrideJsonSerializer.h"
 
+UODJsonSerializer::UODJsonSerializer()
+{
+	DefaultObjectSerializer = CreateDefaultSubobject<UODNoWriteTypeJsonSerializer>(TEXT("DefaultObjectSerializer"));
+}
+
+void UODJsonSerializer::AddOverrideJsonSerializers(const TMap<UClass*, UODOverrideJsonSerializer*>& OverrideObjectSerializers)
+{
+	ObjectSerializers = OverrideObjectSerializers;
+}
+
 TSharedPtr<FJsonObject> UODJsonSerializer::CreateJsonObject(const UObject* Obj, int64 CheckFlags /*= 0*/, int64 SkipFlags /*= 0*/)
 {
 	return UObjectToJsonObject(FName(TEXT("")), Obj, CheckFlags, SkipFlags);
@@ -32,21 +42,14 @@ TSharedPtr<FJsonValue> UODJsonSerializer::ObjectJsonCallback(UProperty* Property
 
 TSharedPtr<FJsonObject> UODJsonSerializer::UObjectToJsonObject(const FName PropertyName, const UObject* Obj, int64 CheckFlags, int64 SkipFlags)
 {
-	//if (const IODOverrideJsonSerialize* overrideJsonSerializer = Cast<IODOverrideJsonSerialize>(Obj))
-	//{
-	//	return overrideJsonSerializer->UObjectToJsonObject(this, Obj, CheckFlags, SkipFlags);
-	//}
-	
-	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
+	auto objectSerializer = DefaultObjectSerializer;
 
-	if (!Obj) return JsonObject;
-
-	for (TFieldIterator<UProperty> PropIt(Obj->GetClass(), EFieldIteratorFlags::IncludeSuper); PropIt; ++PropIt)
+	if (ObjectSerializers.Contains(Obj->GetClass()))
 	{
-		AddJsonValue(JsonObject, Obj, *PropIt, CheckFlags, SkipFlags);
+		DefaultObjectSerializer = ObjectSerializers[Obj->GetClass()]; 
 	}
 
-	return JsonObject;
+	return objectSerializer->UObjectToJsonObject(this, Obj, CheckFlags, SkipFlags);
 }
 
 void UODJsonSerializer::AddJsonValue(TSharedPtr<FJsonObject> JsonObject, const UObject* Obj, UProperty* Property, int64 CheckFlags, int64 SkipFlags)
