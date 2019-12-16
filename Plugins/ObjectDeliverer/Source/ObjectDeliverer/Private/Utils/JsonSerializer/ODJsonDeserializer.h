@@ -3,12 +3,23 @@
 
 #include "CoreMinimal.h"
 #include "Dom/JsonObject.h"
+#include "ODJsonDeserializer.generated.h"
 
-class OBJECTDELIVERER_API ODJsonDeserializer
+class UODOverrideJsonSerializer;
+
+UCLASS()
+class OBJECTDELIVERER_API UODJsonDeserializer : public UObject
 {
+	GENERATED_BODY()
+
 public:
-	virtual bool JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UObject* OutObject);
-	virtual UObject* JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UClass* TargetClass);
+	UODJsonDeserializer();
+
+	void AddOverrideJsonSerializers(const TMap<UClass*, UODOverrideJsonSerializer*>& OverrideObjectSerializers);
+
+	virtual UObject* JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UClass* TargetClass = nullptr);
+
+	virtual bool JsonPropertyToUProperty(const TSharedPtr<FJsonObject>& JsonObject, UProperty* Property, UObject* OutObject);
 
 protected:
 	virtual bool JsonValueToUProperty(const TSharedPtr<FJsonValue>& JsonValue, UProperty* Property, void* OutValue);
@@ -25,5 +36,14 @@ protected:
 	virtual bool JsonValueToUObjectProperty(const TSharedPtr<FJsonValue>& JsonValue, UObjectProperty* ObjectProperty, void* OutValue);
 
 	virtual bool JsonObjectToUStruct(const TSharedPtr<FJsonObject>& JsonObject, const UStruct* StructDefinition, void* OutStruct);
+
+private:
+	UPROPERTY(Transient)
+	UODOverrideJsonSerializer* DefaultObjectSerializer;
+	UPROPERTY(Transient)
+	UODOverrideJsonSerializer* UseTypeObjectSerializer;
+
+	UPROPERTY(Transient)
+	TMap<UClass*, UODOverrideJsonSerializer*> ObjectSerializers;
 
 };

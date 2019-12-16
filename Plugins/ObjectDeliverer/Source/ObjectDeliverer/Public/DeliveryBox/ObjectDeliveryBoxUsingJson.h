@@ -40,4 +40,6 @@ protected:
 
 	UPROPERTY()
 	class UODJsonSerializer* Serializer;
+	UPROPERTY()
+	class UODJsonDeserializer* Deserializer;
 };

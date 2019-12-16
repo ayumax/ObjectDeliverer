@@ -6,6 +6,7 @@
 #include "UObject/EnumProperty.h"
 #include "UObject/TextProperty.h"
 #include "UObject/PropertyPortFlags.h"
+#include "Package.h"
 
 EUPropertyType UODObjectUtil::GetUPropertyType(UProperty* Property)
 {
@@ -81,4 +82,9 @@ void UODObjectUtil::EnumProperties(UObject* TargetObject, TFunction<bool(UProper
 			break;
 		}
 	}
+}
+bool UODObjectUtil::FindClass(const FString& ClassName, UClass*& Class)
+{
+	Class = FindObject<UClass>(ANY_PACKAGE, *ClassName);
+	return Class != nullptr;
 }

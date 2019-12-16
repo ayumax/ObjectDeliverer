@@ -32,5 +32,6 @@ class OBJECTDELIVERER_API UODObjectUtil : public UObject
 public:
 	static EUPropertyType GetUPropertyType(UProperty* Property);
 	static void EnumProperties(UObject* TargetObject, TFunction<bool(UProperty*)> EnumFunc);
+	static bool FindClass(const FString& ClassName, UClass*& Class);
 
 };

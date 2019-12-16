@@ -6,7 +6,8 @@
 
 UObjectDeliveryBoxUsingJson::UObjectDeliveryBoxUsingJson()
 {
-
+	Serializer = CreateDefaultSubobject<UODJsonSerializer>(TEXT("UODJsonSerializer"));
+	Deserializer = CreateDefaultSubobject<UODJsonDeserializer>(TEXT("UODJsonDeserializer"));
 }
 
 UObjectDeliveryBoxUsingJson::~UObjectDeliveryBoxUsingJson()
@@ -16,8 +17,6 @@ UObjectDeliveryBoxUsingJson::~UObjectDeliveryBoxUsingJson()
 void UObjectDeliveryBoxUsingJson::Initialize(UClass* _TargetClass)
 {
 	TargetClass = _TargetClass;
-
-	Serializer = NewObject<UODJsonSerializer>(this);
 }
 
 void UObjectDeliveryBoxUsingJson::Send(const UObject* message)
@@ -46,10 +45,7 @@ void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer(const UObjectDelivererProt
 
 	if (!FJsonSerializer::Deserialize(JsonReader, JsonObject) && JsonObject.IsValid()) return;
 
-	UObject* createdObj = NewObject<UObject>((UObject*)GetTransientPackage(), TargetClass);
-
-	ODJsonDeserializer deserializer;
-	deserializer.JsonObjectToUObject(JsonObject, createdObj);
+	UObject* createdObj = Deserializer->JsonObjectToUObject(JsonObject, TargetClass);
 
 	Received.Broadcast(createdObj, FromObject);
 }

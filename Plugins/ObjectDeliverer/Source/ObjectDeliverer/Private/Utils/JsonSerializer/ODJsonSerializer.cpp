@@ -23,7 +23,7 @@ void UODJsonSerializer::AddOverrideJsonSerializers(const TMap<UClass*, UODOverri
 
 TSharedPtr<FJsonObject> UODJsonSerializer::CreateJsonObject(const UObject* Obj, int64 CheckFlags /*= 0*/, int64 SkipFlags /*= 0*/)
 {
-	return UObjectToJsonObject(FName(TEXT("")), Obj, CheckFlags, SkipFlags);
+	return UObjectToJsonObject(Obj, CheckFlags, SkipFlags);
 }
 
 TSharedPtr<FJsonValue> UODJsonSerializer::ObjectJsonCallback(UProperty* Property, const void* Value)
@@ -32,7 +32,7 @@ TSharedPtr<FJsonValue> UODJsonSerializer::ObjectJsonCallback(UProperty* Property
 	{
 		if (!ObjectProperty->HasAnyFlags(RF_Transient)) // We are taking Transient to mean we don't want to serialize to Json either (could make a new flag if nessasary)
 		{
-			return MakeShareable(new FJsonValueObject(UObjectToJsonObject(Property->GetFName(), ObjectProperty->GetObjectPropertyValue(Value))));
+			return MakeShareable(new FJsonValueObject(UObjectToJsonObject(ObjectProperty->GetObjectPropertyValue(Value))));
 		}
 	}
 
@@ -40,13 +40,13 @@ TSharedPtr<FJsonValue> UODJsonSerializer::ObjectJsonCallback(UProperty* Property
 	return TSharedPtr<FJsonValue>();
 }
 
-TSharedPtr<FJsonObject> UODJsonSerializer::UObjectToJsonObject(const FName PropertyName, const UObject* Obj, int64 CheckFlags, int64 SkipFlags)
+TSharedPtr<FJsonObject> UODJsonSerializer::UObjectToJsonObject(const UObject* Obj, int64 CheckFlags, int64 SkipFlags)
 {
 	auto objectSerializer = DefaultObjectSerializer;
 
 	if (ObjectSerializers.Contains(Obj->GetClass()))
 	{
-		DefaultObjectSerializer = ObjectSerializers[Obj->GetClass()]; 
+		objectSerializer = ObjectSerializers[Obj->GetClass()];
 	}
 
 	return objectSerializer->UObjectToJsonObject(this, Obj, CheckFlags, SkipFlags);
