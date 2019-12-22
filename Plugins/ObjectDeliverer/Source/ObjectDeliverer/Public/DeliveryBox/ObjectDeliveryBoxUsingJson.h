@@ -9,6 +9,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCNObjectDeliveryBoxReceived, UObject*, ReceivedObject, const UObjectDelivererProtocol*, FromObject);
 
+class UODOverrideJsonSerializer;
+
 UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UObjectDeliveryBoxUsingJson : public UDeliveryBox
 {
@@ -19,7 +21,10 @@ public:
 	~UObjectDeliveryBoxUsingJson();
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
-	void Initialize(UClass* TargetClass);
+	void Initialize(UClass* TargetClass = nullptr);
+
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
+	void SetOverrideJsonSerializers(const TMap<UClass*, UODOverrideJsonSerializer*>& ObjectSerializers);
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
 	virtual void Send(const UObject* message);
