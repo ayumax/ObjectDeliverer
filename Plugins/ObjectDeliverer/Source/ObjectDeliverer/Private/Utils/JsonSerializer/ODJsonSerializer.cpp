@@ -13,12 +13,6 @@
 
 UODJsonSerializer::UODJsonSerializer()
 {
-	DefaultObjectSerializer = CreateDefaultSubobject<UODNoWriteTypeJsonSerializer>(TEXT("DefaultObjectSerializer"));
-}
-
-void UODJsonSerializer::AddOverrideJsonSerializers(const TMap<UClass*, UODOverrideJsonSerializer*>& OverrideObjectSerializers)
-{
-	ObjectSerializers = OverrideObjectSerializers;
 }
 
 TSharedPtr<FJsonObject> UODJsonSerializer::CreateJsonObject(const UObject* Obj, int64 CheckFlags /*= 0*/, int64 SkipFlags /*= 0*/)
@@ -42,11 +36,11 @@ TSharedPtr<FJsonValue> UODJsonSerializer::ObjectJsonCallback(UProperty* Property
 
 TSharedPtr<FJsonObject> UODJsonSerializer::UObjectToJsonObject(const UObject* Obj, int64 CheckFlags, int64 SkipFlags)
 {
-	auto objectSerializer = DefaultObjectSerializer;
+	auto objectSerializer = DefaultSerializer;
 
-	if (ObjectSerializers.Contains(Obj->GetClass()))
+	if (ObjectSerializeres.Contains(Obj->GetClass()))
 	{
-		objectSerializer = ObjectSerializers[Obj->GetClass()];
+		objectSerializer = ObjectSerializeres[Obj->GetClass()];
 	}
 
 	return objectSerializer->UObjectToJsonObject(this, Obj, CheckFlags, SkipFlags);

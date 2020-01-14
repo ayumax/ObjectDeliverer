@@ -21,10 +21,11 @@ public:
 	~UObjectDeliveryBoxUsingJson();
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
-	void Initialize(UClass* TargetClass = nullptr);
+	void Initialize(UClass* TargetClass);
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
-	void SetOverrideJsonSerializers(const TMap<UClass*, UODOverrideJsonSerializer*>& ObjectSerializers);
+	void InitializeCustom(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses);
+
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
 	virtual void Send(const UObject* message);

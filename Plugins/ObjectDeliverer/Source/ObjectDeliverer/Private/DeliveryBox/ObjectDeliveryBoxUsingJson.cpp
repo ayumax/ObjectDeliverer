@@ -14,15 +14,15 @@ UObjectDeliveryBoxUsingJson::~UObjectDeliveryBoxUsingJson()
 {
 }
 
-void UObjectDeliveryBoxUsingJson::Initialize(UClass* _TargetClass /*= nullptr*/)
+void UObjectDeliveryBoxUsingJson::Initialize(UClass* _TargetClass)
 {
 	TargetClass = _TargetClass;
 }
 
-void UObjectDeliveryBoxUsingJson::SetOverrideJsonSerializers(const TMap<UClass*, UODOverrideJsonSerializer*>& ObjectSerializers)
+void UObjectDeliveryBoxUsingJson::InitializeCustom(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses)
 {
-	Serializer->AddOverrideJsonSerializers(ObjectSerializers);
-	Deserializer->AddOverrideJsonSerializers(ObjectSerializers);
+	Serializer->AddOverrideJsonSerializers(DefaultObjectSerializerClass, OverrideObjectSerializerClasses);
+	Deserializer->AddOverrideJsonSerializers(DefaultObjectSerializerClass, OverrideObjectSerializerClasses);
 }
 
 void UObjectDeliveryBoxUsingJson::Send(const UObject* message)

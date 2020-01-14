@@ -13,30 +13,19 @@
 
 UODJsonDeserializer::UODJsonDeserializer()
 {
-	DefaultObjectSerializer = CreateDefaultSubobject<UODNoWriteTypeJsonSerializer>(TEXT("DefaultObjectSerializer"));
-	UseTypeObjectSerializer = CreateDefaultSubobject<UODWriteTypeJsonSerializer>(TEXT("UODWriteTypeJsonSerializer"));
-}
-
-void UODJsonDeserializer::AddOverrideJsonSerializers(const TMap<UClass*, UODOverrideJsonSerializer*>& OverrideObjectSerializers)
-{
-	ObjectSerializers = OverrideObjectSerializers;
 }
 
 
 UObject* UODJsonDeserializer::JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UClass* TargetClass /*=nullptr*/)
 {
-	auto objectSerializer = DefaultObjectSerializer;
+	auto objectSerializer = DefaultSerializer;
 
 	if (TargetClass)
 	{
-		if (ObjectSerializers.Contains(TargetClass))
+		if (ObjectSerializeres.Contains(TargetClass))
 		{
-			objectSerializer = ObjectSerializers[TargetClass];
+			objectSerializer = ObjectSerializeres[TargetClass];
 		}
-	}
-	else
-	{
-		objectSerializer = UseTypeObjectSerializer;
 	}
 
 	return objectSerializer->JsonObjectTopUObject(this, JsonObject, TargetClass);

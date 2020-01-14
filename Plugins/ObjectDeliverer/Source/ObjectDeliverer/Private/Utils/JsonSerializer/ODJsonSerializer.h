@@ -1,21 +1,19 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ODJsonSerializerBase.h"
 #include "Dom/JsonObject.h"
 #include "ODJsonSerializer.generated.h"
 
 class UODOverrideJsonSerializer;
 
 UCLASS()
-class OBJECTDELIVERER_API UODJsonSerializer : public UObject
+class OBJECTDELIVERER_API UODJsonSerializer : public UODJsonSerializerBase
 {
 	GENERATED_BODY()
 
 public:
 	UODJsonSerializer();
-
-	void AddOverrideJsonSerializers(const TMap<UClass*, UODOverrideJsonSerializer*>& OverrideObjectSerializers);
 
 	TSharedPtr<FJsonObject> CreateJsonObject(const UObject* Obj, int64 CheckFlags = 0, int64 SkipFlags = 0);
 
@@ -27,10 +25,4 @@ private:
 protected:
 	virtual TSharedPtr<FJsonObject> UObjectToJsonObject(const UObject* Obj, int64 CheckFlags = 0, int64 SkipFlags = 0);
 
-private:
-	UPROPERTY(Transient)
-	UODOverrideJsonSerializer* DefaultObjectSerializer;
-
-	UPROPERTY(Transient)
-	TMap<UClass*, UODOverrideJsonSerializer*> ObjectSerializers;
 };
