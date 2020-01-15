@@ -24,7 +24,7 @@ public:
 	void Initialize(UClass* TargetClass);
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
-	void InitializeCustom(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses);
+	void InitializeCustom(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses, UClass* TargetClass);
 
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")

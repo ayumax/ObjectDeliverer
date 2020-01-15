@@ -4,6 +4,8 @@
 #include "CoreMinimal.h"
 #include "DeliveryBoxFactory.generated.h"
 
+class UODOverrideJsonSerializer;
+
 UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UDeliveryBoxFactory : public UObject
 {
@@ -16,6 +18,13 @@ public:
 	 */
 	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|DeliveryBox")
 	static class UObjectDeliveryBoxUsingJson* CreateObjectDeliveryBoxUsingJson(UClass* TargetClass);
+
+	/**
+	 * create delivery box (object with json serializer)
+	 * @param TargetClass - target object class
+	 */
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|DeliveryBox")
+	static class UObjectDeliveryBoxUsingJson* CreateCustomObjectDeliveryBoxUsingJson(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses, UClass* TargetClass);
 
 	/**
 	 * create delivery box (utf-8 string)

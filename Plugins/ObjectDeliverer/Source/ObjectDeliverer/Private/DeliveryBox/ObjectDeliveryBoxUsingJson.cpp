@@ -19,8 +19,9 @@ void UObjectDeliveryBoxUsingJson::Initialize(UClass* _TargetClass)
 	TargetClass = _TargetClass;
 }
 
-void UObjectDeliveryBoxUsingJson::InitializeCustom(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses)
+void UObjectDeliveryBoxUsingJson::InitializeCustom(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses, UClass* _TargetClass)
 {
+	TargetClass = _TargetClass;
 	Serializer->AddOverrideJsonSerializers(DefaultObjectSerializerClass, OverrideObjectSerializerClasses);
 	Deserializer->AddOverrideJsonSerializers(DefaultObjectSerializerClass, OverrideObjectSerializerClasses);
 }
@@ -46,7 +47,9 @@ void UObjectDeliveryBoxUsingJson::SendTo(const UObject* message, const UObjectDe
 
 void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer)
 {
-	TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(UODStringUtil::BufferToString(buffer));
+	auto jsonString = UODStringUtil::BufferToString(buffer);
+
+	TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(jsonString);
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 
 	if (!FJsonSerializer::Deserialize(JsonReader, JsonObject) && JsonObject.IsValid()) return;

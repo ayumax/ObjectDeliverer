@@ -23,6 +23,6 @@ private:
 	TSharedPtr<FJsonValue> ObjectJsonCallback(UProperty* Property, const void* Value);
 
 protected:
-	virtual TSharedPtr<FJsonObject> UObjectToJsonObject(const UObject* Obj, int64 CheckFlags = 0, int64 SkipFlags = 0);
+	virtual TSharedPtr<FJsonObject> UObjectToJsonObject(UClass* ObjectClass, const UObject* Obj, int64 CheckFlags = 0, int64 SkipFlags = 0);
 
 };
