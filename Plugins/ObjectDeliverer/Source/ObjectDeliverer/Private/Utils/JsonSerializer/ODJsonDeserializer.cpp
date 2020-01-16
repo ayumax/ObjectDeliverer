@@ -36,7 +36,11 @@ bool UODJsonDeserializer::JsonPropertyToUProperty(const TSharedPtr<FJsonObject>&
 	FString PropertyName = Property->GetName();
 	if (OutObject->GetClass()->ImplementsInterface(UODConvertPropertyName::StaticClass()))
 	{
-		PropertyName = IODConvertPropertyName::Execute_ConvertUPropertyName(OutObject, Property->GetFName());
+		FString ConvertedPropertyName = IODConvertPropertyName::Execute_ConvertUPropertyName(OutObject, Property->GetFName());
+		if (!ConvertedPropertyName.IsEmpty())
+		{
+			PropertyName = ConvertedPropertyName;
+		}
 	}
 
 	auto& JsonAttributes = JsonObject->Values;

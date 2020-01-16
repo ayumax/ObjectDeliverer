@@ -53,7 +53,11 @@ void UODJsonSerializer::AddJsonValue(TSharedPtr<FJsonObject> JsonObject, const U
 	FString PropertyName = Property->GetName();
 	if (Obj->GetClass()->ImplementsInterface(UODConvertPropertyName::StaticClass()))
 	{
-		PropertyName = IODConvertPropertyName::Execute_ConvertUPropertyName(Obj, Property->GetFName());
+		FString ConvertedPropertyName = IODConvertPropertyName::Execute_ConvertUPropertyName(Obj, Property->GetFName());
+		if (!ConvertedPropertyName.IsEmpty())
+		{
+			PropertyName = ConvertedPropertyName;
+		}
 	}
 
 	uint8* CurrentPropAddr = Property->ContainerPtrToValuePtr<uint8>((UObject*)Obj);
