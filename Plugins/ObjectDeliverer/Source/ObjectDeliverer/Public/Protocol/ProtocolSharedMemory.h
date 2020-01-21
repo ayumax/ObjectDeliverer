@@ -41,7 +41,7 @@ public:
 	int32 SharedMemorySize = 1024;
 
 protected:
-	class FWorkerThread* CurrentInnerThread = nullptr;
+	class FODWorkerThread* CurrentInnerThread = nullptr;
 	class FRunnableThread* CurrentThread = nullptr;
 
 	TArray<uint8> ReceiveBuffer;

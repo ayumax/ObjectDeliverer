@@ -1,7 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "Protocol/ProtocolTcpIpClient.h"
 #include "Common/TcpSocketBuilder.h"
-#include "Utils/WorkerThread.h"
+#include "Utils/ODWorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 
 UProtocolTcpIpClient::UProtocolTcpIpClient()
@@ -39,7 +39,7 @@ void UProtocolTcpIpClient::Start()
 	ConnectEndPoint = endPoint.Get<1>();
 	InnerSocket = socket;
 
-	ConnectInnerThread = new FWorkerThread([this] { return TryConnect(); }, 1.0f);
+	ConnectInnerThread = new FODWorkerThread([this] { return TryConnect(); }, 1.0f);
 	ConnectThread = FRunnableThread::Create(ConnectInnerThread, TEXT("ObjectDeliverer UProtocolTcpIpClient ConnectThread"));
 }
 

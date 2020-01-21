@@ -1,7 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "Protocol/ProtocolTcpIpSocket.h"
 #include "Common/TcpSocketBuilder.h"
-#include "Utils/WorkerThread.h"
+#include "Utils/ODWorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 #include "PacketRule/PacketRule.h"
 
@@ -61,7 +61,7 @@ void UProtocolTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
 void UProtocolTcpIpSocket::StartPollilng()
 {
 	ReceiveBuffer.SetNum(1024);
-	CurrentInnerThread = new FWorkerThread([this] 
+	CurrentInnerThread = new FODWorkerThread([this] 
 	{ 
 		FScopeLock lock(&ct);
 		return ReceivedData();

@@ -3,12 +3,12 @@
 
 #include "CoreMinimal.h"
 
-class FileWriterUtil
+class ODFileWriterUtil
 {
 public:
-	FileWriterUtil();
-	FileWriterUtil(const FString& FilePath, uint32 WriteFlags = 0);
-	~FileWriterUtil();
+	ODFileWriterUtil();
+	ODFileWriterUtil(const FString& FilePath, uint32 WriteFlags = 0);
+	~ODFileWriterUtil();
 
 	bool Open(const FString& FilePath, uint32 WriteFlags = 0);
 	void Write(const TArray<uint8> Buffer, int32 Length = 0);
@@ -28,12 +28,12 @@ private:
 	FArchive* Ar;
 };
 
-class FileReaderUtil
+class ODFileReaderUtil
 {
 public:
-	FileReaderUtil();
-	FileReaderUtil(const FString& FilePath, uint32 ReadFlags = 0);
-	~FileReaderUtil();
+	ODFileReaderUtil();
+	ODFileReaderUtil(const FString& FilePath, uint32 ReadFlags = 0);
+	~ODFileReaderUtil();
 
 	bool Open(const FString& FilePath, uint32 ReadFlags = 0);
 	void Read(TArray<uint8>& Buffer, int32 Length);

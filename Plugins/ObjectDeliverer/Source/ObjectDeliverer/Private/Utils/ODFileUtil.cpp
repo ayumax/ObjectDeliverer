@@ -1,24 +1,24 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "FileUtil.h"
+#include "ODFileUtil.h"
 #include "HAL/FileManager.h"
 
-FileWriterUtil::FileWriterUtil()
+ODFileWriterUtil::ODFileWriterUtil()
 	: Ar(nullptr)
 {
 
 }
 
-FileWriterUtil::FileWriterUtil(const FString& FilePath, uint32 WriteFlags)
+ODFileWriterUtil::ODFileWriterUtil(const FString& FilePath, uint32 WriteFlags)
 {
 	Open(FilePath, WriteFlags);
 }
 
-FileWriterUtil::~FileWriterUtil()
+ODFileWriterUtil::~ODFileWriterUtil()
 {
 	Close();
 }
 
-bool FileWriterUtil::Open(const FString& FilePath, uint32 WriteFlags)
+bool ODFileWriterUtil::Open(const FString& FilePath, uint32 WriteFlags)
 {
 	Ar = IFileManager::Get().CreateFileWriter(*FilePath, WriteFlags);
 	
@@ -30,7 +30,7 @@ bool FileWriterUtil::Open(const FString& FilePath, uint32 WriteFlags)
 	return true;
 }
 
-void FileWriterUtil::Write(const TArray<uint8> Buffer, int32 Length)
+void ODFileWriterUtil::Write(const TArray<uint8> Buffer, int32 Length)
 {
 	if (!Ar) return;
 
@@ -42,7 +42,7 @@ void FileWriterUtil::Write(const TArray<uint8> Buffer, int32 Length)
 	Ar->Serialize(const_cast<uint8*>(Buffer.GetData()), Length);
 }
 
-void FileWriterUtil::Close()
+void ODFileWriterUtil::Close()
 {
 	if (!Ar) return;
 
@@ -52,23 +52,23 @@ void FileWriterUtil::Close()
 
 /*************************************************************/
 
-FileReaderUtil::FileReaderUtil()
+ODFileReaderUtil::ODFileReaderUtil()
 	: Ar(nullptr)
 {
 
 }
 
-FileReaderUtil::FileReaderUtil(const FString& FilePath, uint32 ReadFlags)
+ODFileReaderUtil::ODFileReaderUtil(const FString& FilePath, uint32 ReadFlags)
 {
 	Open(FilePath, ReadFlags);
 }
 
-FileReaderUtil::~FileReaderUtil()
+ODFileReaderUtil::~ODFileReaderUtil()
 {
 	Close();
 }
 
-bool FileReaderUtil::Open(const FString& FilePath, uint32 ReadFlags)
+bool ODFileReaderUtil::Open(const FString& FilePath, uint32 ReadFlags)
 {
 	Ar = IFileManager::Get().CreateFileReader(*FilePath, ReadFlags);
 
@@ -86,14 +86,14 @@ bool FileReaderUtil::Open(const FString& FilePath, uint32 ReadFlags)
 	return true;
 }
 
-void FileReaderUtil::Read(TArray<uint8>& Buffer, int32 Length)
+void ODFileReaderUtil::Read(TArray<uint8>& Buffer, int32 Length)
 {
 	if (!Ar) return;
 
 	Ar->Serialize(Buffer.GetData(), Length);
 }
 
-double FileReaderUtil::ReadDouble()
+double ODFileReaderUtil::ReadDouble()
 {
 	if (!Ar) return 0;
 
@@ -104,7 +104,7 @@ double FileReaderUtil::ReadDouble()
 	return retValue;
 }
 
-void FileReaderUtil::Close()
+void ODFileReaderUtil::Close()
 {
 	if (!Ar) return;
 
@@ -112,14 +112,14 @@ void FileReaderUtil::Close()
 	Ar = nullptr;
 }
 
-bool FileReaderUtil::IsEnd()
+bool ODFileReaderUtil::IsEnd()
 {
 	if (!Ar) return true;
 
 	return Ar->AtEnd();
 }
 
-int64 FileReaderUtil::RemainSize()
+int64 ODFileReaderUtil::RemainSize()
 {
 	if (!Ar) return 0;
 

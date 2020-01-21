@@ -1,8 +1,8 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "Protocol/ProtocolLogReader.h"
 #include "PacketRule/PacketRule.h"
-#include "Utils/FileUtil.h"
-#include "Utils/WorkerThread.h"
+#include "Utils/ODFileUtil.h"
+#include "Utils/ODWorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 #include "Misc/Paths.h"
 
@@ -40,14 +40,14 @@ void UProtocolLogReader::Start()
 		readPath = FPaths::Combine(FPaths::ProjectLogDir(), FilePath);
 	}
 
-	Reader = new FileReaderUtil();
+	Reader = new ODFileReaderUtil();
 	Reader->Open(readPath, 0);
 
 	StartTime = FDateTime::Now();
 	CurrentLogTime = -1;
 	IsFirst = true;
 
-	CurrentInnerThread = new FWorkerThread([this] { return ReadData(); }, [this] { return ReadEnd(); }, 0.001);
+	CurrentInnerThread = new FODWorkerThread([this] { return ReadData(); }, [this] { return ReadEnd(); }, 0.001);
 	CurrentThread = FRunnableThread::Create(CurrentInnerThread, TEXT("ObjectDeliverer ProtocolLogReader PollingThread"));
 
 	DispatchConnected(this);

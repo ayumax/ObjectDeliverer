@@ -2,7 +2,7 @@
 #include "Protocol/ProtocolTcpIpServer.h"
 #include "Protocol/ProtocolTcpIpSocket.h"
 #include "Common/TcpSocketBuilder.h"
-#include "Utils/WorkerThread.h"
+#include "Utils/ODWorkerThread.h"
 #include "PacketRule/PacketRule.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 
@@ -35,7 +35,7 @@ void UProtocolTcpIpServer::Start()
 
 	ListenerSocket = socket;
 
-	ListenInnerThread = new FWorkerThread([this] { return OnListen(); });
+	ListenInnerThread = new FODWorkerThread([this] { return OnListen(); });
 	ListenThread = FRunnableThread::Create(ListenInnerThread, TEXT("ObjectDeliverer TcpIpSocket ListenThread"));
 }
 

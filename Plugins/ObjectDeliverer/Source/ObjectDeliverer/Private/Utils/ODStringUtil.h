@@ -2,18 +2,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "StringUtil.generated.h"
+#include "ODStringUtil.generated.h"
 
 
 UCLASS(BlueprintType)
-class OBJECTDELIVERER_API UStringUtil : public UObject
+class OBJECTDELIVERER_API UODStringUtil : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	UStringUtil() {}
-	~UStringUtil() {}
-
 	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer")
 	static void StringToBuffer(const FString& message, TArray<uint8>& DataBuffer);
 
