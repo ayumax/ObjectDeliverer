@@ -1,7 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "Protocol/ProtocolLogWriter.h"
 #include "PacketRule/PacketRule.h"
-#include "Utils/FileUtil.h"
+#include "Utils/ODFileUtil.h"
 #include "Misc/Paths.h"
 
 UProtocolLogWriter::UProtocolLogWriter()
@@ -31,7 +31,7 @@ void UProtocolLogWriter::Start()
 		writePath = FPaths::Combine(FPaths::ProjectLogDir(), FilePath);
 	}
 		
-	Writer = new FileWriterUtil();
+	Writer = new ODFileWriterUtil();
 	Writer->Open(writePath, 0);
 
 	StartTime = FDateTime::Now();

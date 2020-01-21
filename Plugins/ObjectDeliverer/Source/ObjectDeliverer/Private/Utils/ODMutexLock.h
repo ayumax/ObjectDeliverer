@@ -3,7 +3,7 @@
 
 #include "CoreMinimal.h"
 
-class MutexLock
+class ODMutexLock
 {
 public:
 	static void Lock(void* Mutex, TFunction<void()> InWork);

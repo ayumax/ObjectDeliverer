@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ObjectUtil.generated.h"
+#include "ODObjectUtil.generated.h"
 
 UENUM()
 enum class EUPropertyType : uint8
@@ -23,16 +23,15 @@ enum class EUPropertyType : uint8
 	Object
 };
 
+
 UCLASS(BlueprintType)
-class OBJECTDELIVERER_API UObjectUtil : public UObject
+class OBJECTDELIVERER_API UODObjectUtil : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	UObjectUtil() {}
-	~UObjectUtil() {}
-
 	static EUPropertyType GetUPropertyType(UProperty* Property);
-
+	static void EnumProperties(UObject* TargetObject, TFunction<bool(UProperty*)> EnumFunc);
+	static bool FindClass(const FString& ClassName, UClass*& Class);
 
 };

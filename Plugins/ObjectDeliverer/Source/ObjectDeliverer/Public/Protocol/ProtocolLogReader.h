@@ -43,9 +43,9 @@ public:
 	bool CutFirstInterval = false;
 
 private:
-	class FileReaderUtil* Reader = nullptr;
+	class ODFileReaderUtil* Reader = nullptr;
 
-	class FWorkerThread* CurrentInnerThread = nullptr;
+	class FODWorkerThread* CurrentInnerThread = nullptr;
 	class FRunnableThread* CurrentThread = nullptr;
 
 	double CurrentLogTime;

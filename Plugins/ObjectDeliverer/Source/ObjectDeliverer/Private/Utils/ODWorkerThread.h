@@ -6,12 +6,12 @@
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 
 
-class OBJECTDELIVERER_API FWorkerThread : public FRunnable
+class OBJECTDELIVERER_API FODWorkerThread : public FRunnable
 {
 public:
-	FWorkerThread(TFunction<bool()> InWork, float WaitSeconds = 0.001f);
-	FWorkerThread(TFunction<bool()> InWork, TFunction<void()> InEnd, float WaitSeconds = 0.001f);
-	~FWorkerThread();
+	FODWorkerThread(TFunction<bool()> InWork, float WaitSeconds = 0.001f);
+	FODWorkerThread(TFunction<bool()> InWork, TFunction<void()> InEnd, float WaitSeconds = 0.001f);
+	~FODWorkerThread();
 
 	virtual uint32 Run() override;
 	virtual void Stop() override;

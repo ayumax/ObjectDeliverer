@@ -67,4 +67,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|Protocol")
 	static class UProtocolLogReader* CreateProtocolLogReader(const FString& FilePath = "log.bin", bool PathIsAbsolute = false, bool CutFirstInterval = true);
 
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|Protocol")
+	static class UProtocolReflection* CreateProtocolReflection();
+
 };

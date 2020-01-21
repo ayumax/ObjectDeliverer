@@ -7,6 +7,7 @@
 #include "Protocol/ProtocolSharedMemory.h"
 #include "Protocol/ProtocolLogWriter.h"
 #include "Protocol/ProtocolLogReader.h"
+#include "Protocol/ProtocolReflection.h"
 
 UProtocolTcpIpClient* UProtocolFactory::CreateProtocolTcpIpClient(const FString& IpAddress /*= "localhost"*/, int32 Port /*= 8000*/, bool Retry/* = false*/, bool AutoConnectAfterDisconnect/* = false*/)
 {
@@ -55,4 +56,9 @@ UProtocolLogReader* UProtocolFactory::CreateProtocolLogReader(const FString& Fil
 	auto protocol = NewObject<UProtocolLogReader>();
 	protocol->Initialize(FilePath, PathIsAblolute, CutFirstInterval);
 	return protocol;
+}
+
+UProtocolReflection* UProtocolFactory::CreateProtocolReflection()
+{
+	return NewObject<UProtocolReflection>();
 }

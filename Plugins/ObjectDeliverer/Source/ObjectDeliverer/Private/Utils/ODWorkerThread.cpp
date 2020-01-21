@@ -1,8 +1,8 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "WorkerThread.h"
+#include "ODWorkerThread.h"
 #include "Runtime/Core/Public/HAL/PlatformProcess.h"
 
-FWorkerThread::FWorkerThread(TFunction<bool()> InWork, float WaitSeconds)
+FODWorkerThread::FODWorkerThread(TFunction<bool()> InWork, float WaitSeconds)
 	: Work(InWork)
 	, End([]() {})
 	, Seconds(WaitSeconds)
@@ -11,7 +11,7 @@ FWorkerThread::FWorkerThread(TFunction<bool()> InWork, float WaitSeconds)
 
 }
 
-FWorkerThread::FWorkerThread(TFunction<bool()> InWork, TFunction<void()> InEnd, float WaitSeconds)
+FODWorkerThread::FODWorkerThread(TFunction<bool()> InWork, TFunction<void()> InEnd, float WaitSeconds)
 	: Work(InWork)
 	, End(InEnd)
 	, Seconds(WaitSeconds)
@@ -20,12 +20,12 @@ FWorkerThread::FWorkerThread(TFunction<bool()> InWork, TFunction<void()> InEnd, 
 
 }
 
-FWorkerThread::~FWorkerThread()
+FODWorkerThread::~FODWorkerThread()
 {
 
 }
 
-uint32 FWorkerThread::Run()
+uint32 FODWorkerThread::Run()
 {
 	while (ContinueRun)
 	{
@@ -44,13 +44,13 @@ uint32 FWorkerThread::Run()
 	return 0;
 }
 
-void FWorkerThread::Stop()
+void FODWorkerThread::Stop()
 {
 	ContinueRun = false;
 
 }
 
-void FWorkerThread::Exit()
+void FODWorkerThread::Exit()
 {
 	ContinueRun = false;
 
