@@ -21,6 +21,12 @@ public:
 
 	/**
 	 * create delivery box (object with json serializer)
+	 */
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|DeliveryBox")
+	static class UObjectDeliveryBoxUsingJson* CreateDynamicObjectDeliveryBoxUsingJson();
+
+	/**
+	 * create delivery box (object with json serializer)
 	 * @param TargetClass - target object class
 	 */
 	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|DeliveryBox")

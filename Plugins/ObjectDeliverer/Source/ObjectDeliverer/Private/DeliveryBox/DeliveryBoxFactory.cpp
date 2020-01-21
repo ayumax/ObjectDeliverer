@@ -13,6 +13,16 @@ UObjectDeliveryBoxUsingJson* UDeliveryBoxFactory::CreateObjectDeliveryBoxUsingJs
 	return deliveryBox;
 }
 
+UObjectDeliveryBoxUsingJson* UDeliveryBoxFactory::CreateDynamicObjectDeliveryBoxUsingJson()
+{
+	auto deliveryBox = NewObject<UObjectDeliveryBoxUsingJson>();
+
+	TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>> OverrideObjectSerializerClasses;
+	deliveryBox->InitializeCustom(UODWriteTypeJsonSerializer::StaticClass(), OverrideObjectSerializerClasses, nullptr);
+
+	return deliveryBox;
+}
+
 UObjectDeliveryBoxUsingJson* UDeliveryBoxFactory::CreateCustomObjectDeliveryBoxUsingJson(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses, UClass* TargetClass/* = nullptr*/)
 {
 	auto deliveryBox = NewObject<UObjectDeliveryBoxUsingJson>();
