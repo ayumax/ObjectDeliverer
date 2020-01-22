@@ -85,6 +85,6 @@ void UODObjectUtil::EnumProperties(UObject* TargetObject, TFunction<bool(UProper
 }
 bool UODObjectUtil::FindClass(const FString& ClassName, UClass*& Class)
 {
-	Class = FindObject<UClass>(ANY_PACKAGE, *ClassName);
+	Class = FindObject<UClass>(ANY_PACKAGE, *ClassName, false);
 	return Class != nullptr;
 }

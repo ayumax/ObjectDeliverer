@@ -50,7 +50,7 @@ TSharedPtr<FJsonObject> UODWriteTypeJsonSerializer::UObjectToJsonObject(UODJsonS
 
 	if (!Obj) return JsonObject;
 
-	JsonObject->SetStringField("Type", Obj->GetName());
+	JsonObject->SetStringField("Type", Obj->GetClass()->GetName());
 
 	TSharedPtr<FJsonObject> JsonObjectBody = MakeShareable(new FJsonObject());
 
