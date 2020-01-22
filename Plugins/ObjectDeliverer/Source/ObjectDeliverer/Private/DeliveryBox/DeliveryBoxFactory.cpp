@@ -2,7 +2,6 @@
 #include "DeliveryBox/DeliveryBoxFactory.h"
 #include "DeliveryBox/ObjectDeliveryBoxUsingJson.h"
 #include "DeliveryBox/Utf8StringDeliveryBox.h"
-#include "Private/Utils/JsonSerializer/ODOverrideJsonSerializer.h"
 
 UObjectDeliveryBoxUsingJson* UDeliveryBoxFactory::CreateObjectDeliveryBoxUsingJson(UClass* TargetClass)
 {
@@ -17,17 +16,17 @@ UObjectDeliveryBoxUsingJson* UDeliveryBoxFactory::CreateDynamicObjectDeliveryBox
 {
 	auto deliveryBox = NewObject<UObjectDeliveryBoxUsingJson>();
 
-	TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>> OverrideObjectSerializerClasses;
-	deliveryBox->InitializeCustom(UODWriteTypeJsonSerializer::StaticClass(), OverrideObjectSerializerClasses, nullptr);
+	TMap<UClass*, EODJsonSerializeType> OverrideObjectSerializerClasses;
+	deliveryBox->InitializeCustom(EODJsonSerializeType::WriteType, OverrideObjectSerializerClasses, nullptr);
 
 	return deliveryBox;
 }
 
-UObjectDeliveryBoxUsingJson* UDeliveryBoxFactory::CreateCustomObjectDeliveryBoxUsingJson(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses, UClass* TargetClass/* = nullptr*/)
+UObjectDeliveryBoxUsingJson* UDeliveryBoxFactory::CreateCustomObjectDeliveryBoxUsingJson(EODJsonSerializeType DefaultSerializerType, const TMap<UClass*, EODJsonSerializeType>& ObjectSerializerTypes, UClass* TargetClass/* = nullptr*/)
 {
 	auto deliveryBox = NewObject<UObjectDeliveryBoxUsingJson>();
 
-	deliveryBox->InitializeCustom(DefaultObjectSerializerClass, OverrideObjectSerializerClasses, TargetClass);
+	deliveryBox->InitializeCustom(DefaultSerializerType, ObjectSerializerTypes, TargetClass);
 
 	return deliveryBox;
 }

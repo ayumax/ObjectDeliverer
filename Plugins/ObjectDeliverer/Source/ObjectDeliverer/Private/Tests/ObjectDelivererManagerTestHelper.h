@@ -6,7 +6,7 @@
 #include "Protocol/ProtocolFactory.h"
 #include "DeliveryBox/DeliveryBoxFactory.h"
 #include "UObject/GCObject.h"
-#include "Private/Utils/JsonSerializer/IODConvertPropertyName.h"
+#include "DeliveryBox/IODConvertPropertyName.h"
 #include "ObjectDelivererManagerTestHelper.generated.h"
 
 class UObjectDelivererProtocol;

@@ -6,7 +6,7 @@
 #include "UObject/EnumProperty.h"
 #include "UObject/TextProperty.h"
 #include "UObject/PropertyPortFlags.h"
-#include "Package.h"
+#include "UObject/Package.h"
 
 EUPropertyType UODObjectUtil::GetUPropertyType(UProperty* Property)
 {

@@ -1,15 +1,13 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #pragma once
-
 #include "CoreMinimal.h"
+#include "DeliveryBox/ODOverrideJsonSerializer.h"
 #include "DeliveryBox.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "ObjectDeliveryBoxUsingJson.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCNObjectDeliveryBoxReceived, UObject*, ReceivedObject, const UObjectDelivererProtocol*, FromObject);
-
-class UODOverrideJsonSerializer;
 
 UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UObjectDeliveryBoxUsingJson : public UDeliveryBox
@@ -24,7 +22,7 @@ public:
 	void Initialize(UClass* TargetClass);
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
-	void InitializeCustom(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses, UClass* TargetClass);
+	void InitializeCustom(EODJsonSerializeType DefaultSerializerType, const TMap<UClass*, EODJsonSerializeType>& ObjectSerializerTypes, UClass* TargetClass);
 
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")

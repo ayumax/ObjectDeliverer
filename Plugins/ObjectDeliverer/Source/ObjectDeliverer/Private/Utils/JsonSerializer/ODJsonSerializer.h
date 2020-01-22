@@ -5,8 +5,6 @@
 #include "Dom/JsonObject.h"
 #include "ODJsonSerializer.generated.h"
 
-class UODOverrideJsonSerializer;
-
 UCLASS()
 class OBJECTDELIVERER_API UODJsonSerializer : public UODJsonSerializerBase
 {
