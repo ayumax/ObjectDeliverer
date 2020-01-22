@@ -19,11 +19,11 @@ void UObjectDeliveryBoxUsingJson::Initialize(UClass* _TargetClass)
 	TargetClass = _TargetClass;
 }
 
-void UObjectDeliveryBoxUsingJson::InitializeCustom(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses, UClass* _TargetClass)
+void UObjectDeliveryBoxUsingJson::InitializeCustom(EODJsonSerializeType DefaultSerializerType, const TMap<UClass*, EODJsonSerializeType>& ObjectSerializerTypes, UClass* _TargetClass)
 {
 	TargetClass = _TargetClass;
-	Serializer->AddOverrideJsonSerializers(DefaultObjectSerializerClass, OverrideObjectSerializerClasses);
-	Deserializer->AddOverrideJsonSerializers(DefaultObjectSerializerClass, OverrideObjectSerializerClasses);
+	Serializer->AddOverrideJsonSerializers(DefaultSerializerType, ObjectSerializerTypes);
+	Deserializer->AddOverrideJsonSerializers(DefaultSerializerType, ObjectSerializerTypes);
 }
 
 void UObjectDeliveryBoxUsingJson::Send(const UObject* message)

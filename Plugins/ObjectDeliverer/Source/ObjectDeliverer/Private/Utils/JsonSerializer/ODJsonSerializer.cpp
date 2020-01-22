@@ -8,8 +8,7 @@
 #include "UObject/EnumProperty.h"
 #include "UObject/TextProperty.h"
 #include "UObject/PropertyPortFlags.h"
-#include "IODConvertPropertyName.h"
-#include "ODOverrideJsonSerializer.h"
+#include "DeliveryBox/IODConvertPropertyName.h"
 
 UODJsonSerializer::UODJsonSerializer()
 {
@@ -63,9 +62,9 @@ void UODJsonSerializer::AddJsonValue(TSharedPtr<FJsonObject> JsonObject, const U
 	uint8* CurrentPropAddr = Property->ContainerPtrToValuePtr<uint8>((UObject*)Obj);
 
 	FJsonObjectConverter::CustomExportCallback CustomCB;
-	CustomCB.BindLambda([this](UProperty* Property, const void* Value)
+	CustomCB.BindLambda([this](UProperty* _Property, const void* Value)
 		{
-			return ObjectJsonCallback(Property, Value);
+			return ObjectJsonCallback(_Property, Value);
 		});
 
 	JsonObject->SetField(PropertyName, FJsonObjectConverter::UPropertyToJsonValue(Property, CurrentPropAddr, CheckFlags, SkipFlags, &CustomCB));

@@ -1,8 +1,8 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
-#include "Private/Utils/JsonSerializer/ODJsonSerializer.h"
-#include "Private/Utils/JsonSerializer/ODJsonDeserializer.h"
+#include "../Utils/JsonSerializer/ODJsonSerializer.h"
+#include "../Utils/JsonSerializer/ODJsonDeserializer.h"
 #include "ObjectDelivererManagerTestHelper.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(ODJsonSerializer_Tests, "ObjectDeliverer.JsonSerializer.SerializationTest", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)

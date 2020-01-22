@@ -1,3 +1,4 @@
+// Copyright 2019 ayumax. All Rights Reserved.
 #include "ObjectDelivererManagerTestHelper.h"
 #include "Protocol/ObjectDelivererProtocol.h"
 

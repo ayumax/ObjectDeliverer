@@ -2,9 +2,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DeliveryBox/ODOverrideJsonSerializer.h"
 #include "ODJsonSerializerBase.generated.h"
-
-class UODOverrideJsonSerializer;
 
 UCLASS()
 class OBJECTDELIVERER_API UODJsonSerializerBase : public UObject
@@ -14,8 +13,10 @@ class OBJECTDELIVERER_API UODJsonSerializerBase : public UObject
 public:
 	UODJsonSerializerBase();
 
-	void AddOverrideJsonSerializers(TSubclassOf<UODOverrideJsonSerializer> DefaultObjectSerializerClass, const TMap<UClass*, TSubclassOf<UODOverrideJsonSerializer>>& OverrideObjectSerializerClasses);
+	void AddOverrideJsonSerializers(EODJsonSerializeType DefaultSerializerType, const TMap<UClass*, EODJsonSerializeType>& ObjectSerializerTypes);
 
+protected:
+	UODOverrideJsonSerializer* CreateOverrideJsonSerializer(EODJsonSerializeType jsonSerializeType);
 
 protected:
 	UPROPERTY(Transient)

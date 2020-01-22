@@ -8,6 +8,16 @@
 class UODJsonSerializer;
 class UODJsonDeserializer;
 
+UENUM(BlueprintType)
+enum class EODJsonSerializeType : uint8
+{
+	/** Do not include the class name */
+	NoWriteType,
+
+	/** Include the class name */
+	WriteType
+};
+
 UCLASS(BlueprintType)
 class OBJECTDELIVERER_API UODOverrideJsonSerializer : public UObject
 {

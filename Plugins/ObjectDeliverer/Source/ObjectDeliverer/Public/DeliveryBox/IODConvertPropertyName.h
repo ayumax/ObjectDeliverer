@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/Interface.h"
 #include "IODConvertPropertyName.generated.h"
 
 UINTERFACE(BlueprintType)
