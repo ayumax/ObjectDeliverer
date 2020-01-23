@@ -91,7 +91,8 @@ void UMyClass::Start()
 	deliverer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9099), UPacketRuleFactory::CreatePacketRuleSizeBody(), deliverybox);
 
 	auto obj = NewObject<USampleObject>();
-	deliverybox2->Send(obj);
+	FString sendJson;
+	deliverybox2->Send(obj, sendJson);
 }
 
 void UMyClass::OnConnect(const UObjectDelivererProtocol* ClientSocket)
@@ -117,7 +118,7 @@ void UMyClass::OnReceiveString(const FString& ReceivedString, const UObjectDeliv
 	// received data string
 }
 
-void UMyClass::OnReceiveObject(UObject* ReceivedObject, const UObjectDelivererProtocol* FromObject)
+void UMyClass::OnReceiveObject(UObject* ReceivedObject, const FString& ReceivedString, const UObjectDelivererProtocol* FromObject)
 {
 	// received data object
 	USampleObject* obj = Cast<USampleObject>(ReceivedObject);

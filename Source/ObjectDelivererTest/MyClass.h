@@ -39,5 +39,5 @@ public:
 	UFUNCTION()
 	void OnReceiveString(const FString& ReceivedString, const UObjectDelivererProtocol* FromObject);
 	UFUNCTION()
-	void OnReceiveObject(UObject* ReceivedObject, const UObjectDelivererProtocol* FromObject);
+	void OnReceiveObject(UObject* ReceivedObject, const FString& ReceivedString, const UObjectDelivererProtocol* FromObject);
 };

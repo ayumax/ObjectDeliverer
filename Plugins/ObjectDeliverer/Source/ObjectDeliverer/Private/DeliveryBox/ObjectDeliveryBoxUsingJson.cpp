@@ -26,18 +26,20 @@ void UObjectDeliveryBoxUsingJson::InitializeCustom(EODJsonSerializeType DefaultS
 	Deserializer->AddOverrideJsonSerializers(DefaultSerializerType, ObjectSerializerTypes);
 }
 
-void UObjectDeliveryBoxUsingJson::Send(const UObject* message)
+void UObjectDeliveryBoxUsingJson::Send(const UObject* message, FString& makedJson)
 {
-	SendTo(message, nullptr);
+	SendTo(message, nullptr, makedJson);
 }
 
-void UObjectDeliveryBoxUsingJson::SendTo(const UObject* message, const UObjectDelivererProtocol* Destination)
+void UObjectDeliveryBoxUsingJson::SendTo(const UObject* message, const UObjectDelivererProtocol* Destination, FString& makedJson)
 {
 	auto jsonObject = Serializer->CreateJsonObject(message);
 
 	FString OutputString;
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
 	FJsonSerializer::Serialize(jsonObject.ToSharedRef(), Writer);
+
+	makedJson = OutputString;
 
 	TArray<uint8> buffer;
 	UODStringUtil::StringToBuffer(OutputString, buffer);
@@ -56,6 +58,6 @@ void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer(const UObjectDelivererProt
 
 	UObject* createdObj = Deserializer->JsonObjectToUObject(JsonObject, TargetClass);
 
-	Received.Broadcast(createdObj, FromObject);
+	Received.Broadcast(createdObj, jsonString, FromObject);
 }
 

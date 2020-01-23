@@ -3,6 +3,7 @@
 #include "Misc/AutomationTest.h"
 #include "../Utils/JsonSerializer/ODJsonSerializer.h"
 #include "../Utils/JsonSerializer/ODJsonDeserializer.h"
+#include "DeliveryBox/ObjectDeliveryBoxUsingJson.h"
 #include "ObjectDelivererManagerTestHelper.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(ODJsonSerializer_Tests, "ObjectDeliverer.JsonSerializer.SerializationTest", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
@@ -68,3 +69,4 @@ bool ODJsonSerializer_ConvertPropertyNameTest::RunTest(const FString& Parameters
 
 	return true;
 }
+
