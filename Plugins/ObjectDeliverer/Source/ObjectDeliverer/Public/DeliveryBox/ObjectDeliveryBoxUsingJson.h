@@ -7,7 +7,7 @@
 #include "Serialization/JsonSerializer.h"
 #include "ObjectDeliveryBoxUsingJson.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCNObjectDeliveryBoxReceived, UObject*, ReceivedObject, const UObjectDelivererProtocol*, FromObject);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FCNObjectDeliveryBoxReceived, UObject*, ReceivedObject, const FString&, ReceivedJsonString, const UObjectDelivererProtocol*, FromObject);
 
 UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UObjectDeliveryBoxUsingJson : public UDeliveryBox
@@ -26,10 +26,10 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
-	virtual void Send(const UObject* message);
+	virtual void Send(const UObject* message, FString& makedJson);
 
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|DeliveryBox")
-	virtual void SendTo(const UObject* message, const UObjectDelivererProtocol* Destination);
+	virtual void SendTo(const UObject* message, const UObjectDelivererProtocol* Destination, FString& makedJson);
 
 	virtual void NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer) override;
 
