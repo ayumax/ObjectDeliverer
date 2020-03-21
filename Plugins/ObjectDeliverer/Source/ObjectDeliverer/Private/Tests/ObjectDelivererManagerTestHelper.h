@@ -106,7 +106,7 @@ public:
 	UPROPERTY()
 	uint8 Uint8Property;
 
-	FString ConvertUPropertyName_Implementation(const FName& PropertyName) const override
+	FString ConvertFPropertyName_Implementation(const FName& PropertyName) const override
 	{
 		if (PropertyName == FName(TEXT("IntProperty")))
 		{

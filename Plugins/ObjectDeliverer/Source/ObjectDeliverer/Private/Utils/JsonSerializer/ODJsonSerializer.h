@@ -15,10 +15,10 @@ public:
 
 	TSharedPtr<FJsonObject> CreateJsonObject(const UObject* Obj, int64 CheckFlags = 0, int64 SkipFlags = 0);
 
-	void AddJsonValue(TSharedPtr<FJsonObject> JsonObject, const UObject* Obj, UProperty* Property, int64 CheckFlags, int64 SkipFlags);
+	void AddJsonValue(TSharedPtr<FJsonObject> JsonObject, const UObject* Obj, FProperty* Property, int64 CheckFlags, int64 SkipFlags);
 
 private:
-	TSharedPtr<FJsonValue> ObjectJsonCallback(UProperty* Property, const void* Value);
+	TSharedPtr<FJsonValue> ObjectJsonCallback(FProperty* Property, const void* Value);
 
 protected:
 	virtual TSharedPtr<FJsonObject> UObjectToJsonObject(UClass* ObjectClass, const UObject* Obj, int64 CheckFlags = 0, int64 SkipFlags = 0);
