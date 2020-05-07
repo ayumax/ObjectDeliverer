@@ -30,12 +30,12 @@ UObject* UODJsonDeserializer::JsonObjectToUObject(const TSharedPtr<FJsonObject>&
 	return objectSerializer->JsonObjectTopUObject(this, JsonObject, TargetClass);
 }
 
-bool UODJsonDeserializer::JsonPropertyToUProperty(const TSharedPtr<FJsonObject>& JsonObject, UProperty* Property, UObject* OutObject)
+bool UODJsonDeserializer::JsonPropertyToFProperty(const TSharedPtr<FJsonObject>& JsonObject, FProperty* Property, UObject* OutObject)
 {
 	FString PropertyName = Property->GetName();
 	if (OutObject->GetClass()->ImplementsInterface(UODConvertPropertyName::StaticClass()))
 	{
-		FString ConvertedPropertyName = IODConvertPropertyName::Execute_ConvertUPropertyName(OutObject, Property->GetFName());
+		FString ConvertedPropertyName = IODConvertPropertyName::Execute_ConvertFPropertyName(OutObject, Property->GetFName());
 		if (!ConvertedPropertyName.IsEmpty())
 		{
 			PropertyName = ConvertedPropertyName;
@@ -53,7 +53,7 @@ bool UODJsonDeserializer::JsonPropertyToUProperty(const TSharedPtr<FJsonObject>&
 	{
 		void* Value = Property->ContainerPtrToValuePtr<uint8>(OutObject);
 
-		if (JsonValueToUProperty(*JsonValue, Property, Value))
+		if (JsonValueToFProperty(*JsonValue, Property, Value))
 		{
 			return true;
 		}
@@ -72,9 +72,9 @@ bool UODJsonDeserializer::JsonObjectToUStruct(const TSharedPtr<FJsonObject>& Jso
 		return true;
 	}
 
-	for (TFieldIterator<UProperty> PropIt(StructDefinition); PropIt; ++PropIt)
+	for (TFieldIterator<FProperty> PropIt(StructDefinition); PropIt; ++PropIt)
 	{
-		UProperty* Property = *PropIt;
+		FProperty* Property = *PropIt;
 
 		const TSharedPtr<FJsonValue>* JsonValue = JsonAttributes.Find(Property->GetName());
 		if (!JsonValue)
@@ -86,7 +86,7 @@ bool UODJsonDeserializer::JsonObjectToUStruct(const TSharedPtr<FJsonObject>& Jso
 		{
 			void* Value = Property->ContainerPtrToValuePtr<uint8>(OutStruct);
 
-			if (!JsonValueToUProperty(*JsonValue, Property, Value))
+			if (!JsonValueToFProperty(*JsonValue, Property, Value))
 			{
 				UE_LOG(LogJson, Error, TEXT("JsonObjectToUStruct - Unable to parse %s.%s from JSON"), *StructDefinition->GetName(), *Property->GetName());
 				return false;
@@ -102,22 +102,22 @@ bool UODJsonDeserializer::JsonObjectToUStruct(const TSharedPtr<FJsonObject>& Jso
 	return true;
 }
 
-bool UODJsonDeserializer::JsonValueToUProperty(const TSharedPtr<FJsonValue>& JsonValue, UProperty* Property, void* OutValue)
+bool UODJsonDeserializer::JsonValueToFProperty(const TSharedPtr<FJsonValue>& JsonValue, FProperty* Property, void* OutValue)
 {
 	if (!JsonValue.IsValid())
 	{
-		UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Invalid value JSON key"));
+		UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Invalid value JSON key"));
 		return false;
 	}
 
-	bool bArrayOrSetProperty = Property->IsA<UArrayProperty>() || Property->IsA<USetProperty>();
+	bool bArrayOrSetProperty = Property->IsA<FArrayProperty>() || Property->IsA<FSetProperty>();
 	bool bJsonArray = JsonValue->Type == EJson::Array;
 
 	if (!bJsonArray)
 	{
 		if (bArrayOrSetProperty)
 		{
-			UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Attempted to import TArray from non-array JSON key"));
+			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Attempted to import TArray from non-array JSON key"));
 			return false;
 		}
 
@@ -126,12 +126,12 @@ bool UODJsonDeserializer::JsonValueToUProperty(const TSharedPtr<FJsonValue>& Jso
 			UE_LOG(LogJson, Warning, TEXT("Ignoring excess properties when deserializing %s"), *Property->GetName());
 		}
 
-		return ConvertScalarJsonValueToUPropertyWithContainer(JsonValue, Property, OutValue);
+		return ConvertScalarJsonValueToFPropertyWithContainer(JsonValue, Property, OutValue);
 	}
 
 	if (bArrayOrSetProperty && Property->ArrayDim == 1)
 	{
-		return ConvertScalarJsonValueToUPropertyWithContainer(JsonValue, Property, OutValue);
+		return ConvertScalarJsonValueToFPropertyWithContainer(JsonValue, Property, OutValue);
 	}
 
 	const auto& ArrayValue = JsonValue->AsArray();
@@ -143,7 +143,7 @@ bool UODJsonDeserializer::JsonValueToUProperty(const TSharedPtr<FJsonValue>& Jso
 	int ItemsToRead = FMath::Clamp(ArrayValue.Num(), 0, Property->ArrayDim);
 	for (int Index = 0; Index != ItemsToRead; ++Index)
 	{
-		if (!ConvertScalarJsonValueToUPropertyWithContainer(ArrayValue[Index], Property, (char*)OutValue + Index * Property->ElementSize))
+		if (!ConvertScalarJsonValueToFPropertyWithContainer(ArrayValue[Index], Property, (char*)OutValue + Index * Property->ElementSize))
 		{
 			return false;
 		}
@@ -152,54 +152,54 @@ bool UODJsonDeserializer::JsonValueToUProperty(const TSharedPtr<FJsonValue>& Jso
 	return true;
 }
 
-bool UODJsonDeserializer::ConvertScalarJsonValueToUPropertyWithContainer(const TSharedPtr<FJsonValue>& JsonValue, UProperty* Property, void* OutValue)
+bool UODJsonDeserializer::ConvertScalarJsonValueToFPropertyWithContainer(const TSharedPtr<FJsonValue>& JsonValue, FProperty* Property, void* OutValue)
 {
-	if (UEnumProperty* EnumProperty = Cast<UEnumProperty>(Property))
+	if (FEnumProperty* EnumProperty = CastField<FEnumProperty>(Property))
 	{
-		JsonValueToUEnumProperty(JsonValue, EnumProperty, OutValue);
+		JsonValueToFEnumProperty(JsonValue, EnumProperty, OutValue);
 	}
-	else if (UNumericProperty* NumericProperty = Cast<UNumericProperty>(Property))
+	else if (FNumericProperty* NumericProperty = CastField<FNumericProperty>(Property))
 	{
-		JsonValueToUNumericProperty(JsonValue, NumericProperty, OutValue);
+		JsonValueToFNumericProperty(JsonValue, NumericProperty, OutValue);
 	}
-	else if (UBoolProperty* BoolProperty = Cast<UBoolProperty>(Property))
+	else if (FBoolProperty* BoolProperty = CastField<FBoolProperty>(Property))
 	{
-		JsonValueToUBoolProperty(JsonValue, BoolProperty, OutValue);
+		JsonValueToFBoolProperty(JsonValue, BoolProperty, OutValue);
 	}
-	else if (UStrProperty* StringProperty = Cast<UStrProperty>(Property))
+	else if (FStrProperty* StringProperty = CastField<FStrProperty>(Property))
 	{
-		JsonValueToUStrProperty(JsonValue, StringProperty, OutValue);
+		JsonValueToFStrProperty(JsonValue, StringProperty, OutValue);
 	}
-	else if (UArrayProperty* ArrayProperty = Cast<UArrayProperty>(Property))
+	else if (FArrayProperty* ArrayProperty = CastField<FArrayProperty>(Property))
 	{
-		JsonValueToUArrayProperty(JsonValue, ArrayProperty, OutValue);
+		JsonValueToFArrayProperty(JsonValue, ArrayProperty, OutValue);
 	}
-	else if (UMapProperty* MapProperty = Cast<UMapProperty>(Property))
+	else if (FMapProperty* MapProperty = CastField<FMapProperty>(Property))
 	{
-		JsonValueToUMapProperty(JsonValue, MapProperty, OutValue);
+		JsonValueToFMapProperty(JsonValue, MapProperty, OutValue);
 	}
-	else if (USetProperty* SetProperty = Cast<USetProperty>(Property))
+	else if (FSetProperty* SetProperty = CastField<FSetProperty>(Property))
 	{
-		JsonValueToUSetProperty(JsonValue, SetProperty, OutValue);
+		JsonValueToFSetProperty(JsonValue, SetProperty, OutValue);
 	}
-	else if (UTextProperty* TextProperty = Cast<UTextProperty>(Property))
+	else if (FTextProperty* TextProperty = CastField<FTextProperty>(Property))
 	{
-		JsonValueToUTextProperty(JsonValue, TextProperty, OutValue);
+		JsonValueToFTextProperty(JsonValue, TextProperty, OutValue);
 	}
-	else if (UStructProperty* StructProperty = Cast<UStructProperty>(Property))
+	else if (FStructProperty* StructProperty = CastField<FStructProperty>(Property))
 	{
-		JsonValueToUStructProperty(JsonValue, StructProperty, OutValue);
+		JsonValueToFStructProperty(JsonValue, StructProperty, OutValue);
 	}
-	else if (UObjectProperty* ObjectProperty = Cast<UObjectProperty>(Property))
+	else if (FObjectProperty* ObjectProperty = CastField<FObjectProperty>(Property))
 	{
-		JsonValueToUObjectProperty(JsonValue, ObjectProperty, OutValue);
+		JsonValueToFObjectProperty(JsonValue, ObjectProperty, OutValue);
 	}
 	else
 	{
 		// Default to expect a string for everything else
 		if (Property->ImportText(*JsonValue->AsString(), OutValue, 0, NULL) == NULL)
 		{
-			UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Unable import property type %s from string value for property %s"), *Property->GetClass()->GetName(), *Property->GetNameCPP());
+			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable import property type %s from string value for property %s"), *Property->GetClass()->GetName(), *Property->GetNameCPP());
 			return false;
 		}
 	}
@@ -207,7 +207,7 @@ bool UODJsonDeserializer::ConvertScalarJsonValueToUPropertyWithContainer(const T
 	return true;
 }
 
-bool UODJsonDeserializer::JsonValueToUEnumProperty(const TSharedPtr<FJsonValue>& JsonValue, UEnumProperty* Property, void* OutValue)
+bool UODJsonDeserializer::JsonValueToFEnumProperty(const TSharedPtr<FJsonValue>& JsonValue, FEnumProperty* Property, void* OutValue)
 {
 	if (JsonValue->Type == EJson::String)
 	{
@@ -218,7 +218,7 @@ bool UODJsonDeserializer::JsonValueToUEnumProperty(const TSharedPtr<FJsonValue>&
 		int64 IntValue = Enum->GetValueByName(FName(*StrValue));
 		if (IntValue == INDEX_NONE)
 		{
-			UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Unable import enum %s from string value %s for property %s"), *Enum->CppType, *StrValue, *Property->GetNameCPP());
+			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable import enum %s from string value %s for property %s"), *Enum->CppType, *StrValue, *Property->GetNameCPP());
 			return false;
 		}
 		Property->GetUnderlyingProperty()->SetIntPropertyValue(OutValue, IntValue);
@@ -232,7 +232,7 @@ bool UODJsonDeserializer::JsonValueToUEnumProperty(const TSharedPtr<FJsonValue>&
 	return true;
 }
 
-bool UODJsonDeserializer::JsonValueToUNumericProperty(const TSharedPtr<FJsonValue>& JsonValue, UNumericProperty* NumericProperty, void* OutValue)
+bool UODJsonDeserializer::JsonValueToFNumericProperty(const TSharedPtr<FJsonValue>& JsonValue, FNumericProperty* NumericProperty, void* OutValue)
 {
 	if (NumericProperty->IsEnum() && JsonValue->Type == EJson::String)
 	{
@@ -243,7 +243,7 @@ bool UODJsonDeserializer::JsonValueToUNumericProperty(const TSharedPtr<FJsonValu
 		int64 IntValue = Enum->GetValueByName(FName(*StrValue));
 		if (IntValue == INDEX_NONE)
 		{
-			UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Unable import enum %s from string value %s for property %s"), *Enum->CppType, *StrValue, *NumericProperty->GetNameCPP());
+			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable import enum %s from string value %s for property %s"), *Enum->CppType, *StrValue, *NumericProperty->GetNameCPP());
 			return false;
 		}
 		NumericProperty->SetIntPropertyValue(OutValue, IntValue);
@@ -268,28 +268,28 @@ bool UODJsonDeserializer::JsonValueToUNumericProperty(const TSharedPtr<FJsonValu
 	}
 	else
 	{
-		UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Unable to set numeric property type %s for property %s"), *NumericProperty->GetClass()->GetName(), *NumericProperty->GetNameCPP());
+		UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable to set numeric property type %s for property %s"), *NumericProperty->GetClass()->GetName(), *NumericProperty->GetNameCPP());
 		return false;
 	}
 
 	return true;
 }
 
-bool UODJsonDeserializer::JsonValueToUBoolProperty(const TSharedPtr<FJsonValue>& JsonValue, UBoolProperty* BoolProperty, void* OutValue)
+bool UODJsonDeserializer::JsonValueToFBoolProperty(const TSharedPtr<FJsonValue>& JsonValue, FBoolProperty* BoolProperty, void* OutValue)
 {
 	// AsBool will log an error for completely inappropriate types (then give us a default)
 	BoolProperty->SetPropertyValue(OutValue, JsonValue->AsBool());
 	return true;
 }
 
-bool UODJsonDeserializer::JsonValueToUStrProperty(const TSharedPtr<FJsonValue>& JsonValue, UStrProperty* StringProperty, void* OutValue)
+bool UODJsonDeserializer::JsonValueToFStrProperty(const TSharedPtr<FJsonValue>& JsonValue, FStrProperty* StringProperty, void* OutValue)
 {
 	// AsString will log an error for completely inappropriate types (then give us a default)
 	StringProperty->SetPropertyValue(OutValue, JsonValue->AsString());
 	return true;
 }
 
-bool UODJsonDeserializer::JsonValueToUArrayProperty(const TSharedPtr<FJsonValue>& JsonValue, UArrayProperty* ArrayProperty, void* OutValue)
+bool UODJsonDeserializer::JsonValueToFArrayProperty(const TSharedPtr<FJsonValue>& JsonValue, FArrayProperty* ArrayProperty, void* OutValue)
 {
 	if (JsonValue->Type == EJson::Array)
 	{
@@ -306,9 +306,9 @@ bool UODJsonDeserializer::JsonValueToUArrayProperty(const TSharedPtr<FJsonValue>
 			const TSharedPtr<FJsonValue>& ArrayValueItem = ArrayValue[i];
 			if (ArrayValueItem.IsValid() && !ArrayValueItem->IsNull())
 			{
-				if (!JsonValueToUProperty(ArrayValueItem, ArrayProperty->Inner, Helper.GetRawPtr(i)))
+				if (!JsonValueToFProperty(ArrayValueItem, ArrayProperty->Inner, Helper.GetRawPtr(i)))
 				{
-					UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Unable to deserialize array element [%d] for property %s"), i, *ArrayProperty->GetNameCPP());
+					UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable to deserialize array element [%d] for property %s"), i, *ArrayProperty->GetNameCPP());
 					return false;
 				}
 			}
@@ -316,14 +316,14 @@ bool UODJsonDeserializer::JsonValueToUArrayProperty(const TSharedPtr<FJsonValue>
 	}
 	else
 	{
-		UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Attempted to import TArray from non-array JSON key for property %s"), *ArrayProperty->GetNameCPP());
+		UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Attempted to import TArray from non-array JSON key for property %s"), *ArrayProperty->GetNameCPP());
 		return false;
 	}
 
 	return true;
 }
 
-bool UODJsonDeserializer::JsonValueToUMapProperty(const TSharedPtr<FJsonValue>& JsonValue, UMapProperty* MapProperty, void* OutValue)
+bool UODJsonDeserializer::JsonValueToFMapProperty(const TSharedPtr<FJsonValue>& JsonValue, FMapProperty* MapProperty, void* OutValue)
 {
 	if (JsonValue->Type == EJson::Object)
 	{
@@ -340,12 +340,12 @@ bool UODJsonDeserializer::JsonValueToUMapProperty(const TSharedPtr<FJsonValue>& 
 
 				TSharedPtr<FJsonValueString> TempKeyValue = MakeShareable(new FJsonValueString(Entry.Key));
 
-				const bool bKeySuccess = JsonValueToUProperty(TempKeyValue, MapProperty->KeyProp, Helper.GetKeyPtr(NewIndex));
-				const bool bValueSuccess = JsonValueToUProperty(Entry.Value, MapProperty->ValueProp, Helper.GetValuePtr(NewIndex));
+				const bool bKeySuccess = JsonValueToFProperty(TempKeyValue, MapProperty->KeyProp, Helper.GetKeyPtr(NewIndex));
+				const bool bValueSuccess = JsonValueToFProperty(Entry.Value, MapProperty->ValueProp, Helper.GetValuePtr(NewIndex));
 
 				if (!(bKeySuccess && bValueSuccess))
 				{
-					UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Unable to deserialize map element [key: %s] for property %s"), *Entry.Key, *MapProperty->GetNameCPP());
+					UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable to deserialize map element [key: %s] for property %s"), *Entry.Key, *MapProperty->GetNameCPP());
 					return false;
 				}
 			}
@@ -355,14 +355,14 @@ bool UODJsonDeserializer::JsonValueToUMapProperty(const TSharedPtr<FJsonValue>& 
 	}
 	else
 	{
-		UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Attempted to import TMap from non-object JSON key for property %s"), *MapProperty->GetNameCPP());
+		UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Attempted to import TMap from non-object JSON key for property %s"), *MapProperty->GetNameCPP());
 		return false;
 	}
 
 	return true;
 }
 
-bool UODJsonDeserializer::JsonValueToUSetProperty(const TSharedPtr<FJsonValue>& JsonValue, USetProperty* SetProperty, void* OutValue)
+bool UODJsonDeserializer::JsonValueToFSetProperty(const TSharedPtr<FJsonValue>& JsonValue, FSetProperty* SetProperty, void* OutValue)
 {
 	if (JsonValue->Type == EJson::Array)
 	{
@@ -378,9 +378,9 @@ bool UODJsonDeserializer::JsonValueToUSetProperty(const TSharedPtr<FJsonValue>& 
 			if (ArrayValueItem.IsValid() && !ArrayValueItem->IsNull())
 			{
 				int32 NewIndex = Helper.AddDefaultValue_Invalid_NeedsRehash();
-				if (!JsonValueToUProperty(ArrayValueItem, SetProperty->ElementProp, Helper.GetElementPtr(NewIndex)))
+				if (!JsonValueToFProperty(ArrayValueItem, SetProperty->ElementProp, Helper.GetElementPtr(NewIndex)))
 				{
-					UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Unable to deserialize set element [%d] for property %s"), i, *SetProperty->GetNameCPP());
+					UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable to deserialize set element [%d] for property %s"), i, *SetProperty->GetNameCPP());
 					return false;
 				}
 			}
@@ -390,14 +390,14 @@ bool UODJsonDeserializer::JsonValueToUSetProperty(const TSharedPtr<FJsonValue>& 
 	}
 	else
 	{
-		UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Attempted to import TSet from non-array JSON key for property %s"), *SetProperty->GetNameCPP());
+		UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Attempted to import TSet from non-array JSON key for property %s"), *SetProperty->GetNameCPP());
 		return false;
 	}
 
 	return true;
 }
 
-bool UODJsonDeserializer::JsonValueToUTextProperty(const TSharedPtr<FJsonValue>& JsonValue, UTextProperty* TextProperty, void* OutValue)
+bool UODJsonDeserializer::JsonValueToFTextProperty(const TSharedPtr<FJsonValue>& JsonValue, FTextProperty* TextProperty, void* OutValue)
 {
 	if (JsonValue->Type == EJson::String)
 	{
@@ -413,21 +413,21 @@ bool UODJsonDeserializer::JsonValueToUTextProperty(const TSharedPtr<FJsonValue>&
 		FText Text;
 		if (!FJsonObjectConverter::GetTextFromObject(Obj.ToSharedRef(), Text))
 		{
-			UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Attempted to import FText from JSON object with invalid keys for property %s"), *TextProperty->GetNameCPP());
+			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Attempted to import FText from JSON object with invalid keys for property %s"), *TextProperty->GetNameCPP());
 			return false;
 		}
 		TextProperty->SetPropertyValue(OutValue, Text);
 	}
 	else
 	{
-		UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Attempted to import FText from JSON that was neither string nor object for property %s"), *TextProperty->GetNameCPP());
+		UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Attempted to import FText from JSON that was neither string nor object for property %s"), *TextProperty->GetNameCPP());
 		return false;
 	}
 
 	return true;
 }
 
-bool UODJsonDeserializer::JsonValueToUStructProperty(const TSharedPtr<FJsonValue>& JsonValue, UStructProperty* StructProperty, void* OutValue)
+bool UODJsonDeserializer::JsonValueToFStructProperty(const TSharedPtr<FJsonValue>& JsonValue, FStructProperty* StructProperty, void* OutValue)
 {
 	static const FName NAME_DateTime(TEXT("DateTime"));
 	static const FName NAME_Color(TEXT("Color"));
@@ -439,7 +439,7 @@ bool UODJsonDeserializer::JsonValueToUStructProperty(const TSharedPtr<FJsonValue
 		check(Obj.IsValid()); // should not fail if Type == EJson::Object
 		if (!JsonObjectToUStruct(Obj, StructProperty->Struct, OutValue))
 		{
-			UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - FJsonObjectConverter::JsonObjectToUStruct failed for property %s"), *StructProperty->GetNameCPP());
+			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - FJsonObjectConverter::JsonObjectToUStruct failed for property %s"), *StructProperty->GetNameCPP());
 			return false;
 		}
 	}
@@ -489,7 +489,7 @@ bool UODJsonDeserializer::JsonValueToUStructProperty(const TSharedPtr<FJsonValue
 		}
 		else
 		{
-			UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Unable to import FDateTime for property %s"), *StructProperty->GetNameCPP());
+			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable to import FDateTime for property %s"), *StructProperty->GetNameCPP());
 			return false;
 		}
 	}
@@ -513,14 +513,14 @@ bool UODJsonDeserializer::JsonValueToUStructProperty(const TSharedPtr<FJsonValue
 	}
 	else
 	{
-		UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Attempted to import UStruct from non-object JSON key for property %s"), *StructProperty->GetNameCPP());
+		UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Attempted to import UStruct from non-object JSON key for property %s"), *StructProperty->GetNameCPP());
 		return false;
 	}
 
 	return true;
 }
 
-bool UODJsonDeserializer::JsonValueToUObjectProperty(const TSharedPtr<FJsonValue>& JsonValue, UObjectProperty* ObjectProperty, void* OutValue)
+bool UODJsonDeserializer::JsonValueToFObjectProperty(const TSharedPtr<FJsonValue>& JsonValue, FObjectProperty* ObjectProperty, void* OutValue)
 {
 	if (JsonValue->Type == EJson::Object)
 	{
@@ -540,7 +540,7 @@ bool UODJsonDeserializer::JsonValueToUObjectProperty(const TSharedPtr<FJsonValue
 		// Default to expect a string for everything else
 		if (ObjectProperty->ImportText(*JsonValue->AsString(), OutValue, 0, NULL) == NULL)
 		{
-			UE_LOG(LogJson, Error, TEXT("JsonValueToUProperty - Unable import property type %s from string value for property %s"), *ObjectProperty->GetClass()->GetName(), *ObjectProperty->GetNameCPP());
+			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable import property type %s from string value for property %s"), *ObjectProperty->GetClass()->GetName(), *ObjectProperty->GetNameCPP());
 			return false;
 		}
 	}
