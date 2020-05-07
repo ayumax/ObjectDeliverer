@@ -1,17 +1,17 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 
 #include "MyClass.h"
-#include "Utf8StringDeliveryBox.h"
-#include "ObjectDeliveryBoxUsingJson.h"
+#include "DeliveryBox/Utf8StringDeliveryBox.h"
+#include "DeliveryBox/ObjectDeliveryBoxUsingJson.h"
 #include "ObjectDelivererManager.h"
-#include "ProtocolTcpIpClient.h"
-#include "ProtocolTcpIpServer.h"
-#include "PacketRuleSizeBody.h"
-#include "ProtocolUdpSocketSender.h"
-#include "ProtocolUdpSocketReceiver.h"
-#include "PacketRuleFixedLength.h"
-#include "PacketRuleNodivision.h"
-#include "PacketRuleTerminate.h"
+#include "Protocol/ProtocolTcpIpClient.h"
+#include "Protocol/ProtocolTcpIpServer.h"
+#include "PacketRule/PacketRuleSizeBody.h"
+#include "Protocol/ProtocolUdpSocketSender.h"
+#include "Protocol/ProtocolUdpSocketReceiver.h"
+#include "PacketRule/PacketRuleFixedLength.h"
+#include "PacketRule/PacketRuleNodivision.h"
+#include "PacketRule/PacketRuleTerminate.h"
 
 USampleObject::USampleObject()
 {

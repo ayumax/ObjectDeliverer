@@ -15,21 +15,21 @@ public:
 
 	virtual UObject* JsonObjectToUObject(const TSharedPtr<FJsonObject>& JsonObject, UClass* TargetClass = nullptr);
 
-	virtual bool JsonPropertyToUProperty(const TSharedPtr<FJsonObject>& JsonObject, UProperty* Property, UObject* OutObject);
+	virtual bool JsonPropertyToFProperty(const TSharedPtr<FJsonObject>& JsonObject, FProperty* Property, UObject* OutObject);
 
 protected:
-	virtual bool JsonValueToUProperty(const TSharedPtr<FJsonValue>& JsonValue, UProperty* Property, void* OutValue);
-	virtual bool ConvertScalarJsonValueToUPropertyWithContainer(const TSharedPtr<FJsonValue>& JsonValue, UProperty* Property, void* OutValue);
-	virtual bool JsonValueToUEnumProperty(const TSharedPtr<FJsonValue>& JsonValue, UEnumProperty* Property, void* OutValue);
-	virtual bool JsonValueToUNumericProperty(const TSharedPtr<FJsonValue>& JsonValue, UNumericProperty* NumericProperty, void* OutValue);
-	virtual bool JsonValueToUBoolProperty(const TSharedPtr<FJsonValue>& JsonValue, UBoolProperty* BoolProperty, void* OutValue);
-	virtual bool JsonValueToUStrProperty(const TSharedPtr<FJsonValue>& JsonValue, UStrProperty* StringProperty, void* OutValue);
-	virtual bool JsonValueToUArrayProperty(const TSharedPtr<FJsonValue>& JsonValue, UArrayProperty* ArrayProperty, void* OutValue);
-	virtual bool JsonValueToUMapProperty(const TSharedPtr<FJsonValue>& JsonValue, UMapProperty* MapProperty, void* OutValue);
-	virtual bool JsonValueToUSetProperty(const TSharedPtr<FJsonValue>& JsonValue, USetProperty* SetProperty, void* OutValue);
-	virtual bool JsonValueToUTextProperty(const TSharedPtr<FJsonValue>& JsonValue, UTextProperty* TextProperty, void* OutValue);
-	virtual bool JsonValueToUStructProperty(const TSharedPtr<FJsonValue>& JsonValue, UStructProperty* StructProperty, void* OutValue);
-	virtual bool JsonValueToUObjectProperty(const TSharedPtr<FJsonValue>& JsonValue, UObjectProperty* ObjectProperty, void* OutValue);
+	virtual bool JsonValueToFProperty(const TSharedPtr<FJsonValue>& JsonValue, FProperty* Property, void* OutValue);
+	virtual bool ConvertScalarJsonValueToFPropertyWithContainer(const TSharedPtr<FJsonValue>& JsonValue, FProperty* Property, void* OutValue);
+	virtual bool JsonValueToFEnumProperty(const TSharedPtr<FJsonValue>& JsonValue, FEnumProperty* Property, void* OutValue);
+	virtual bool JsonValueToFNumericProperty(const TSharedPtr<FJsonValue>& JsonValue, FNumericProperty* NumericProperty, void* OutValue);
+	virtual bool JsonValueToFBoolProperty(const TSharedPtr<FJsonValue>& JsonValue, FBoolProperty* BoolProperty, void* OutValue);
+	virtual bool JsonValueToFStrProperty(const TSharedPtr<FJsonValue>& JsonValue, FStrProperty* StringProperty, void* OutValue);
+	virtual bool JsonValueToFArrayProperty(const TSharedPtr<FJsonValue>& JsonValue, FArrayProperty* ArrayProperty, void* OutValue);
+	virtual bool JsonValueToFMapProperty(const TSharedPtr<FJsonValue>& JsonValue, FMapProperty* MapProperty, void* OutValue);
+	virtual bool JsonValueToFSetProperty(const TSharedPtr<FJsonValue>& JsonValue, FSetProperty* SetProperty, void* OutValue);
+	virtual bool JsonValueToFTextProperty(const TSharedPtr<FJsonValue>& JsonValue, FTextProperty* TextProperty, void* OutValue);
+	virtual bool JsonValueToFStructProperty(const TSharedPtr<FJsonValue>& JsonValue, FStructProperty* StructProperty, void* OutValue);
+	virtual bool JsonValueToFObjectProperty(const TSharedPtr<FJsonValue>& JsonValue, FObjectProperty* ObjectProperty, void* OutValue);
 
 	virtual bool JsonObjectToUStruct(const TSharedPtr<FJsonObject>& JsonObject, const UStruct* StructDefinition, void* OutStruct);
 

@@ -19,9 +19,9 @@ TSharedPtr<FJsonObject> UODJsonSerializer::CreateJsonObject(const UObject* Obj, 
 	return UObjectToJsonObject(Obj->StaticClass(), Obj, CheckFlags, SkipFlags);
 }
 
-TSharedPtr<FJsonValue> UODJsonSerializer::ObjectJsonCallback(UProperty* Property, const void* Value)
+TSharedPtr<FJsonValue> UODJsonSerializer::ObjectJsonCallback(FProperty* Property, const void* Value)
 {
-	if (UObjectProperty* ObjectProperty = Cast<UObjectProperty>(Property))
+	if (FObjectProperty* ObjectProperty = CastField<FObjectProperty>(Property))
 	{
 		if (!ObjectProperty->HasAnyFlags(RF_Transient)) // We are taking Transient to mean we don't want to serialize to Json either (could make a new flag if nessasary)
 		{
@@ -47,12 +47,12 @@ TSharedPtr<FJsonObject> UODJsonSerializer::UObjectToJsonObject(UClass* ObjectCla
 	return objectSerializer->UObjectToJsonObject(this, Obj, CheckFlags, SkipFlags);
 }
 
-void UODJsonSerializer::AddJsonValue(TSharedPtr<FJsonObject> JsonObject, const UObject* Obj, UProperty* Property, int64 CheckFlags, int64 SkipFlags)
+void UODJsonSerializer::AddJsonValue(TSharedPtr<FJsonObject> JsonObject, const UObject* Obj, FProperty* Property, int64 CheckFlags, int64 SkipFlags)
 {
 	FString PropertyName = Property->GetName();
 	if (Obj->GetClass()->ImplementsInterface(UODConvertPropertyName::StaticClass()))
 	{
-		FString ConvertedPropertyName = IODConvertPropertyName::Execute_ConvertUPropertyName(Obj, Property->GetFName());
+		FString ConvertedPropertyName = IODConvertPropertyName::Execute_ConvertFPropertyName(Obj, Property->GetFName());
 		if (!ConvertedPropertyName.IsEmpty())
 		{
 			PropertyName = ConvertedPropertyName;
@@ -62,7 +62,7 @@ void UODJsonSerializer::AddJsonValue(TSharedPtr<FJsonObject> JsonObject, const U
 	uint8* CurrentPropAddr = Property->ContainerPtrToValuePtr<uint8>((UObject*)Obj);
 
 	FJsonObjectConverter::CustomExportCallback CustomCB;
-	CustomCB.BindLambda([this](UProperty* _Property, const void* Value)
+	CustomCB.BindLambda([this](FProperty* _Property, const void* Value)
 		{
 			return ObjectJsonCallback(_Property, Value);
 		});

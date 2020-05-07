@@ -17,5 +17,5 @@ class OBJECTDELIVERER_API IODConvertPropertyName
 
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ObjectDeliverer")
-	FString ConvertUPropertyName(const FName& PropertyName) const;
+	FString ConvertFPropertyName(const FName& PropertyName) const;
 };

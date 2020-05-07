@@ -22,7 +22,7 @@ TSharedPtr<FJsonObject> UODNoWriteTypeJsonSerializer::UObjectToJsonObject(UODJso
 
 	if (!Obj) return JsonObject;
 
-	for (TFieldIterator<UProperty> PropIt(Obj->GetClass(), EFieldIteratorFlags::IncludeSuper); PropIt; ++PropIt)
+	for (TFieldIterator<FProperty> PropIt(Obj->GetClass(), EFieldIteratorFlags::IncludeSuper); PropIt; ++PropIt)
 	{
 		JsonSerializer->AddJsonValue(JsonObject, Obj, *PropIt, CheckFlags, SkipFlags);
 	}
@@ -36,9 +36,9 @@ UObject* UODNoWriteTypeJsonSerializer::JsonObjectTopUObject(UODJsonDeserializer*
 
 	UObject* createdObj = NewObject<UObject>((UObject*)GetTransientPackage(), TargetClass);
 
-	for (TFieldIterator<UProperty> PropIt(createdObj->GetClass()); PropIt; ++PropIt)
+	for (TFieldIterator<FProperty> PropIt(createdObj->GetClass()); PropIt; ++PropIt)
 	{
-		JsonDeserializer->JsonPropertyToUProperty(JsonObject, *PropIt, createdObj);
+		JsonDeserializer->JsonPropertyToFProperty(JsonObject, *PropIt, createdObj);
 	}
 
 	return createdObj;
@@ -54,7 +54,7 @@ TSharedPtr<FJsonObject> UODWriteTypeJsonSerializer::UObjectToJsonObject(UODJsonS
 
 	TSharedPtr<FJsonObject> JsonObjectBody = MakeShareable(new FJsonObject());
 
-	for (TFieldIterator<UProperty> PropIt(Obj->GetClass(), EFieldIteratorFlags::IncludeSuper); PropIt; ++PropIt)
+	for (TFieldIterator<FProperty> PropIt(Obj->GetClass(), EFieldIteratorFlags::IncludeSuper); PropIt; ++PropIt)
 	{
 		JsonSerializer->AddJsonValue(JsonObjectBody, Obj, *PropIt, CheckFlags, SkipFlags);
 	}
@@ -86,9 +86,9 @@ UObject* UODWriteTypeJsonSerializer::JsonObjectTopUObject(UODJsonDeserializer* J
 		return nullptr;
 	}
 
-	for (TFieldIterator<UProperty> PropIt(createdObj->GetClass()); PropIt; ++PropIt)
+	for (TFieldIterator<FProperty> PropIt(createdObj->GetClass()); PropIt; ++PropIt)
 	{
-		JsonDeserializer->JsonPropertyToUProperty(*bodyJsonObject, *PropIt, createdObj);
+		JsonDeserializer->JsonPropertyToFProperty(*bodyJsonObject, *PropIt, createdObj);
 	}
 
 	return createdObj;
