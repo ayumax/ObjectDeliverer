@@ -29,7 +29,7 @@ void UPacketRuleTerminate::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 	DispatchMadeSendBuffer(BufferForSend);
 }
 
-void UPacketRuleTerminate::NotifyReceiveData(const TArray<uint8>& DataBuffer)
+void UPacketRuleTerminate::NotifyReceiveData(const ODByteSpan& DataBuffer)
 {
 	ReceiveTempBuffer += DataBuffer;
 

@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Utils/ODGrowBuffer.h"
 #include "PacketRule.generated.h"
 
 UENUM(BlueprintType)
@@ -27,7 +28,7 @@ public:
 
 	virtual void Initialize();
 	virtual void MakeSendPacket(const TArray<uint8>& BodyBuffer);
-	virtual void NotifyReceiveData(const TArray<uint8>& DataBuffer);
+	virtual void NotifyReceiveData(const ODByteSpan& DataBuffer);
 	virtual int32 GetWantSize();
 	virtual UPacketRule* Clone();
 	

@@ -19,7 +19,7 @@ void UPacketRule::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 {
 }
 
-void UPacketRule::NotifyReceiveData(const TArray<uint8>& DataBuffer)
+void UPacketRule::NotifyReceiveData(const ODByteSpan& DataBuffer)
 {
 }
 
@@ -30,6 +30,7 @@ int32 UPacketRule::GetWantSize()
 
 UPacketRule* UPacketRule::Clone()
 {
+
 	return nullptr;
 }
 

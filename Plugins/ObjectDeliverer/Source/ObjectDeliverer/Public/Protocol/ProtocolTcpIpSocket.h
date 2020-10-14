@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "ProtocolSocketBase.h"
 #include "GetIPV4Info.h"
+#include "Utils/ODGrowBuffer.h"
 #include "ProtocolTcpIpSocket.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)
@@ -34,7 +35,7 @@ protected:
 	class FODWorkerThread* CurrentInnerThread = nullptr;
 	class FRunnableThread* CurrentThread = nullptr;
 
-	TArray<uint8> ReceiveBuffer;
+	ODGrowBuffer ReceiveBuffer;
 	FCriticalSection ct;
 	bool IsSelfClose = false;
 };

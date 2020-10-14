@@ -45,7 +45,7 @@ void UPacketRuleSizeBody::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 
 }
 
-void UPacketRuleSizeBody::NotifyReceiveData(const TArray<uint8>& DataBuffer)
+void UPacketRuleSizeBody::NotifyReceiveData(const ODByteSpan& DataBuffer)
 {
 	if (ReceiveMode == EReceiveMode::Size)
 	{
