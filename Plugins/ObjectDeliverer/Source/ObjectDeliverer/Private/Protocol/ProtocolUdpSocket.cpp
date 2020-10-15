@@ -15,37 +15,31 @@ UProtocolUdpSocket::~UProtocolUdpSocket()
 void UProtocolUdpSocket::Initialize(FIPv4Endpoint IP)
 {
 	IPEndPoint = IP;
+	ReceiveBuffer.SetBufferSize(1024);
 }
 
 void UProtocolUdpSocket::NotifyReceived(const FArrayReaderPtr& data)
 {
-	int64 receivedSize = data->TotalSize();
 	TArray<uint8>& receiveBuffer = *(data.Get());
 
-	auto wantSize = PacketRule->GetWantSize();
-	if (wantSize == 0)
+	ReceiveBuffer.Add(ODByteSpan(receiveBuffer));
+
+	while (ReceiveBuffer.GetLength() > 0)
 	{
-		wantSize = receivedSize;
-	}
+		const int32 wantSize = PacketRule->GetWantSize();
 
-	TArray<uint8> BodyBuffer;
-
-	if (wantSize <= receivedSize)
-	{
-		TArray<uint8> SplitBuffer;
-		int64 nowSize = receivedSize;
-
-		while (nowSize >= wantSize)
+		if (wantSize > 0)
 		{
-			SplitBuffer.SetNum(wantSize, false);
-			FMemory::Memcpy(SplitBuffer.GetData(), receiveBuffer.GetData() + (receivedSize - nowSize), SplitBuffer.Num());
-
-			nowSize -= wantSize;
-
-			PacketRule->NotifyReceiveData(SplitBuffer);
+			if (ReceiveBuffer.GetLength() < wantSize) return;
 		}
 
+		const auto receiveSize = wantSize == 0 ? ReceiveBuffer.GetLength() : wantSize;
+
+		PacketRule->NotifyReceiveData(ReceiveBuffer.AsSpan(0, receiveSize).ToArray());
+
+		ReceiveBuffer.RemoveRangeFromStart(0, receiveSize);
 	}
+	
 }
 
 

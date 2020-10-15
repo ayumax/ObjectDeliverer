@@ -3,6 +3,7 @@
 
 ODGrowBuffer::ODGrowBuffer(int initialSize /*= 1024*/, int packetSize /*= 1024*/)
     : bufferSize(0)
+    , currentSize(0)
 {
     this->packetSize = packetSize;
     SetBufferSize(initialSize);
@@ -10,7 +11,7 @@ ODGrowBuffer::ODGrowBuffer(int initialSize /*= 1024*/, int packetSize /*= 1024*/
 
 int ODGrowBuffer::GetLength() const
 {
-    return bufferSize;
+    return currentSize;
 }
 
 int ODGrowBuffer::GetInnerBufferSize() const
@@ -35,9 +36,9 @@ bool ODGrowBuffer::SetBufferSize(int NewSize /*= 0*/)
 {
     bool isGrow = false;
 
-    if (this.innerBuffer.Num() < NewSize)
+    if (innerBuffer.Num() < NewSize)
     {
-        this.innerBuffer.SetNum(packetSize * (NewSize / packetSize + 1));
+        innerBuffer.SetNum(packetSize * (NewSize / packetSize + 1));
 
         isGrow = true;
     }
@@ -52,29 +53,34 @@ void ODGrowBuffer::Add(ODByteSpan addBuffer)
     SetBufferSize(GetLength() + addBuffer.Length);
 
     AsSpan(GetLength() - addBuffer.Length, addBuffer.Length).CopyFrom(addBuffer);
+
+    currentSize += addBuffer.Length;
 }
 
 void ODGrowBuffer::CopyFrom(ODByteSpan fromBuffer, int myOffset /*= 0*/)
 {
-    ODByteSpan& spanBuffer = AsSpan(myOffset, FMath::Min(fromBuffer.Length, GetLength() - myOffset));
+    currentSize = FMath::Max(GetLength(), fromBuffer.Length + myOffset);
+    SetBufferSize(currentSize);
+
+    ODByteSpan spanBuffer = AsSpan(myOffset, fromBuffer.Length);
 
     spanBuffer.CopyFrom(fromBuffer);
 }
 
 void ODGrowBuffer::RemoveRangeFromStart(int start, int length)
 {
-    auto moveLength = GetLength() - length;
+    auto moveLength = GetLength() - (start + length);
     TArray<uint8> tempBuffer = TArray<uint8>();
     tempBuffer.SetNum(moveLength);
     auto moveSpan = AsSpan(start + length, moveLength);
     ODByteSpan(tempBuffer).CopyFrom(moveSpan);
     AsSpan(start, moveLength).CopyFrom(tempBuffer);
 
-    bufferSize = moveLength;
+    currentSize = moveLength;
 }
 
 void ODGrowBuffer::Clear()
 {
     innerBuffer.Reset();
-    bufferSize = 0;
+    currentSize = 0;
 }

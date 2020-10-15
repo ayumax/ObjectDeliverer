@@ -19,7 +19,7 @@ void UPacketRule::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 {
 }
 
-void UPacketRule::NotifyReceiveData(const ODByteSpan& DataBuffer)
+void UPacketRule::NotifyReceiveData(const TArray<uint8>& DataBuffer)
 {
 }
 

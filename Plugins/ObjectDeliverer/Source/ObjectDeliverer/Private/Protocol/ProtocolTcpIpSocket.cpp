@@ -123,11 +123,11 @@ bool UProtocolTcpIpSocket::ReceivedData()
 			}
 			return false;
 		}
-		
-		const uint32 wantSize = PacketRule->GetWantSize();
 
-		while(true)
+		while(ReceiveBuffer.GetLength() > 0)
 		{
+			const int32 wantSize = PacketRule->GetWantSize();
+
 			if (wantSize > 0)
 			{
 				if (ReceiveBuffer.GetLength() < wantSize) return true;
@@ -135,7 +135,7 @@ bool UProtocolTcpIpSocket::ReceivedData()
 
 			const auto receiveSize = wantSize == 0 ? ReceiveBuffer.GetLength() : wantSize;
 
-			PacketRule->NotifyReceiveData(ReceiveBuffer.AsSpan(0, receiveSize));
+			PacketRule->NotifyReceiveData(ReceiveBuffer.AsSpan(0, receiveSize).ToArray());
 
 			ReceiveBuffer.RemoveRangeFromStart(0, receiveSize);
 		}		

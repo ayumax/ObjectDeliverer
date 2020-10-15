@@ -13,7 +13,7 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolUdpTest1, "ObjectDeliverer.ProtocolTest.ProtocolUdpTest1", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolUdpTest1, "ObjectDeliverer.ProtocolTest.ProtocolUdpTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
 bool FProtocolUdpTest1::RunTest(const FString& Parameters)
 {

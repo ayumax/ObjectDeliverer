@@ -24,7 +24,7 @@ void UPacketRuleFixedLength::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 	DispatchMadeSendBuffer(BufferForSend);
 }
 
-void UPacketRuleFixedLength::NotifyReceiveData(const ODByteSpan& DataBuffer)
+void UPacketRuleFixedLength::NotifyReceiveData(const TArray<uint8>& DataBuffer)
 {
 	DispatchMadeReceiveBuffer(DataBuffer);
 }

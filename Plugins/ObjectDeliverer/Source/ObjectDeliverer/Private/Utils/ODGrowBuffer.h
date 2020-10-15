@@ -6,10 +6,15 @@
 struct ODByteSpan
 {
     uint8* Buffer;
-    int Length;
+    int32 Length;
 
     ODByteSpan(){}
-    ODByteSpan(const TArray<uint8>& FromBuffer)
+    ODByteSpan(uint8* RawBuffer, int32 RawBufferLength)
+    {
+        Buffer = RawBuffer;
+        Length = RawBufferLength;
+    }
+    ODByteSpan(TArray<uint8>& FromBuffer)
     {
         Buffer = FromBuffer.GetData();
         Length = FromBuffer.Num();
@@ -21,7 +26,12 @@ struct ODByteSpan
         {
             checkf(Length >= FromBuffer.Length, TEXT("ODByteSpan::CopyFrom SizeOver!"));
         }
-        FMemory::Memcpy(Buffer, FromBuffer.Buffer, FromBuffer.Length);
+        FMemory::Memcpy((void*)Buffer, (const void*)FromBuffer.Buffer, FromBuffer.Length);
+    }
+
+    TArray<uint8> ToArray() const
+    {
+        return TArray<uint8>(Buffer, Length);
     }
 };
 
@@ -49,4 +59,5 @@ private:
     TArray<uint8> innerBuffer;
 
     int bufferSize;
+    int currentSize;
 };
