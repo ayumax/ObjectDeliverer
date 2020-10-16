@@ -38,26 +38,29 @@ struct ODByteSpan
 class ODGrowBuffer
 {
 public:
-    ODGrowBuffer(int initialSize = 1024, int packetSize = 1024);
+    ODGrowBuffer(int32 initialSize = 1024, int32 packetSize = 1024);
 
-    int GetLength() const;
-    int GetInnerBufferSize() const;
+    uint8 operator [](int32 index)
+    {
+        return innerBuffer[index];
+    }
+
+    int32 GetLength() const;
+    int32 GetInnerBufferSize() const;
 
     ODByteSpan AsSpan();
-    ODByteSpan AsSpan(int Position, int Length);
+    ODByteSpan AsSpan(int32 Position, int32 Length);
 
-    bool SetBufferSize(int NewSize = 0);
+    bool SetLength(int32 NewSize = 0);
 
     void Add(ODByteSpan addBuffer);
 
-    void CopyFrom(ODByteSpan fromBuffer, int myOffset = 0);
-    void RemoveRangeFromStart(int start, int length);
-    void Clear();
+    void CopyFrom(ODByteSpan fromBuffer, int32 myOffset = 0);
+    void RemoveRangeFromStart(int32 start, int32 length);
+    void Clear(int32 NewSize = 0);
     
 private:
-    int packetSize = 1024;
+    int32 packetSize = 1024;
     TArray<uint8> innerBuffer;
-
-    int bufferSize;
-    int currentSize;
+    int32 currentSize;
 };

@@ -33,32 +33,42 @@ bool FProtocolUdpTest1::RunTest(const FString& Parameters)
 		ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
 		ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolUdpSocketSender("localhost", 9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
+		const int udpSendMaxSize = 65507 - 4 - 1;
+
 		ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
 
-		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient]()
+		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient, udpSendMaxSize]()
 			{
-				for (int i = 0; i < 1000; ++i)
+				for (int count = 0; count < 3; ++count)
 				{
-					uint8 data = i;
-					TArray<uint8> sendbuffer = { data };
+					TArray<uint8> sendbuffer;
+
+					for (int i = 0; i < udpSendMaxSize; ++i)
+					{
+						sendbuffer.Add((uint8)i);
+					}
+
 					ObjectDelivererClient->Send(sendbuffer);
 				}
+				
 				return true;
 			}));
 
-		ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
+		ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(3.0f));
 
-		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper, ObjectDelivererClient, ObjectDelivererServer]()
+		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper, ObjectDelivererClient, ObjectDelivererServer, udpSendMaxSize]()
 			{
-				TestEqual("check received count", serverHelper->ReceiveBuffers.Num(), 1000);
-				if (serverHelper->ReceiveBuffers.Num() == 1000)
+				TestEqual("check received count", serverHelper->ReceiveBuffers.Num() > 0, true);
+
+				if (serverHelper->ReceiveBuffers.Num() > 0)
 				{
-					for (int i = 0; i < 1000; ++i)
+					TArray<uint8>& receiveBuffer = serverHelper->ReceiveBuffers[0];
+					for (int i = 0; i < udpSendMaxSize; ++i)
 					{
-						TArray<uint8>& receivebuf = serverHelper->ReceiveBuffers[i];
-						TestEqual("check received data", receivebuf[0], (uint8)i);
+						TestEqual("check received data", receiveBuffer[i], (uint8)i);
 					}
 				}
+
 				ObjectDelivererClient->Close();
 				ObjectDelivererServer->Close();
 				return true;
@@ -81,14 +91,22 @@ bool FProtocolUdpTest1::RunTest(const FString& Parameters)
 		ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
 		ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolUdpSocketSender("localhost", 9099), UPacketRuleFactory::CreatePacketRuleNodivision());
 
+		const int udpSendMaxSize = 65507 - 1;
+
+
 		ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
 
-		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient]()
+		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient, udpSendMaxSize]()
 			{
-				for (int i = 0; i < 1000; ++i)
+				for (int count = 0; count < 3; ++count)
 				{
-					uint8 data = i;
-					TArray<uint8> sendbuffer = { data };
+					TArray<uint8> sendbuffer;
+
+					for (int i = 0; i < udpSendMaxSize; ++i)
+					{
+						sendbuffer.Add((uint8)i);
+					}
+
 					ObjectDelivererClient->Send(sendbuffer);
 				}
 				return true;
@@ -96,17 +114,19 @@ bool FProtocolUdpTest1::RunTest(const FString& Parameters)
 
 		ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 
-		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper, ObjectDelivererClient, ObjectDelivererServer]()
+		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper, ObjectDelivererClient, ObjectDelivererServer, udpSendMaxSize]()
 			{
-				TestEqual("check received count", serverHelper->ReceiveBuffers.Num(), 1000);
-				if (serverHelper->ReceiveBuffers.Num() == 1000)
+				TestEqual("check received count", serverHelper->ReceiveBuffers.Num() > 0, true);
+
+				if (serverHelper->ReceiveBuffers.Num() > 0)
 				{
-					for (int i = 0; i < 1000; ++i)
+					TArray<uint8>& receiveBuffer = serverHelper->ReceiveBuffers[0];
+					for (int i = 0; i < udpSendMaxSize; ++i)
 					{
-						TArray<uint8>& receivebuf = serverHelper->ReceiveBuffers[i];
-						TestEqual("check received data", receivebuf[0], (uint8)i);
+						TestEqual("check received data", receiveBuffer[i], (uint8)i);
 					}
 				}
+
 				ObjectDelivererClient->Close();
 				ObjectDelivererServer->Close();
 				return true;

@@ -218,7 +218,7 @@ bool FProtocolTcpIpServerClientTest5::RunTest(const FString& Parameters)
 	ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
 
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(2.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererServer]()
 	{
 		ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolTcpIpServer(9013), UPacketRuleFactory::CreatePacketRuleSizeBody());
@@ -233,6 +233,7 @@ bool FProtocolTcpIpServerClientTest5::RunTest(const FString& Parameters)
 		TestEqual("check connected client", clientHelper->ConnectedSocket.Num(), 0);
 		return true;
 	}));
+
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper, ObjectDelivererClient, ObjectDelivererServer]()
 	{
 		TestEqual("check diconnected server", serverHelper->DisconnectedSocket.Num(), 0);

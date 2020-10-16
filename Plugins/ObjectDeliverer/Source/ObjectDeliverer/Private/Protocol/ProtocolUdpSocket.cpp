@@ -15,7 +15,7 @@ UProtocolUdpSocket::~UProtocolUdpSocket()
 void UProtocolUdpSocket::Initialize(FIPv4Endpoint IP)
 {
 	IPEndPoint = IP;
-	ReceiveBuffer.SetBufferSize(1024);
+	ReceiveBuffer.SetLength(1024);
 }
 
 void UProtocolUdpSocket::NotifyReceived(const FArrayReaderPtr& data)
