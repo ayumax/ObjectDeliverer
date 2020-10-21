@@ -15,14 +15,12 @@ UProtocolUdpSocket::~UProtocolUdpSocket()
 void UProtocolUdpSocket::Initialize(FIPv4Endpoint IP)
 {
 	IPEndPoint = IP;
-	ReceiveBuffer.SetLength(1024);
+	ReceiveBuffer.SetLength(0);
 }
 
-void UProtocolUdpSocket::NotifyReceived(const FArrayReaderPtr& data)
+void UProtocolUdpSocket::NotifyReceived(const ODByteSpan& data)
 {
-	TArray<uint8>& receiveBuffer = *(data.Get());
-
-	ReceiveBuffer.Add(ODByteSpan(receiveBuffer));
+	ReceiveBuffer.Add(data);
 
 	while (ReceiveBuffer.GetLength() > 0)
 	{

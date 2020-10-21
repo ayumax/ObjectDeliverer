@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "ProtocolSocketBase.h"
+#include "Utils/ODGrowBuffer.h"
 #include "ProtocolUdpSocketReceiver.generated.h"
 
 
@@ -31,10 +32,16 @@ protected:
 	UFUNCTION()
 	void ReceiveDataFromClient(const UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer);
 
+	bool ReceivedData();
+
 private:
-	FUdpSocketReceiver* Receiver = nullptr;
 	FCriticalSection ct;
 	TMap<FIPv4Endpoint, UProtocolUdpSocket*> ConnectedSockets;
+	class FODWorkerThread* CurrentInnerThread = nullptr;
+	class FRunnableThread* CurrentThread = nullptr;
+	ODGrowBuffer ReceiveBuffer;
+	bool IsSelfClose = false;
+	ISocketSubsystem* SocketSubsystem;
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")

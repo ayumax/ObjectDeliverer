@@ -20,7 +20,7 @@ public:
 	~UProtocolUdpSocket();
 
 	void Initialize(FIPv4Endpoint IP);
-	void NotifyReceived(const FArrayReaderPtr& data);
+	void NotifyReceived(const ODByteSpan& data);
 
 	bool GetIPAddress(TArray<uint8>& IPAddress) override;
 	bool GetIPAddressInString(FString& IPAddress) override;

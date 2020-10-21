@@ -46,12 +46,7 @@ bool ODGrowBuffer_Tests::RunTest(const FString& Parameters)
 
         buffer.Clear();
         TestEqual(TEXT("check buffer size"), buffer.GetLength(), 0);
-        TestEqual(TEXT("check inner buffer size"), buffer.GetInnerBufferSize(), 0);
-
-        buffer.Clear(packetSize);
-        TestEqual(TEXT("check buffer size"), buffer.GetLength(), packetSize);
-        TestEqual(TEXT("check inner buffer size"), buffer.GetInnerBufferSize(), packetSize);
-
+        TestEqual(TEXT("check inner buffer size"), buffer.GetInnerBufferSize(), packetSize * 2);
     }
 
 	return true;

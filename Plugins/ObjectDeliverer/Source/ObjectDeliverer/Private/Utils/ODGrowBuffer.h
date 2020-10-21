@@ -57,7 +57,7 @@ public:
 
     void CopyFrom(ODByteSpan fromBuffer, int32 myOffset = 0);
     void RemoveRangeFromStart(int32 start, int32 length);
-    void Clear(int32 NewSize = 0);
+    void Clear();
     
 private:
     int32 packetSize = 1024;

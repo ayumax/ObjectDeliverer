@@ -60,7 +60,7 @@ void UProtocolTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
 
 void UProtocolTcpIpSocket::StartPollilng()
 {
-	ReceiveBuffer.SetLength(1024);
+	ReceiveBuffer.SetLength(0);
 	CurrentInnerThread = new FODWorkerThread([this] 
 	{ 
 		FScopeLock lock(&ct);
@@ -123,6 +123,8 @@ bool UProtocolTcpIpSocket::ReceivedData()
 			}
 			return false;
 		}
+
+		ReceiveBuffer.SetLength(Read);
 
 		while(ReceiveBuffer.GetLength() > 0)
 		{

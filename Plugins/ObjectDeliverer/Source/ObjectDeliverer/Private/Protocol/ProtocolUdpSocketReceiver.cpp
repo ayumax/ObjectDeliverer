@@ -2,6 +2,8 @@
 #include "Protocol/ProtocolUdpSocketReceiver.h"
 #include "PacketRule/PacketRule.h"
 #include "Protocol/ProtocolUdpSocket.h"
+#include "Utils/ODWorkerThread.h"
+#include "Runtime/Core/Public/HAL/RunnableThread.h"
 
 UProtocolUdpSocketReceiver::UProtocolUdpSocketReceiver()
 {
@@ -20,6 +22,8 @@ void UProtocolUdpSocketReceiver::InitializeWithReceiver(int32 _BoundPort)
 
 void UProtocolUdpSocketReceiver::Start()
 {
+	ReceiveBuffer.SetLength(0);
+
 	InnerSocket = FUdpSocketBuilder(TEXT("ObjectDeliverer UdpSocket"))
 		.WithReceiveBufferSize(1024 * 1024)
 		.BoundToPort(BoundPort)
@@ -27,9 +31,14 @@ void UProtocolUdpSocketReceiver::Start()
 
 	if (InnerSocket)
 	{
-		Receiver = new FUdpSocketReceiver(InnerSocket, FTimespan::FromMilliseconds(10), TEXT("UProtocolUdpSocketReceiver"));
-		Receiver->OnDataReceived().BindUObject(this, &UProtocolUdpSocketReceiver::UdpReceivedCallback);
-		Receiver->Start();
+		SocketSubsystem = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+
+		CurrentInnerThread = new FODWorkerThread([this]
+			{
+				FScopeLock lock(&ct);
+				return ReceivedData();
+			});
+		CurrentThread = FRunnableThread::Create(CurrentInnerThread, TEXT("ObjectDeliverer UDPSocket PollingThread"));
 
 		ConnectedSockets.Reset();
 
@@ -41,35 +50,75 @@ void UProtocolUdpSocketReceiver::Close()
 {
 	if (!InnerSocket) return;
 
+	IsSelfClose = true;
+
 	InnerSocket->Close();
 
 	FScopeLock lock(&ct);
 
-	if (Receiver)
-	{
-		Receiver->Stop();
-		delete Receiver;
-		Receiver = nullptr;
-	}
+	if (!CurrentThread) return;
+	CurrentThread->Kill(true);
+
+	delete CurrentThread;
+	CurrentThread = nullptr;
+
+	if (!CurrentInnerThread) return;
+	delete CurrentInnerThread;
+	CurrentInnerThread = nullptr;
 
 	ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(InnerSocket);
 	InnerSocket = nullptr;
 }
 
-void UProtocolUdpSocketReceiver::UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip)
+
+bool UProtocolUdpSocketReceiver::ReceivedData()
 {
-	if (!ConnectedSockets.Contains(ip))
+	if (!InnerSocket->Wait(ESocketWaitConditions::WaitForRead, FTimespan::FromMilliseconds(10)))
 	{
-		auto udpSender = NewObject<UProtocolUdpSocket>(this);
-		udpSender->Initialize(ip);
-		udpSender->SetPacketRule(PacketRule->Clone());
-		udpSender->ReceiveData.BindUObject(this, &UProtocolUdpSocketReceiver::ReceiveDataFromClient);
-		ConnectedSockets.Add(ip, udpSender);
+		return true;
 	}
 
-	FScopeLock lock(&ct);
-	ConnectedSockets[ip]->NotifyReceived(data);
+	uint32 Size = 0;
+	while (InnerSocket->HasPendingData(Size))
+	{
+		ReceiveBuffer.SetLength(Size);
 
+		TSharedRef<FInternetAddr> Sender = SocketSubsystem->CreateInternetAddr();
+		int32 Read = 0;
+
+		if (!InnerSocket->RecvFrom(ReceiveBuffer.AsSpan().Buffer, ReceiveBuffer.GetLength(), Read, *Sender))
+		{
+			if (!IsSelfClose)
+			{
+				CloseInnerSocket();
+				DispatchDisconnected(this);
+			}
+			return false;
+		}
+
+		ReceiveBuffer.SetLength(Read);
+
+		if (ReceiveBuffer.GetLength() > 0)
+		{
+			auto ip = FIPv4Endpoint(Sender);
+
+			if (!ConnectedSockets.Contains(ip))
+			{
+				auto udpSender = NewObject<UProtocolUdpSocket>(this);
+				udpSender->Initialize(ip);
+				udpSender->SetPacketRule(PacketRule->Clone());
+				udpSender->ReceiveData.BindUObject(this, &UProtocolUdpSocketReceiver::ReceiveDataFromClient);
+				ConnectedSockets.Add(ip, udpSender);
+			}
+
+			FScopeLock lock(&ct);
+			ConnectedSockets[ip]->NotifyReceived(ReceiveBuffer.AsSpan());
+
+			ReceiveBuffer.Clear();
+		}
+	}
+
+	return true;
 }
 
 

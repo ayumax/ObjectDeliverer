@@ -11,7 +11,7 @@ UProtocolTcpIpClient::UProtocolTcpIpClient()
 
 UProtocolTcpIpClient::~UProtocolTcpIpClient()
 {
-
+	
 }
 
 void UProtocolTcpIpClient::Initialize(const FString& IpAddress, int32 Port, bool Retry/* = false*/, bool _AutoConnectAfterDisconnect/* = false*/)

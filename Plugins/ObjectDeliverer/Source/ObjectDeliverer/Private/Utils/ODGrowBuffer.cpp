@@ -81,8 +81,7 @@ void ODGrowBuffer::RemoveRangeFromStart(int32 start, int32 length)
     currentSize = moveLength;
 }
 
-void ODGrowBuffer::Clear(int32 NewSize /*=0*/)
+void ODGrowBuffer::Clear()
 {
-    innerBuffer.Reset();
-    SetLength(NewSize);
+    currentSize = 0;
 }
