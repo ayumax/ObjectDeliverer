@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
 	void InitializeWithReceiver(int32 BoundPort = 8000);
 
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
+	UProtocolUdpSocketReceiver* WithReceiveBufferSize(int32 SizeInBytes);
+
 	virtual void Start() override;
 	virtual void Close() override;
 
@@ -46,4 +49,8 @@ private:
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
 	int32 BoundPort = 8000;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
+	int32 ReceiveBufferSize = 1024 * 1024;
+
 };

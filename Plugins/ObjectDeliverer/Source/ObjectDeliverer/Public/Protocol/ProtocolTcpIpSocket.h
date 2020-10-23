@@ -26,6 +26,13 @@ public:
 	bool GetIPAddress(TArray<uint8>& IPAddress) override;
 	bool GetIPAddressInString(FString& IPAddress) override;
 
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
+	int32 ReceiveBufferSize = 1024 * 1024;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
+	int32 SendBufferSize = 1024 * 1024;
+
 protected:
 	void CloseSocket();
 	void StartPollilng();

@@ -22,13 +22,28 @@ void UProtocolTcpIpClient::Initialize(const FString& IpAddress, int32 Port, bool
 	AutoConnectAfterDisconnect = _AutoConnectAfterDisconnect;
 }
 
+UProtocolTcpIpClient* UProtocolTcpIpClient::WithReceiveBufferSize(int32 SizeInBytes)
+{
+	ReceiveBufferSize = SizeInBytes;
+
+	return this;
+}
+
+UProtocolTcpIpClient* UProtocolTcpIpClient::WithSendBufferSize(int32 SizeInBytes)
+{
+	SendBufferSize = SizeInBytes;
+
+	return this;
+}
+
 void UProtocolTcpIpClient::Start()
 {
 	CloseSocket();
 
 	auto socket = FTcpSocketBuilder(TEXT("ObjectDeliverer TcpIpClient"))
 		.AsBlocking()
-		.WithReceiveBufferSize(1024 * 1024)
+		.WithReceiveBufferSize(ReceiveBufferSize)
+		.WithSendBufferSize(SendBufferSize)
 		.Build();
 
 	if (socket == nullptr) return;

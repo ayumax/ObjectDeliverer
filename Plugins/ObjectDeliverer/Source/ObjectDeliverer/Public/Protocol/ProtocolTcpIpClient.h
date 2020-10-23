@@ -23,6 +23,12 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
 	void Initialize(const FString& IpAddress = "localhost", int32 Port = 8000, bool Retry = false, bool AutoConnectAfterDisconnect = false);
+	
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
+	UProtocolTcpIpClient* WithReceiveBufferSize(int32 SizeInBytes);
+	
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
+	UProtocolTcpIpClient* WithSendBufferSize(int32 SizeInBytes);
 
 	virtual void Start() override;
 	virtual void Close() override;
@@ -45,6 +51,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
 	bool AutoConnectAfterDisconnect = false;
+
 
 protected:
 	class FODWorkerThread* ConnectInnerThread = nullptr;
