@@ -60,7 +60,7 @@ void UProtocolTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
 
 void UProtocolTcpIpSocket::StartPollilng()
 {
-	ReceiveBuffer.SetNum(1024);
+	ReceiveBuffer.SetLength(0);
 	CurrentInnerThread = new FODWorkerThread([this] 
 	{ 
 		FScopeLock lock(&ct);
@@ -111,19 +111,10 @@ bool UProtocolTcpIpSocket::ReceivedData()
 	uint32 Size = 0;
 	while (InnerSocket->HasPendingData(Size))
 	{
-		uint32 wantSize = PacketRule->GetWantSize();
-
-		if (wantSize > 0)
-		{
-			if (Size < wantSize) return true;
-		}
-
-		auto receiveSize = wantSize == 0 ? Size : wantSize;
-
-		ReceiveBuffer.SetNum(receiveSize, false);
+		ReceiveBuffer.SetLength(Size);
 
 		int32 Read = 0;
-		if (!InnerSocket->Recv(ReceiveBuffer.GetData(), ReceiveBuffer.Num(), Read, ESocketReceiveFlags::WaitAll))
+		if (!InnerSocket->Recv(ReceiveBuffer.AsSpan().Buffer, ReceiveBuffer.GetLength(), Read, ESocketReceiveFlags::WaitAll))
 		{
 			if (!IsSelfClose)
 			{
@@ -133,7 +124,23 @@ bool UProtocolTcpIpSocket::ReceivedData()
 			return false;
 		}
 
-		PacketRule->NotifyReceiveData(ReceiveBuffer);
+		ReceiveBuffer.SetLength(Read);
+
+		while(ReceiveBuffer.GetLength() > 0)
+		{
+			const int32 wantSize = PacketRule->GetWantSize();
+
+			if (wantSize > 0)
+			{
+				if (ReceiveBuffer.GetLength() < wantSize) return true;
+			}
+
+			const auto receiveSize = wantSize == 0 ? ReceiveBuffer.GetLength() : wantSize;
+
+			PacketRule->NotifyReceiveData(ReceiveBuffer.AsSpan(0, receiveSize).ToArray());
+
+			ReceiveBuffer.RemoveRangeFromStart(0, receiveSize);
+		}		
 	}
 
 	return true;

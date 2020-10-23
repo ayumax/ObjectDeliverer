@@ -11,7 +11,7 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolSharedMemoryTest, "ObjectDeliverer.ProtocolTest.ProtocolSharedMemoryTest1", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolSharedMemoryTest, "ObjectDeliverer.ProtocolTest.ProtocolSharedMemoryTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
 bool FProtocolSharedMemoryTest::RunTest(const FString& Parameters)
 {

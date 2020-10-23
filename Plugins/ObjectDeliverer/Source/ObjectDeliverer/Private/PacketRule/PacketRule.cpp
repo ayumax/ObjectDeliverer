@@ -30,6 +30,7 @@ int32 UPacketRule::GetWantSize()
 
 UPacketRule* UPacketRule::Clone()
 {
+
 	return nullptr;
 }
 
