@@ -21,6 +21,20 @@ void UProtocolTcpIpServer::Initialize(int32 Port)
 	ListenPort = Port;
 }
 
+UProtocolTcpIpServer* UProtocolTcpIpServer::WithReceiveBufferSize(int32 SizeInBytes)
+{
+	ReceiveBufferSize = SizeInBytes;
+
+	return this;
+}
+
+UProtocolTcpIpServer* UProtocolTcpIpServer::WithSendBufferSize(int32 SizeInBytes)
+{
+	SendBufferSize = SizeInBytes;
+
+	return this;
+}
+
 void UProtocolTcpIpServer::Start()
 {
 	Close();
@@ -88,6 +102,11 @@ bool UProtocolTcpIpServer::OnListen()
 
 		if (_clientSocket != nullptr)
 		{
+			int32 _newReceiveBufferSize;
+			_clientSocket->SetReceiveBufferSize(ReceiveBufferSize, _newReceiveBufferSize);
+			int32 _newSendBufferSize;
+			_clientSocket->SetSendBufferSize(SendBufferSize, _newSendBufferSize);
+
 			auto clientSocket = NewObject<UProtocolTcpIpSocket>();
 			clientSocket->Disconnected.BindUObject(this, &UProtocolTcpIpServer::DisconnectedClient);
 			clientSocket->ReceiveData.BindUObject(this, &UProtocolTcpIpServer::ReceiveDataFromClient);

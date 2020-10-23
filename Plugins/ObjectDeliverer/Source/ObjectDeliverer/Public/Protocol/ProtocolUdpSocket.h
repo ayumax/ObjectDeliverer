@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "ProtocolSocketBase.h"
 #include "GetIPV4Info.h"
+#include "Utils/ODGrowBuffer.h"
 #include "ProtocolUdpSocket.generated.h"
 
 
@@ -19,7 +20,7 @@ public:
 	~UProtocolUdpSocket();
 
 	void Initialize(FIPv4Endpoint IP);
-	void NotifyReceived(const FArrayReaderPtr& data);
+	void NotifyReceived(const ODByteSpan& data);
 
 	bool GetIPAddress(TArray<uint8>& IPAddress) override;
 	bool GetIPAddressInString(FString& IPAddress) override;
@@ -27,4 +28,5 @@ public:
 
 private:
 	FIPv4Endpoint IPEndPoint;
+	ODGrowBuffer ReceiveBuffer;
 };

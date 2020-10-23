@@ -13,105 +13,129 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolUdpTest1, "ObjectDeliverer.ProtocolTest.ProtocolUdpTest1", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolUdpTest1, "ObjectDeliverer.ProtocolTest.ProtocolUdpTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
 bool FProtocolUdpTest1::RunTest(const FString& Parameters)
 {
-	{
-		// send and receive.
-		auto serverHelper = NewObject<UObjectDelivererManagerTestHelper>();
-		auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
-		ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
-		ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-		ObjectDelivererServer->ReceiveData.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnReceive);
-		ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	// send and receive.
+	auto serverHelper = NewObject<UObjectDelivererManagerTestHelper>();
+	auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
+	ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
+	ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
+	ObjectDelivererServer->ReceiveData.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnReceive);
+	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
-		auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
+	auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
 
-		auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
-		ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
-		ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-		ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolUdpSocketSender("localhost", 9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
+	ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
+	ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
+	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolUdpSocketSender("localhost", 9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
-		ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
+	const int udpSendMaxSize = 65507 - 4;
 
-		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient]()
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(3.0f));
+
+	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient, udpSendMaxSize]()
+		{
+			for (int count = 0; count < 3; ++count)
 			{
-				for (int i = 0; i < 1000; ++i)
+				TArray<uint8> sendbuffer;
+
+				for (int i = 0; i < udpSendMaxSize; ++i)
 				{
-					uint8 data = i;
-					TArray<uint8> sendbuffer = { data };
-					ObjectDelivererClient->Send(sendbuffer);
+					sendbuffer.Add((uint8)i);
 				}
-				return true;
-			}));
 
-		ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
+				ObjectDelivererClient->Send(sendbuffer);
+			}
+				
+			return true;
+		}));
 
-		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper, ObjectDelivererClient, ObjectDelivererServer]()
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(3.0f));
+
+	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper, ObjectDelivererClient, ObjectDelivererServer, udpSendMaxSize]()
+		{
+			TestEqual("check received count", serverHelper->ReceiveBuffers.Num() > 0, true);
+
+			if (serverHelper->ReceiveBuffers.Num() > 0)
 			{
-				TestEqual("check received count", serverHelper->ReceiveBuffers.Num(), 1000);
-				if (serverHelper->ReceiveBuffers.Num() == 1000)
+				TArray<uint8>& receiveBuffer = serverHelper->ReceiveBuffers[0];
+				for (int i = 0; i < udpSendMaxSize; ++i)
 				{
-					for (int i = 0; i < 1000; ++i)
-					{
-						TArray<uint8>& receivebuf = serverHelper->ReceiveBuffers[i];
-						TestEqual("check received data", receivebuf[0], (uint8)i);
-					}
+					TestEqual(*FString::Printf(TEXT("check received data %d, %d"), receiveBuffer[i], i), receiveBuffer[i], (uint8)i);
 				}
-				ObjectDelivererClient->Close();
-				ObjectDelivererServer->Close();
-				return true;
-			}));
-	}
+			}
 
-	{
-		// send and receive.
-		auto serverHelper = NewObject<UObjectDelivererManagerTestHelper>();
-		auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
-		ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
-		ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-		ObjectDelivererServer->ReceiveData.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnReceive);
-		ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099), UPacketRuleFactory::CreatePacketRuleNodivision());
+			ObjectDelivererClient->Close();
+			ObjectDelivererServer->Close();
+			return true;
+		}));
+	
+	return true;
+}
 
-		auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
 
-		auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
-		ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
-		ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-		ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolUdpSocketSender("localhost", 9099), UPacketRuleFactory::CreatePacketRuleNodivision());
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolUdpTest2, "ObjectDeliverer.ProtocolTest.ProtocolUdpTest2", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-		ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
+bool FProtocolUdpTest2::RunTest(const FString& Parameters)
+{
+	// send and receive.
+	auto serverHelper = NewObject<UObjectDelivererManagerTestHelper>();
+	auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
+	ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
+	ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
+	ObjectDelivererServer->ReceiveData.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnReceive);
+	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099), UPacketRuleFactory::CreatePacketRuleNodivision());
 
-		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient]()
+	auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
+
+	auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
+	ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
+	ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
+	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolUdpSocketSender("localhost", 9099), UPacketRuleFactory::CreatePacketRuleNodivision());
+
+	const int udpSendMaxSize = 65507;
+
+
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
+
+	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient, udpSendMaxSize]()
+		{
+			for (int count = 0; count < 3; ++count)
 			{
-				for (int i = 0; i < 1000; ++i)
+				TArray<uint8> sendbuffer;
+
+				for (int i = 0; i < udpSendMaxSize; ++i)
 				{
-					uint8 data = i;
-					TArray<uint8> sendbuffer = { data };
-					ObjectDelivererClient->Send(sendbuffer);
+					sendbuffer.Add((uint8)i);
 				}
-				return true;
-			}));
 
-		ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
+				ObjectDelivererClient->Send(sendbuffer);
+			}
+			return true;
+		}));
 
-		ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper, ObjectDelivererClient, ObjectDelivererServer]()
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(3.0f));
+
+	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper, ObjectDelivererClient, ObjectDelivererServer, udpSendMaxSize]()
+		{
+			TestEqual("check received count", serverHelper->ReceiveBuffers.Num() > 0, true);
+
+			if (serverHelper->ReceiveBuffers.Num() > 0)
 			{
-				TestEqual("check received count", serverHelper->ReceiveBuffers.Num(), 1000);
-				if (serverHelper->ReceiveBuffers.Num() == 1000)
+				TArray<uint8>& receiveBuffer = serverHelper->ReceiveBuffers[0];
+				for (int i = 0; i < udpSendMaxSize; ++i)
 				{
-					for (int i = 0; i < 1000; ++i)
-					{
-						TArray<uint8>& receivebuf = serverHelper->ReceiveBuffers[i];
-						TestEqual("check received data", receivebuf[0], (uint8)i);
-					}
+					TestEqual("check received data", receiveBuffer[i], (uint8)i);
 				}
-				ObjectDelivererClient->Close();
-				ObjectDelivererServer->Close();
-				return true;
-			}));
-	}
+			}
+
+			ObjectDelivererClient->Close();
+			ObjectDelivererServer->Close();
+			return true;
+		}));
 
 	return true;
 }

@@ -20,6 +20,13 @@ void UProtocolUdpSocketSender::Initialize(const FString& IpAddress, int32 Port)
 	DestinationPort = Port;
 }
 
+UProtocolUdpSocketSender* UProtocolUdpSocketSender::WithSendBufferSize(int32 SizeInBytes)
+{
+	SendBufferSize = SizeInBytes;
+
+	return this;
+}
+
 void UProtocolUdpSocketSender::Start()
 {
 	auto endPoint = GetIP4EndPoint(DestinationIpAddress, DestinationPort);
@@ -28,7 +35,7 @@ void UProtocolUdpSocketSender::Start()
 	DestinationEndpoint = endPoint.Get<1>();
 
 	InnerSocket = FUdpSocketBuilder(TEXT("ObjectDeliverer UdpSocket"))
-		.WithReceiveBufferSize(1024 * 1024)
+		.WithSendBufferSize(SendBufferSize)
 		.Build();
 
 	if (InnerSocket)

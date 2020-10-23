@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Utils/ODGrowBuffer.h"
 #include "PacketRule.generated.h"
 
 UENUM(BlueprintType)

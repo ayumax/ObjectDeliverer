@@ -13,7 +13,7 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolLogWrierReaderTest, "ObjectDeliverer.ProtocolTest.ProtocolLogWrierReaderTest1", EAutomationTestFlags::ClientContext | EAutomationTestFlags::StressFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolLogWrierReaderTest, "ObjectDeliverer.ProtocolTest.ProtocolLogWrierReaderTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
 bool FProtocolLogWrierReaderTest::RunTest(const FString& Parameters)
 {

@@ -26,6 +26,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
 	void Initialize(int32 Port);
 
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
+	UProtocolTcpIpServer* WithReceiveBufferSize(int32 SizeInBytes);
+
+	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
+	UProtocolTcpIpServer* WithSendBufferSize(int32 SizeInBytes);
+
 	virtual void Start() override;
 	virtual void Close() override;
 	virtual void Send(const TArray<uint8>& DataBuffer) const override;
@@ -45,6 +51,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ObjectDeliverer|Protocol")
 	int32 MaxBacklog = 10;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
+	int32 ReceiveBufferSize = 1024 * 1024;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = "ObjectDeliverer|Protocol")
+	int32 SendBufferSize = 1024 * 1024;
 
 protected:
 	FSocket* ListenerSocket = nullptr;
