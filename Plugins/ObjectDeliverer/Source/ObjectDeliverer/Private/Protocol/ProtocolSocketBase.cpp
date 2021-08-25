@@ -54,7 +54,7 @@ bool UProtocolSocketBase::FormatIP4ToNumber(const FString& IpAddress, uint8(&Out
 		return true;
 	}
 
-	_ip.Replace(TEXT(" "), TEXT(""));
+	_ip = _ip.Replace(TEXT(" "), TEXT(""));
 
 	const TCHAR* Delims[] = { TEXT(".") };
 	TArray<FString> Parts;

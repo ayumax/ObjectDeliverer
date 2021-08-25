@@ -11,6 +11,16 @@ It has the following features.
 + Communication protocol, data division rule, serialization method can be switched by part replacement.
 + Available for both C ++ and Blueprint
 
+## Relationship between branch and UE4 Engine version
+
+The master branch only supports UE4 4.25. You cannot build with 4.24 or lower. Use the'lessthan_425 'branch if you use it below 4.24.
+
+|Engine Version|branch|
+| ---- | ---- |
+|4.25|master|
+|4.24 or less|lessthan_425|
+
+
 ## Communication protocol
 The following protocols can be used with built-in.
 You can also add your own protocol.
