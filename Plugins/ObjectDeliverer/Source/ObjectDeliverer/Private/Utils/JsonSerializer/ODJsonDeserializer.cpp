@@ -430,8 +430,8 @@ bool UODJsonDeserializer::JsonValueToFTextProperty(const TSharedPtr<FJsonValue>&
 bool UODJsonDeserializer::JsonValueToFStructProperty(const TSharedPtr<FJsonValue>& JsonValue, FStructProperty* StructProperty, void* OutValue)
 {
 	static const FName NAME_DateTime(TEXT("DateTime"));
-	static const FName NAME_Color(TEXT("Color"));
-	static const FName NAME_LinearColor(TEXT("LinearColor"));
+	static const FName NAME_ColorProperty(TEXT("Color"));
+	static const FName NAME_LinearColorProperty(TEXT("LinearColor"));
 
 	if (JsonValue->Type == EJson::Object)
 	{
@@ -443,7 +443,7 @@ bool UODJsonDeserializer::JsonValueToFStructProperty(const TSharedPtr<FJsonValue
 			return false;
 		}
 	}
-	else if (JsonValue->Type == EJson::String && StructProperty->Struct->GetFName() == NAME_LinearColor)
+	else if (JsonValue->Type == EJson::String && StructProperty->Struct->GetFName() == NAME_LinearColorProperty)
 	{
 		FLinearColor& ColorOut = *(FLinearColor*)OutValue;
 		FString ColorString = JsonValue->AsString();
@@ -453,7 +453,7 @@ bool UODJsonDeserializer::JsonValueToFStructProperty(const TSharedPtr<FJsonValue
 
 		ColorOut = IntermediateColor;
 	}
-	else if (JsonValue->Type == EJson::String && StructProperty->Struct->GetFName() == NAME_Color)
+	else if (JsonValue->Type == EJson::String && StructProperty->Struct->GetFName() == NAME_ColorProperty)
 	{
 		FColor& ColorOut = *(FColor*)OutValue;
 		FString ColorString = JsonValue->AsString();

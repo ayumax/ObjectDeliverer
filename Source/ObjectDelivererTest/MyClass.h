@@ -7,7 +7,8 @@
 
 /**
  * 
- */UCLASS()
+ */
+UCLASS()
 class OBJECTDELIVERERTEST_API USampleObject : public UObject
 {
 	GENERATED_BODY()
