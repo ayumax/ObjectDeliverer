@@ -13,11 +13,11 @@ It has the following features.
 
 ## Relationship between branch and UE4 Engine version
 
-The master branch only supports UE4 4.25. You cannot build with 4.24 or lower. Use the'lessthan_425 'branch if you use it below 4.24.
+The master branch supports UE4 4.25 and above. 4.24 and below cannot be built. if you use 4.24 or below, please use the "lessthan_425" branch.
 
 |Engine Version|branch|
 | ---- | ---- |
-|4.25|master|
+|4.25 or adove|master|
 |4.24 or less|lessthan_425|
 
 
