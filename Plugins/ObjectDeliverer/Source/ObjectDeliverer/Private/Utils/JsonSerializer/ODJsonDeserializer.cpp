@@ -10,6 +10,8 @@
 #include "UObject/PropertyPortFlags.h"
 #include "DeliveryBox/IODConvertPropertyName.h"
 
+#define CHECK_UE_VERSION_ORUNDER_5_0 (ENGINE_MAJOR_VERSION >= 5 && ENGINE_MINOR_VERSION <= 0) || ENGINE_MAJOR_VERSION == 4
+
 UODJsonDeserializer::UODJsonDeserializer()
 {
 }
@@ -197,7 +199,11 @@ bool UODJsonDeserializer::ConvertScalarJsonValueToFPropertyWithContainer(const T
 	else
 	{
 		// Default to expect a string for everything else
+#if CHECK_UE_VERSION_ORUNDER_5_0
+		if (Property->ImportText(*JsonValue->AsString(), OutValue, 0, NULL) == NULL)
+#else
 		if (Property->ImportText_Direct(*JsonValue->AsString(), OutValue, NULL, 0) == NULL)
+#endif
 		{
 			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable import property type %s from string value for property %s"), *Property->GetClass()->GetName(), *Property->GetNameCPP());
 			return false;
@@ -502,14 +508,22 @@ bool UODJsonDeserializer::JsonValueToFStructProperty(const TSharedPtr<FJsonValue
 		if (!TheCppStructOps->ImportTextItem(ImportTextPtr, OutValue, PPF_None, nullptr, (FOutputDevice*)GWarn))
 		{
 			// Fall back to trying the tagged property approach if custom ImportTextItem couldn't get it done
+#if CHECK_UE_VERSION_ORUNDER_5_0
+			StructProperty->ImportText(ImportTextPtr, OutValue, PPF_None, nullptr);
+#else
 			StructProperty->ImportText_Direct(ImportTextPtr, OutValue, nullptr, PPF_None);
+#endif
 		}
 	}
 	else if (JsonValue->Type == EJson::String)
 	{
 		FString ImportTextString = JsonValue->AsString();
 		const TCHAR* ImportTextPtr = *ImportTextString;
+#if CHECK_UE_VERSION_ORUNDER_5_0
+		StructProperty->ImportText(ImportTextPtr, OutValue, PPF_None, nullptr);
+#else
 		StructProperty->ImportText_Direct(ImportTextPtr, OutValue, nullptr, PPF_None);
+#endif
 	}
 	else
 	{
@@ -538,7 +552,11 @@ bool UODJsonDeserializer::JsonValueToFObjectProperty(const TSharedPtr<FJsonValue
 	else if (JsonValue->Type == EJson::String)
 	{
 		// Default to expect a string for everything else
+#if CHECK_UE_VERSION_ORUNDER_5_0
+		if (ObjectProperty->ImportText(*JsonValue->AsString(), OutValue, 0, NULL) == NULL)
+#else
 		if (ObjectProperty->ImportText_Direct(*JsonValue->AsString(), OutValue, NULL, 0) == NULL)
+#endif
 		{
 			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable import property type %s from string value for property %s"), *ObjectProperty->GetClass()->GetName(), *ObjectProperty->GetNameCPP());
 			return false;
