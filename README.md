@@ -1,6 +1,6 @@
 # ObjectDeliverer
 
-## UE4 Marketplace
+## UE Marketplace
 [https://www.unrealengine.com/marketplace/ja/slug/objectdeliverer](https://www.unrealengine.com/marketplace/ja/slug/objectdeliverer)
 
 ## Description
@@ -11,14 +11,9 @@ It has the following features.
 + Communication protocol, data division rule, serialization method can be switched by part replacement.
 + Available for both C ++ and Blueprint
 
-## Relationship between branch and UE4 Engine version
+## Relationship between branch and UE Engine version
 
-The master branch supports UE4 4.25 and above. 4.24 and below cannot be built. if you use 4.24 or below, please use the "lessthan_425" branch.
-
-|Engine Version|branch|
-| ---- | ---- |
-|4.25 or adove|master|
-|4.24 or less|lessthan_425|
+The master branch is buildable with UE5 5.0 or later; UE4 requires some modifications to build.
 
 
 ## Communication protocol
