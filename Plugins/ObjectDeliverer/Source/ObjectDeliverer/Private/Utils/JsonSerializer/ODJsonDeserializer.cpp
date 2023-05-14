@@ -197,7 +197,7 @@ bool UODJsonDeserializer::ConvertScalarJsonValueToFPropertyWithContainer(const T
 	else
 	{
 		// Default to expect a string for everything else
-		if (Property->ImportText(*JsonValue->AsString(), OutValue, 0, NULL) == NULL)
+		if (Property->ImportText_Direct(*JsonValue->AsString(), OutValue, NULL, 0) == NULL)
 		{
 			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable import property type %s from string value for property %s"), *Property->GetClass()->GetName(), *Property->GetNameCPP());
 			return false;
@@ -502,14 +502,14 @@ bool UODJsonDeserializer::JsonValueToFStructProperty(const TSharedPtr<FJsonValue
 		if (!TheCppStructOps->ImportTextItem(ImportTextPtr, OutValue, PPF_None, nullptr, (FOutputDevice*)GWarn))
 		{
 			// Fall back to trying the tagged property approach if custom ImportTextItem couldn't get it done
-			StructProperty->ImportText(ImportTextPtr, OutValue, PPF_None, nullptr);
+			StructProperty->ImportText_Direct(ImportTextPtr, OutValue, nullptr, PPF_None);
 		}
 	}
 	else if (JsonValue->Type == EJson::String)
 	{
 		FString ImportTextString = JsonValue->AsString();
 		const TCHAR* ImportTextPtr = *ImportTextString;
-		StructProperty->ImportText(ImportTextPtr, OutValue, PPF_None, nullptr);
+		StructProperty->ImportText_Direct(ImportTextPtr, OutValue, nullptr, PPF_None);
 	}
 	else
 	{
@@ -538,7 +538,7 @@ bool UODJsonDeserializer::JsonValueToFObjectProperty(const TSharedPtr<FJsonValue
 	else if (JsonValue->Type == EJson::String)
 	{
 		// Default to expect a string for everything else
-		if (ObjectProperty->ImportText(*JsonValue->AsString(), OutValue, 0, NULL) == NULL)
+		if (ObjectProperty->ImportText_Direct(*JsonValue->AsString(), OutValue, NULL, 0) == NULL)
 		{
 			UE_LOG(LogJson, Error, TEXT("JsonValueToFProperty - Unable import property type %s from string value for property %s"), *ObjectProperty->GetClass()->GetName(), *ObjectProperty->GetNameCPP());
 			return false;

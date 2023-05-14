@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Networking.h"
+#include "Interfaces/IPv4/IPv4Endpoint.h"
 #include "Sockets.h"
 #include "ObjectDelivererProtocol.h"
 #include "ProtocolSocketBase.generated.h"

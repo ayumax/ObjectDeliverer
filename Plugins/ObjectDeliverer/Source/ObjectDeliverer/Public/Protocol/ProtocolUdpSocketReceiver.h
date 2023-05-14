@@ -30,8 +30,6 @@ public:
 	virtual void Close() override;
 
 protected:
-	void UdpReceivedCallback(const FArrayReaderPtr& data, const FIPv4Endpoint& ip);
-	
 	UFUNCTION()
 	void ReceiveDataFromClient(const UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer);
 

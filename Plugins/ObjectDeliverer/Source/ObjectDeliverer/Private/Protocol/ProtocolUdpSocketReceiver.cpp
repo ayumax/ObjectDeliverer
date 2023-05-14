@@ -4,6 +4,7 @@
 #include "Protocol/ProtocolUdpSocket.h"
 #include "Utils/ODWorkerThread.h"
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
+#include "Networking/Public/Common/UdpSocketBuilder.h"
 
 UProtocolUdpSocketReceiver::UProtocolUdpSocketReceiver()
 {
