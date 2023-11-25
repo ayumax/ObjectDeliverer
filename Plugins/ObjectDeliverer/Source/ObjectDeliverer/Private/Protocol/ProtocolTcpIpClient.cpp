@@ -16,7 +16,17 @@ UProtocolTcpIpClient::~UProtocolTcpIpClient()
 
 void UProtocolTcpIpClient::Initialize(const FString& IpAddress, int32 Port, bool Retry/* = false*/, bool _AutoConnectAfterDisconnect/* = false*/)
 {
-	ServerIpAddress = IpAddress;
+	ISocketSubsystem* SocketSubSystem = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+
+	auto result = SocketSubSystem->GetAddressInfo(*IpAddress, nullptr, EAddressInfoFlags::Default, NAME_None);
+	if (result.Results.Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GetAddressInfo failed"));
+		return;
+	}
+	auto ip = result.Results[0].Address->ToString(false);
+
+	ServerIpAddress = ip;
 	ServerPort = Port;
 	RetryConnect = Retry;
 	AutoConnectAfterDisconnect = _AutoConnectAfterDisconnect;
