@@ -55,7 +55,7 @@ bool FProtocolLogWrierReaderTest::RunTest(const FString& Parameters)
 
 	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.5f));
 	
-	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([=]()
+	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([=, this]()
 	{
 		ObjectDelivererReader->Close();
 
