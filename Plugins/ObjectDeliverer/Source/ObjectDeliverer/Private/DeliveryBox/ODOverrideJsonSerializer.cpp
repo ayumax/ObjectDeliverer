@@ -50,7 +50,7 @@ TSharedPtr<FJsonObject> UODWriteTypeJsonSerializer::UObjectToJsonObject(UODJsonS
 
 	if (!Obj) return JsonObject;
 
-	JsonObject->SetStringField("Type", Obj->GetClass()->GetName());
+	JsonObject->SetStringField(TEXT("Type"), Obj->GetClass()->GetName());
 
 	TSharedPtr<FJsonObject> JsonObjectBody = MakeShareable(new FJsonObject());
 
@@ -59,7 +59,7 @@ TSharedPtr<FJsonObject> UODWriteTypeJsonSerializer::UObjectToJsonObject(UODJsonS
 		JsonSerializer->AddJsonValue(JsonObjectBody, Obj, *PropIt, CheckFlags, SkipFlags);
 	}
 
-	JsonObject->SetObjectField("Body", JsonObjectBody);
+	JsonObject->SetObjectField(TEXT("Body"), JsonObjectBody);
 
 	return JsonObject;
 }
@@ -67,7 +67,7 @@ TSharedPtr<FJsonObject> UODWriteTypeJsonSerializer::UObjectToJsonObject(UODJsonS
 UObject* UODWriteTypeJsonSerializer::JsonObjectTopUObject(UODJsonDeserializer* JsonDeserializer, const TSharedPtr<FJsonObject> JsonObject, UClass* TargetClass) const
 {
 	FString typeValue;
-	if (!JsonObject->TryGetStringField("Type", typeValue))
+	if (!JsonObject->TryGetStringField(TEXT("Type"), typeValue))
 	{
 		return nullptr;
 	}
@@ -81,7 +81,7 @@ UObject* UODWriteTypeJsonSerializer::JsonObjectTopUObject(UODJsonDeserializer* J
 	UObject* createdObj = NewObject<UObject>((UObject*)GetTransientPackage(), targetType);
 
 	const TSharedPtr<FJsonObject>* bodyJsonObject;
-	if (!JsonObject->TryGetObjectField("Body", bodyJsonObject))
+	if (!JsonObject->TryGetObjectField(TEXT("Body"), bodyJsonObject))
 	{
 		return nullptr;
 	}
