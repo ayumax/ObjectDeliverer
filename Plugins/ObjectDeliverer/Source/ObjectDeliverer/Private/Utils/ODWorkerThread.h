@@ -2,8 +2,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Runtime/Core/Public/HAL/Runnable.h"
-#include "Runtime/Core/Public/HAL/RunnableThread.h"
+#include "HAL/Runnable.h"
+#include "HAL/RunnableThread.h"
 
 
 class OBJECTDELIVERER_API FODWorkerThread : public FRunnable
