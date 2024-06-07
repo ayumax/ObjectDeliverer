@@ -1,7 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "Protocol/ProtocolSharedMemory.h"
 #include "Utils/ODWorkerThread.h"
-#include "Runtime/Core/Public/HAL/RunnableThread.h"
+#include "HAL/RunnableThread.h"
 #include "PacketRule/PacketRule.h"
 
 #if PLATFORM_WINDOWS

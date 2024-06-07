@@ -2,7 +2,7 @@
 #include "Protocol/ProtocolTcpIpSocket.h"
 #include "Common/TcpSocketBuilder.h"
 #include "Utils/ODWorkerThread.h"
-#include "Runtime/Core/Public/HAL/RunnableThread.h"
+#include "HAL/RunnableThread.h"
 #include "PacketRule/PacketRule.h"
 
 UProtocolTcpIpSocket::UProtocolTcpIpSocket()

@@ -1,6 +1,6 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 #include "ODWorkerThread.h"
-#include "Runtime/Core/Public/HAL/PlatformProcess.h"
+#include "HAL/PlatformProcess.h"
 
 FODWorkerThread::FODWorkerThread(TFunction<bool()> InWork, float WaitSeconds)
 	: Work(InWork)
