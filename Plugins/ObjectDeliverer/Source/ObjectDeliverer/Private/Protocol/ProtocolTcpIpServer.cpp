@@ -4,7 +4,7 @@
 #include "Common/TcpSocketBuilder.h"
 #include "Utils/ODWorkerThread.h"
 #include "PacketRule/PacketRule.h"
-#include "Runtime/Core/Public/HAL/RunnableThread.h"
+#include "HAL/RunnableThread.h"
 
 UProtocolTcpIpServer::UProtocolTcpIpServer()
 {

@@ -2,7 +2,7 @@
 #include "Protocol/ProtocolTcpIpClient.h"
 #include "Common/TcpSocketBuilder.h"
 #include "Utils/ODWorkerThread.h"
-#include "Runtime/Core/Public/HAL/RunnableThread.h"
+#include "HAL/RunnableThread.h"
 
 UProtocolTcpIpClient::UProtocolTcpIpClient()
 {

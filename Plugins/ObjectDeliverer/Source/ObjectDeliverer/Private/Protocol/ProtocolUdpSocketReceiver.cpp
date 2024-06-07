@@ -3,7 +3,7 @@
 #include "PacketRule/PacketRule.h"
 #include "Protocol/ProtocolUdpSocket.h"
 #include "Utils/ODWorkerThread.h"
-#include "Runtime/Core/Public/HAL/RunnableThread.h"
+#include "HAL/RunnableThread.h"
 #include "Common/UdpSocketBuilder.h"
 
 UProtocolUdpSocketReceiver::UProtocolUdpSocketReceiver()
