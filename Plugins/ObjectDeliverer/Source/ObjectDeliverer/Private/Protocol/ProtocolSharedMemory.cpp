@@ -116,15 +116,18 @@ bool UProtocolSharedMemory::ReceivedData()
 		[this, &Size]() noexcept
 		{
 			uint8 counter{ 0u };
-			FMemory::Memcpy(&counter, SharedMemoryData, sizeof(uint8));
+			const auto uint8size{ sizeof(uint8) };
+			FMemory::Memcpy(&counter, SharedMemoryData, uint8size);
 
 			if (counter == NowCounter)
 				return;
 
-			NowCounter = counter;
-			FMemory::Memcpy(&Size, SharedMemoryData + sizeof(uint8), sizeof(uint32));
+			NowCounter = MoveTemp(counter);
+			const auto NextSharedMemoryData{ SharedMemoryData + uint8size };
+			const auto uint32size{ sizeof(uint32) };
+			FMemory::Memcpy(&Size, NextSharedMemoryData, uint32size);
 			TempBuffer.SetNum(Size, EAllowShrinking::No);
-			FMemory::Memcpy(TempBuffer.GetData(), SharedMemoryData + sizeof(uint8) + sizeof(uint32), FMath::Min(SharedMemorySize > 0 ? StaticCast<decltype(Size)>(SharedMemorySize) : 0u, Size));
+			FMemory::Memcpy(TempBuffer.GetData(), NextSharedMemoryData + uint32size, FMath::Min(StaticCast<decltype(Size)>(SharedMemorySize), Size));
 		}
 	);
 
