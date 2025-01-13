@@ -1,12 +1,11 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "CoreMinimal.h"
+
 #include "Misc/AutomationTest.h"
+#include "ObjectDelivererManagerTestHelper.h"
 #include "../Utils/JsonSerializer/ODJsonSerializer.h"
 #include "../Utils/JsonSerializer/ODJsonDeserializer.h"
-#include "DeliveryBox/ObjectDeliveryBoxUsingJson.h"
-#include "ObjectDelivererManagerTestHelper.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(ODJsonSerializer_Tests, "ObjectDeliverer.JsonSerializer.SerializationTest", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(ODJsonSerializer_Tests, "ObjectDeliverer.JsonSerializer.SerializationTest", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool ODJsonSerializer_Tests::RunTest(const FString& Parameters)
 {
@@ -48,7 +47,7 @@ bool ODJsonSerializer_Tests::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(ODJsonSerializer_ConvertPropertyNameTest, "ObjectDeliverer.JsonSerializer.ConvertPropertyNameTest", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(ODJsonSerializer_ConvertPropertyNameTest, "ObjectDeliverer.JsonSerializer.ConvertPropertyNameTest", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool ODJsonSerializer_ConvertPropertyNameTest::RunTest(const FString& Parameters)
 {
