@@ -22,9 +22,19 @@ void UODObjectUtil::EnumProperties(UObject* TargetObject, TFunction<bool(FProper
 }
 bool UODObjectUtil::FindClass(const FString& ClassName, UClass*& Class)
 {
-	ConstructorHelpers::FClassFinder<UClass> FindClass(*ClassName);
-	Class = FindClass.Class;
-	const auto bFound{ FindClass.Succeeded() };
-	if (!bFound) UE_LOG(LogObjectDeliverer, Error, TEXT("Can't find class."));
+	UClass* LoadedClass = FSoftClassPath(ClassName).TryLoadClass<UObject>();
+
+	bool bFound = false;
+	if (LoadedClass)
+	{
+		LoadedClass->AddToRoot();
+		bFound = true;
+		Class = LoadedClass;
+	}	
+	if (!bFound)
+	{
+		UE_LOG(LogObjectDeliverer, Error, TEXT("Can't find class."));
+	}
+	
 	return bFound;
 }
