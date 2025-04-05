@@ -1,9 +1,10 @@
 // Copyright 2019 ayumax. All Rights Reserved.
-#include "Misc/AutomationTest.h"
-#include "PacketRule/PacketRuleTerminate.h"
-#include "PacketRule/PacketRuleFactory.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPacketRuleTerminateTest_MakeSendPacket, "ObjectDeliverer.PacketRuleTests.PacketRuleTerminateTest.MakeSendPacket", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+#include "Misc/AutomationTest.h"
+#include "PacketRule/PacketRuleFactory.h"
+#include "PacketRule/PacketRuleTerminate.h"
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPacketRuleTerminateTest_MakeSendPacket, "ObjectDeliverer.PacketRuleTests.PacketRuleTerminateTest.MakeSendPacket", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool FPacketRuleTerminateTest_MakeSendPacket::RunTest(const FString& Parameters)
 {
@@ -69,7 +70,7 @@ bool FPacketRuleTerminateTest_MakeSendPacket::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPacketRuleTerminateTest_NotifyReceiveData, "ObjectDeliverer.PacketRuleTests.PacketRuleTerminateTest.NotifyReceiveData", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPacketRuleTerminateTest_NotifyReceiveData, "ObjectDeliverer.PacketRuleTests.PacketRuleTerminateTest.NotifyReceiveData", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool FPacketRuleTerminateTest_NotifyReceiveData::RunTest(const FString& Parameters)
 {

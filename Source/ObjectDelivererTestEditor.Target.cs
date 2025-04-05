@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 public class ObjectDelivererTestEditorTarget : TargetRules
 {
-	public ObjectDelivererTestEditorTarget(TargetInfo Target) : base(Target)
-	{
-		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-
-		ExtraModuleNames.AddRange( new string[] { "ObjectDelivererTest" } );
-	}
+    public ObjectDelivererTestEditorTarget(TargetInfo Target) : base(Target)
+    {
+        Type = TargetType.Editor;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+        ExtraModuleNames.Add("ObjectDelivererTest");
+    }
 }

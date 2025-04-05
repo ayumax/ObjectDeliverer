@@ -21,53 +21,51 @@ void UPacketRuleTerminate::Initialize()
 
 void UPacketRuleTerminate::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 {
-	BufferForSend.SetNum(BodyBuffer.Num() + Terminate.Num(), false);
-
-	FMemory::Memcpy(BufferForSend.GetData(), BodyBuffer.GetData(), BodyBuffer.Num());
-	FMemory::Memcpy(BufferForSend.GetData() + BodyBuffer.Num(), Terminate.GetData(), Terminate.Num());
-
+	const auto BodyCount{ BodyBuffer.Num() };
+	const auto TerminateCount{ Terminate.Num() };
+	BufferForSend.SetNum(BodyCount + TerminateCount, EAllowShrinking::No);
+	const auto BufferForSendData{ BufferForSend.GetData() };
+	FMemory::Memcpy(BufferForSendData, BodyBuffer.GetData(), BodyCount);
+	FMemory::Memcpy(BufferForSendData + BodyCount, Terminate.GetData(), TerminateCount);
 	DispatchMadeSendBuffer(BufferForSend);
 }
 
 void UPacketRuleTerminate::NotifyReceiveData(const TArray<uint8>& DataBuffer)
 {
 	ReceiveTempBuffer += DataBuffer;
+	const auto TerminateCount{ Terminate.Num() };
 
-	int32 findIndex = -1;
-
-	while (true)
+	while (ReceiveTempBuffer.Num() >= TerminateCount)
 	{
-		for (int i = 0; i <= ReceiveTempBuffer.Num() - Terminate.Num(); ++i)
-		{
-			bool notEqual = false;
-			for (int j = 0; j < Terminate.Num(); ++j)
-			{
-				if (ReceiveTempBuffer[i + j] != Terminate[j])
-				{
-					notEqual = true;
-					break;
-				}
-			}
+		int32 findIndex{ INDEX_NONE };
 
-			if (notEqual == false)
+		for (int32 i{ 0 }, count{ ReceiveTempBuffer.Num() - TerminateCount }; i <= count; i++)
+		{
+			auto bTerminate{ true };
+
+			for (decltype(i) j{ 0u }; j < TerminateCount; j++)
 			{
-				findIndex = i;
+				if (ReceiveTempBuffer[i + j] == Terminate[j])
+					continue;
+
+				bTerminate = false;
 				break;
 			}
+
+			if (!bTerminate)
+				continue;
+
+			findIndex = MoveTemp(i);
+			break;
 		}
 
-		if (findIndex == -1)
-		{
+		if (findIndex <= INDEX_NONE)
 			return;
-		}
 
-		BufferForReceive.SetNum(findIndex, false);
+		BufferForReceive.SetNum(findIndex, EAllowShrinking::No);
 		FMemory::Memcpy(BufferForReceive.GetData(), ReceiveTempBuffer.GetData(), findIndex);
 		DispatchMadeReceiveBuffer(BufferForReceive);
-
 		ReceiveTempBuffer.RemoveAt(0, findIndex + Terminate.Num());
-
-		findIndex = -1;
 	}
 }
 
