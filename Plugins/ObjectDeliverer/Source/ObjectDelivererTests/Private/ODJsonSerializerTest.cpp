@@ -2,8 +2,8 @@
 
 #include "Misc/AutomationTest.h"
 #include "ObjectDelivererManagerTestHelper.h"
-#include "../Utils/JsonSerializer/ODJsonSerializer.h"
-#include "../Utils/JsonSerializer/ODJsonDeserializer.h"
+#include "Utils/JsonSerializer/ODJsonSerializer.h"
+#include "Utils/JsonSerializer/ODJsonDeserializer.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(ODJsonSerializer_Tests, "ObjectDeliverer.JsonSerializer.SerializationTest", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
@@ -27,6 +27,12 @@ bool ODJsonSerializer_Tests::RunTest(const FString& Parameters)
 	UODJsonSerializer* serializer = NewObject<UODJsonSerializer>();
 	auto jsonObj = serializer->CreateJsonObject(testObj);
 
+	FString OutPutString;
+	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutPutString);
+
+	// JsonをFStringに書き込み
+	FJsonSerializer::Serialize(jsonObj.ToSharedRef(), Writer);
+	
 	UODJsonDeserializer* deserializr = NewObject<UODJsonDeserializer>();
 	UJsonSerializerTestObject* testObj2 = Cast<UJsonSerializerTestObject>(deserializr->JsonObjectToUObject(jsonObj, UJsonSerializerTestObject::StaticClass()));
 
@@ -39,6 +45,8 @@ bool ODJsonSerializer_Tests::RunTest(const FString& Parameters)
 	TestEqual(TEXT("check rotator property"), testObj2->RotateProperty, FRotator(1.22f, 2.33f, 3.44f));
 	TestEqual(TEXT("check array property num"), testObj2->ArrayProperty.Num(), 3);
 
+	if (testObj2->ArrayProperty.Num() < 3) return false;
+	
 	for (int i = 0; i < 3; ++i)
 	{
 		TestEqual(TEXT("check array property value"), testObj2->ArrayProperty[i]->IntProperty, i);

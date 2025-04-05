@@ -3,7 +3,7 @@
 
 #include "CoreMinimal.h"
 
-struct ODByteSpan
+struct OBJECTDELIVERER_API ODByteSpan
 {
     uint8* Buffer;
     int32 Length;
@@ -35,7 +35,7 @@ struct ODByteSpan
     }
 };
 
-class ODGrowBuffer
+class OBJECTDELIVERER_API ODGrowBuffer
 {
 public:
     ODGrowBuffer(int32 initialSize = 1024, int32 packetSize = 1024);

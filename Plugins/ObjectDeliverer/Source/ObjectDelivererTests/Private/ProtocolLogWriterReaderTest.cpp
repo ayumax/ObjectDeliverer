@@ -9,7 +9,7 @@
 #include "Protocol/ProtocolFactory.h"
 #include "ObjectDelivererManager.h"
 #include "DeliveryBox/Utf8StringDeliveryBox.h"
-#include "Tests/ObjectDelivererManagerTestHelper.h"
+#include "ObjectDelivererManagerTestHelper.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 

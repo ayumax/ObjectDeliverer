@@ -1,7 +1,7 @@
 {
   "FileVersion": 3,
   "Version": 151,
-  "VersionName": "1.5.1",
+  "VersionName": "1.6.0",
   "FriendlyName": "ObjectDeliverer",
   "Description": "ObjectDeliverer is a data transmission / reception library for Unreal Engine (C ++, Blueprint).",
   "Category": "Programming",
@@ -20,7 +20,18 @@
         "Android",
         "Win64",
         "Mac",
-        "IOS"
+        "IOS",
+        "Linux"
+      ]
+    },
+    {
+      "Name": "ObjectDelivererTests",
+      "Type": "DeveloperTool",
+      "LoadingPhase": "Default",
+      "WhitelistPlatforms": [
+        "Win64",
+        "Mac",
+        "Linux"
       ]
     }
   ]
