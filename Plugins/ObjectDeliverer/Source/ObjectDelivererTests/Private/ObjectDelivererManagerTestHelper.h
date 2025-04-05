@@ -122,3 +122,99 @@ public:
 	}
 
 };
+
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerNestedObject : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	FString Name;
+
+	UPROPERTY()
+	int32 Value;
+};
+
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerComplexObject : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	TMap<FString, int32> MapProperty;
+
+	UPROPERTY()
+	TSet<FString> SetProperty;
+
+	UPROPERTY()
+	UJsonSerializerNestedObject* NestedObject;
+
+	UPROPERTY()
+	TArray<UJsonSerializerNestedObject*> NestedObjectArray;
+};
+
+
+// Class for testing inheritance relationships
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerBaseClass : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	int32 BaseValue;
+    
+	UPROPERTY()
+	FString BaseName;
+};
+
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerDerivedClass : public UJsonSerializerBaseClass
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	float DerivedValue;
+    
+	UPROPERTY()
+	bool DerivedFlag;
+};
+
+
+// Class for testing UE4 basic types
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerUE4TypesObject : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	FTransform TransformProperty;
+    
+	UPROPERTY()
+	FColor ColorProperty;
+    
+	UPROPERTY()
+	FDateTime DateTimeProperty;
+    
+	UPROPERTY()
+	FGuid GuidProperty;
+};
+
+
+// Class for objects with circular references
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerCircularObject : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	FString Name;
+    
+	UPROPERTY()
+	UJsonSerializerCircularObject* Reference;
+};

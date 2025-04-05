@@ -23,4 +23,7 @@ private:
 protected:
 	virtual TSharedPtr<FJsonObject> UObjectToJsonObject(UClass* ObjectClass, const UObject* Obj, int64 CheckFlags = 0, int64 SkipFlags = 0);
 
+private:
+	TArray<UObject*> VisitedObjects;
+
 };

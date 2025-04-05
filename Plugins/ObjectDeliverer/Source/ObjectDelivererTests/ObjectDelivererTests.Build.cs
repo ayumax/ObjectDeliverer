@@ -16,7 +16,6 @@ public class ObjectDelivererTests : ModuleRules
 				"Core",
 				"CoreUObject",
 				"Engine",
-				"InputCore",
 				"Sockets",
 				"Networking",
 				"Json",
