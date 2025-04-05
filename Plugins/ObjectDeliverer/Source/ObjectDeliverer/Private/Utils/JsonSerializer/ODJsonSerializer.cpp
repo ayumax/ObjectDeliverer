@@ -16,7 +16,7 @@ UODJsonSerializer::UODJsonSerializer()
 
 TSharedPtr<FJsonObject> UODJsonSerializer::CreateJsonObject(const UObject* Obj, int64 CheckFlags /*= 0*/, int64 SkipFlags /*= 0*/)
 {
-	return UObjectToJsonObject(Obj->StaticClass(), Obj, CheckFlags, SkipFlags);
+	return UObjectToJsonObject(Obj->GetClass(), Obj, CheckFlags, SkipFlags);
 }
 
 TSharedPtr<FJsonValue> UODJsonSerializer::ObjectJsonCallback(FProperty* Property, const void* Value)
