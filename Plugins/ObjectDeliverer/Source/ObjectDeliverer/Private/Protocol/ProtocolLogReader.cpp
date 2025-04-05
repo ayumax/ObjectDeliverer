@@ -74,77 +74,71 @@ void UProtocolLogReader::Close()
 
 void UProtocolLogReader::Send(const TArray<uint8>& DataBuffer) const
 {
-	
+
 }
 
 void UProtocolLogReader::RequestSend(const TArray<uint8>& DataBuffer)
 {
-	
+
 }
 
 bool UProtocolLogReader::ReadData()
 {
-	if (!Reader) return false;
+	if (!Reader)
+		return false;
 
 	while (!Reader->IsEnd() || CurrentLogTime >= 0)
 	{
 		if (CurrentLogTime >= 0)
 		{
-			auto nowTime = (FDateTime::Now() - StartTime).GetTotalMilliseconds();
-			if (CurrentLogTime <= nowTime)
-			{
-				uint32 Size = ReadBuffer.Num();
-				uint32 wantSize = PacketRule->GetWantSize();
+			const auto nowTime{ (FDateTime::Now() - StartTime).GetTotalMilliseconds() };
 
-				if (wantSize > 0)
-				{
-					if (Size < wantSize) return true;
-				}
-
-				int32 Offset = 0;
-				while (Size > 0)
-				{
-					wantSize = PacketRule->GetWantSize();
-					auto receiveSize = wantSize == 0 ? Size : wantSize;
-
-					ReceiveBuffer.SetNum(receiveSize, false);
-
-					int32 Read = 0;
-					FMemory::Memcpy(ReceiveBuffer.GetData(), ReadBuffer.GetData() + Offset, receiveSize);
-					Offset += receiveSize;
-					Size -= receiveSize;
-
-					PacketRule->NotifyReceiveData(ReceiveBuffer);
-				}
-
-				CurrentLogTime = -1;
-			}
-			else
-			{
+			if (CurrentLogTime > nowTime)
 				break;
+
+			auto Size{ ReadBuffer.Num() };
+			auto wantSize{ PacketRule->GetWantSize() };
+
+			if (wantSize > 0 && Size < wantSize)
+				return true;
+
+			auto Offset{ 0u };
+
+			while (Size > 0)
+			{
+				wantSize = PacketRule->GetWantSize();
+				const auto receiveSize{ wantSize == 0 ? Size : wantSize };
+				ReceiveBuffer.SetNum(receiveSize, EAllowShrinking::No);
+				FMemory::Memcpy(ReceiveBuffer.GetData(), ReadBuffer.GetData() + Offset, receiveSize);
+				Offset += receiveSize;
+				Size -= receiveSize;
+				PacketRule->NotifyReceiveData(ReceiveBuffer);
 			}
+
+			CurrentLogTime = -1;
 		}
 
-		if (Reader->RemainSize() < sizeof(double)) return false;
+		if (Reader->RemainSize() < sizeof(double))
+			return false;
 
 		CurrentLogTime = Reader->Read<double>();
+
 		if (IsFirst && CutFirstInterval)
-		{
 			StartTime -= FTimespan::FromMilliseconds(CurrentLogTime);
-		}
+
 		IsFirst = false;
 
-		if (Reader->RemainSize() < sizeof(int32)) return false;
+		if (Reader->RemainSize() < sizeof(int32))
+			return false;
 
-		int32 bufferSize = Reader->Read<int32>();
+		const auto bufferSize{ Reader->Read<int32>() };
 
-		if (Reader->RemainSize() < bufferSize) return false;
+		if (Reader->RemainSize() < bufferSize)
+			return false;
 
-		ReadBuffer.SetNum(bufferSize, false);
-
+		ReadBuffer.SetNum(bufferSize, EAllowShrinking::No);
 		Reader->Read(ReadBuffer, bufferSize);
 	}
-	
 
 	return true;
 }
