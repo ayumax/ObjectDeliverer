@@ -20,20 +20,33 @@ void UODObjectUtil::EnumProperties(UObject* TargetObject, TFunction<bool(FProper
 		}
 	}
 }
+
 bool UODObjectUtil::FindClass(const FString& ClassName, UClass*& Class)
 {
+	// Method 1: Current method using FSoftClassPath
 	UClass* LoadedClass = FSoftClassPath(ClassName).TryLoadClass<UObject>();
+	
+	// Method 2: Use FindFirstObjectSafe to directly search for the class
+	if (!LoadedClass)
+	{
+		LoadedClass = FindFirstObjectSafe<UClass>(*ClassName);
+	}
+	
+	// Method 3: Use StaticLoadObject to load the class
+	if (!LoadedClass)
+	{
+		LoadedClass = StaticLoadClass(UObject::StaticClass(), nullptr, *ClassName);
+	}
 
 	bool bFound = false;
 	if (LoadedClass)
 	{
-		LoadedClass->AddToRoot();
 		bFound = true;
 		Class = LoadedClass;
 	}	
-	if (!bFound)
+	else
 	{
-		UE_LOG(LogObjectDeliverer, Error, TEXT("Can't find class."));
+		UE_LOG(LogObjectDeliverer, Error, TEXT("Can't find class: %s"), *ClassName);
 	}
 	
 	return bFound;
