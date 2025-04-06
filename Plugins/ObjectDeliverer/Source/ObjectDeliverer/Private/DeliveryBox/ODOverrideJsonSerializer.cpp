@@ -21,16 +21,11 @@ TSharedPtr<FJsonObject> UODNoWriteTypeJsonSerializer::UObjectToJsonObject(UODJso
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 
 	if (!Obj) return JsonObject;
-	JsonObject->SetStringField(TEXT("Type"), Obj->GetClass()->GetPathName());
-
-	TSharedPtr<FJsonObject> JsonObjectBody = MakeShareable(new FJsonObject());
-
+	
 	for (TFieldIterator<FProperty> PropIt(Obj->GetClass(), EFieldIteratorFlags::IncludeSuper); PropIt; ++PropIt)
 	{
-		JsonSerializer->AddJsonValue(JsonObjectBody, Obj, *PropIt, CheckFlags, SkipFlags);
+		JsonSerializer->AddJsonValue(JsonObject, Obj, *PropIt, CheckFlags, SkipFlags);
 	}
-
-	JsonObject->SetObjectField(TEXT("Body"), JsonObjectBody);
 
 	return JsonObject;
 }

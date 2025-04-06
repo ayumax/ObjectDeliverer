@@ -8,7 +8,7 @@ namespace UnrealBuildTool.Rules
 		public ObjectDeliverer(ReadOnlyTargetRules Target) : base(Target)
 		{
             PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-
+            
             PublicIncludePaths.Add(Path.Combine(ModuleDirectory, "Private"));
 
             PublicDependencyModuleNames.AddRange(

@@ -2,9 +2,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PacketRule/PacketRuleFactory.h"
-#include "Protocol/ProtocolFactory.h"
-#include "DeliveryBox/DeliveryBoxFactory.h"
 #include "UObject/GCObject.h"
 #include "DeliveryBox/IODConvertPropertyName.h"
 #include "ObjectDelivererManagerTestHelper.generated.h"
@@ -12,7 +9,7 @@
 class UObjectDelivererProtocol;
 
 UCLASS()
-class OBJECTDELIVERER_API UObjectDelivererManagerTestHelper : public UObject
+class OBJECTDELIVERERTESTS_API UObjectDelivererManagerTestHelper : public UObject
 {
 	GENERATED_BODY()
 
@@ -40,7 +37,7 @@ public:
 };
 
 UCLASS()
-class OBJECTDELIVERER_API UJsonSerializerTestArrayElementObject1 : public UObject
+class OBJECTDELIVERERTESTS_API UJsonSerializerTestArrayElementObject1 : public UObject
 {
 	GENERATED_BODY()
 
@@ -51,7 +48,7 @@ public:
 };
 
 UCLASS()
-class OBJECTDELIVERER_API UJsonSerializerTestArrayElementObject2 : public UJsonSerializerTestArrayElementObject1
+class OBJECTDELIVERERTESTS_API UJsonSerializerTestArrayElementObject2 : public UJsonSerializerTestArrayElementObject1
 {
 	GENERATED_BODY()
 
@@ -61,7 +58,7 @@ public:
 };
 
 UCLASS()
-class OBJECTDELIVERER_API UJsonSerializerTestObject : public UObject
+class OBJECTDELIVERERTESTS_API UJsonSerializerTestObject : public UObject
 {
 	GENERATED_BODY()
 
@@ -92,7 +89,7 @@ public:
 };
 
 UCLASS()
-class OBJECTDELIVERER_API UJsonSerializeConvertNameTestObject : public UObject, public IODConvertPropertyName
+class OBJECTDELIVERERTESTS_API UJsonSerializeConvertNameTestObject : public UObject, public IODConvertPropertyName
 {
 	GENERATED_BODY()
 
@@ -124,4 +121,100 @@ public:
 		return TEXT("");
 	}
 
+};
+
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerNestedObject : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	FString Name;
+
+	UPROPERTY()
+	int32 Value;
+};
+
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerComplexObject : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	TMap<FString, int32> MapProperty;
+
+	UPROPERTY()
+	TSet<FString> SetProperty;
+
+	UPROPERTY()
+	UJsonSerializerNestedObject* NestedObject;
+
+	UPROPERTY()
+	TArray<UJsonSerializerNestedObject*> NestedObjectArray;
+};
+
+
+// Class for testing inheritance relationships
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerBaseClass : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	int32 BaseValue;
+    
+	UPROPERTY()
+	FString BaseName;
+};
+
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerDerivedClass : public UJsonSerializerBaseClass
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	float DerivedValue;
+    
+	UPROPERTY()
+	bool DerivedFlag;
+};
+
+
+// Class for testing UE4 basic types
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerUE4TypesObject : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	FTransform TransformProperty;
+    
+	UPROPERTY()
+	FColor ColorProperty;
+    
+	UPROPERTY()
+	FDateTime DateTimeProperty;
+    
+	UPROPERTY()
+	FGuid GuidProperty;
+};
+
+
+// Class for objects with circular references
+UCLASS()
+class OBJECTDELIVERERTESTS_API UJsonSerializerCircularObject : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	FString Name;
+    
+	UPROPERTY()
+	UJsonSerializerCircularObject* Reference;
 };

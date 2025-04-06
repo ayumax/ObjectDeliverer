@@ -1,5 +1,5 @@
 ﻿// Copyright 2019 ayumax. All Rights Reserved.
-#include "ODGrowBuffer.h"
+#include "Utils/ODGrowBuffer.h"
 
 ODGrowBuffer::ODGrowBuffer(int32 initialSize /*= 1024*/, int32 packetSize /*= 1024*/)
     : currentSize(0)

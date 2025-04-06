@@ -1,7 +1,7 @@
 // Copyright 2019 ayumax. All Rights Reserved.
 
 #include "Misc/AutomationTest.h"
-#include "../Utils/ODGrowBuffer.h"
+#include "Utils/ODGrowBuffer.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(ODGrowBuffer_Tests, "ObjectDeliverer.GrowBuffer.Test", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
