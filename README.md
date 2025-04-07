@@ -13,7 +13,7 @@ It has the following features.
 
 ## Relationship between branch and UE Engine version
 
-The master branch is buildable with UE5 5.0 or later; UE4 requires some modifications to build.
+The master branch has been updated to be buildable with the latest UE5 version. If you need to build it with previous UE versions, some modifications may be required.
 
 
 ## Communication protocol
@@ -29,6 +29,11 @@ You can also add your own protocol.
 
 ## Data division rule
 The following rules are available for built-in split rules of transmitted and received data.
+
+This functionality primarily divides received buffers into appropriate packets, but also plays an important role in reassembling packets that were split across multiple buffers. 
+
+This is especially useful for TCP/IP connections where a single transmission may be fragmented into multiple buffers during network transport.
+
 + FixedSize  
 	Example) In the case of fixed 1024 bytes
 	![fixedlength](https://user-images.githubusercontent.com/8191970/56475737-7d999f00-64c7-11e9-8e9e-0182f1af8156.png)
@@ -42,6 +47,9 @@ The following rules are available for built-in split rules of transmitted and re
 + Split by terminal symbol  
 	Example) When 0x00 is the end
 	![terminate](https://user-images.githubusercontent.com/8191970/56475740-82f6e980-64c7-11e9-91a6-05d77cfdbd60.png)
+
++ No division  
+    Uses the received buffer as-is without any packet splitting or combining operations.
 
 ## Serialization method
 + Byte Array
@@ -103,4 +111,25 @@ void UMyClass::OnReceive(UObjectDelivererProtocol* ClientSocket, const TArray<ui
 
 # How to use each function
 Look at the Wiki
+
 https://github.com/ayumax/ObjectDeliverer/wiki
+
+# License
+This plugin is provided under the MIT License.
+- This plugin is provided under the MIT License.
+- However, if you download and use it from the Epic Games Marketplace, the Epic Games license terms will apply.
+
+## Contributing
+
+We welcome contributions from everyone! If you'd like to improve ObjectDeliverer, here's how you can help:
+
+1. Fork the repository
+2. Create your feature branch from the `devel` branch
+3. Make your changes
+4. Submit a pull request targeting the `devel` branch
+
+All pull requests should be directed to the `devel` branch, not the master branch. This helps us manage changes and test them properly before merging into the main codebase.
+
+Whether you're fixing bugs, adding features, improving documentation, or suggesting enhancements - your contributions are appreciated!
+
+For major changes, please open an issue first to discuss what you would like to change.
