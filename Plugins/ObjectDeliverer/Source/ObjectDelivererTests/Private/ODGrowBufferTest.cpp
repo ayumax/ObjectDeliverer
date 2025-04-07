@@ -20,8 +20,8 @@ bool ODGrowBuffer_Tests::RunTest(const FString& Parameters)
 		TestEqual(TEXT("check buffer size"), buffer.GetLength(), 2000);
 		TestEqual(TEXT("check inner buffer size"), buffer.GetInnerBufferSize(), packetSize * 2);
 
-		uint8 testDataARray[] = { 1, 2, 3 };
-		buffer.Add(ODByteSpan(testDataARray, sizeof(testDataARray)));
+		uint8 testDataArray[] = { 1, 2, 3 };
+		buffer.Add(ODByteSpan(testDataArray, sizeof(testDataArray)));
 
 		TestEqual(TEXT("check buffer size"), buffer.GetLength(), 2003);
 		TestEqual(TEXT("check inner buffer size"), buffer.GetInnerBufferSize(), packetSize * 2);
@@ -36,8 +36,8 @@ bool ODGrowBuffer_Tests::RunTest(const FString& Parameters)
 		TestEqual(TEXT("check Add Data2"), buffer[1], 2);
 		TestEqual(TEXT("check Add Data3"), buffer[2], 3);
 
-		uint8 testDataARray2[] = { 0xEE, 0xEF };
-		buffer.CopyFrom(ODByteSpan(testDataARray2, sizeof(testDataARray2)), 1);
+		uint8 testDataArray2[] = { 0xEE, 0xEF };
+		buffer.CopyFrom(ODByteSpan(testDataArray2, sizeof(testDataArray2)), 1);
 		TestEqual(TEXT("check buffer size"), buffer.GetLength(), 3);
 		TestEqual(TEXT("check inner buffer size"), buffer.GetInnerBufferSize(), packetSize * 2);
 		TestEqual(TEXT("check Add Data1"), buffer[0], 1);
