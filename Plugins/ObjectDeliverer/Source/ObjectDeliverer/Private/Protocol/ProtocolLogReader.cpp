@@ -108,7 +108,7 @@ bool UProtocolLogReader::ReadData()
 			{
 				wantSize = PacketRule->GetWantSize();
 				const auto receiveSize{ wantSize == 0 ? Size : wantSize };
-				ReceiveBuffer.SetNum(receiveSize, EAllowShrinking::No);
+				ReceiveBuffer.SetNum(receiveSize, false);
 				FMemory::Memcpy(ReceiveBuffer.GetData(), ReadBuffer.GetData() + Offset, receiveSize);
 				Offset += receiveSize;
 				Size -= receiveSize;
@@ -136,7 +136,7 @@ bool UProtocolLogReader::ReadData()
 		if (Reader->RemainSize() < bufferSize)
 			return false;
 
-		ReadBuffer.SetNum(bufferSize, EAllowShrinking::No);
+		ReadBuffer.SetNum(bufferSize, false);
 		Reader->Read(ReadBuffer, bufferSize);
 	}
 

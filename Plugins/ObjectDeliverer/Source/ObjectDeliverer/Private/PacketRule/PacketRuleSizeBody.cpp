@@ -21,7 +21,7 @@ void UPacketRuleSizeBody::Initialize()
 void UPacketRuleSizeBody::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 {
 	const auto BodyBufferNum{ BodyBuffer.Num() };
-	BufferForSend.SetNum(BodyBufferNum + SizeLength, EAllowShrinking::No);
+	BufferForSend.SetNum(BodyBufferNum + SizeLength, false);
 
 	for (decltype(SizeLength) i{ 0u }; i < SizeLength; i++)
 		if (BufferForSend.IsValidIndex(i))
