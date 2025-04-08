@@ -25,7 +25,9 @@ jobs:
         run: |
           if [ -f .github/cherry-pick-config.yml ]; then
             echo "config_exists=true" >> $GITHUB_OUTPUT
-            echo "target_branches=$(yq -o=json '.target_branches' .github/cherry-pick-config.yml)" >> $GITHUB_OUTPUT
+            echo "target_branches<<EOF" >> $GITHUB_OUTPUT
+            yq -o=json '.target_branches' .github/cherry-pick-config.yml >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
           else
             echo "config_exists=false" >> $GITHUB_OUTPUT
           fi
