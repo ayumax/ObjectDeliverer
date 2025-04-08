@@ -1,0 +1,98 @@
+name: Auto Cherry-Pick
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '.github/cherry-pick-config.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  cherry-pick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 
+
+      - name: Read config file
+        id: config
+        run: |
+          if [ -f .github/cherry-pick-config.yml ]; then
+            echo "config_exists=true" >> $GITHUB_OUTPUT
+            echo "target_branches=$(yq -o=json '.target_branches' .github/cherry-pick-config.yml)" >> $GITHUB_OUTPUT
+          else
+            echo "config_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Get commit info
+        id: commit_info
+        run: |
+          echo "commit_id=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+          echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+          echo "commit_author=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
+          echo "commit_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Cherry-pick and create PRs
+        if: steps.config.outputs.config_exists == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_BRANCHES: ${{ steps.config.outputs.target_branches }}
+          COMMIT_ID: ${{ steps.commit_info.outputs.commit_id }}
+          COMMIT_MESSAGE: ${{ steps.commit_info.outputs.commit_message }}
+          COMMIT_AUTHOR: ${{ steps.commit_info.outputs.commit_author }}
+          COMMIT_SHORT: ${{ steps.commit_info.outputs.commit_short }}
+        run: |
+          # Parse JSON array with JQ
+          echo "$TARGET_BRANCHES" | jq -c '.[]' | while read -r branch; do
+            # Remove double quotes
+            branch=$(echo $branch | tr -d '"')
+            echo "Processing branch: $branch"
+            
+            # Checkout target branch
+            git fetch origin
+            git checkout $branch || git checkout -b $branch origin/$branch
+            
+            # Create a new branch for cherry-picking
+            # Remove special characters from branch name
+            safe_branch=$(echo $branch | sed 's/[^a-zA-Z0-9_-]/_/g')
+            cherry_branch="cherry-pick-${COMMIT_SHORT}-to-$safe_branch"
+            
+            # Attempt cherry-pick, skip if it fails
+            git cherry-pick $COMMIT_ID || {
+              echo "Cherry-pick failed for $branch, skipping..."
+              git cherry-pick --abort
+              git checkout master
+              continue
+            }
+            
+            # Push to remote
+            git push origin $cherry_branch
+            
+            # Set PR title and description
+            PR_TITLE="[Cherry-pick] $(echo "$COMMIT_MESSAGE" | head -n 1) to $branch"
+            PR_BODY="Cherry-pick of commit $COMMIT_ID from master to $branch.
+
+            Original commit by: $COMMIT_AUTHOR
+            Original commit message: 
+
+            $COMMIT_MESSAGE"
+            
+            # Create PR using gh CLI
+            gh pr create --base $branch --head $cherry_branch --title "$PR_TITLE" --body "$PR_BODY"
+            echo "Successfully created PR to $branch"
+            
+            # Return to master branch
+            git checkout master
+          done
+
