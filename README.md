@@ -24,8 +24,8 @@ You can also add your own protocol.
 + UDP(Sender)
 + UDP(Receiver)
 + Shared Memory(Windows Only)
-+ LogFile Writer
-+ LogFile Reader
++ File Writer
++ File Reader
 
 ## Data division rule
 The following rules are available for built-in split rules of transmitted and received data.
