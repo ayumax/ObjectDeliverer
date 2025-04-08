@@ -128,7 +128,7 @@ We welcome contributions from everyone! If you'd like to improve ObjectDeliverer
 3. Make your changes
 4. Submit a pull request targeting the `master` branch
 
-All pull requests should be directed to the `master` branch, not the master branch. This helps us manage changes and test them properly before merging into the main codebase.
+All pull requests should be directed to the `master` branch. This helps us manage changes and test them properly before merging into the main codebase.
 
 Whether you're fixing bugs, adding features, improving documentation, or suggesting enhancements - your contributions are appreciated!
 
