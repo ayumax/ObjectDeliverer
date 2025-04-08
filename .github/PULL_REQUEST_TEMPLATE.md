@@ -26,7 +26,7 @@
 ### Checklist
 - [ ] I have tested these changes locally
 - [ ] I have updated documentation as needed
-- [ ] This PR targets the `devel` branch (not master)
+- [ ] This PR targets the `master` branch
 - [ ] I have added/updated tests to cover my changes (if applicable)
 
 ### Related Issues
