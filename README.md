@@ -124,11 +124,11 @@ This plugin is provided under the MIT License.
 We welcome contributions from everyone! If you'd like to improve ObjectDeliverer, here's how you can help:
 
 1. Fork the repository
-2. Create your feature branch from the `devel` branch
+2. Create your feature branch from the `master` branch
 3. Make your changes
-4. Submit a pull request targeting the `devel` branch
+4. Submit a pull request targeting the `master` branch
 
-All pull requests should be directed to the `devel` branch, not the master branch. This helps us manage changes and test them properly before merging into the main codebase.
+All pull requests should be directed to the `master` branch, not the master branch. This helps us manage changes and test them properly before merging into the main codebase.
 
 Whether you're fixing bugs, adding features, improving documentation, or suggesting enhancements - your contributions are appreciated!
 
