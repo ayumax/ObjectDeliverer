@@ -1,10 +1,14 @@
 # ObjectDeliverer
 
 ## UE Marketplace
-[https://www.unrealengine.com/marketplace/ja/slug/objectdeliverer](https://www.unrealengine.com/marketplace/ja/slug/objectdeliverer)
+[https://www.fab.com/ja/listings/b6ffd7d7-80da-483f-a7fa-09cb46b72651](https://www.fab.com/ja/listings/b6ffd7d7-80da-483f-a7fa-09cb46b72651)
+
+If you acquire this plugin through the Marketplace, you will be charged the specified fee.
 
 ## Description
 ObjectDeliverer is a data transmission / reception library for Unreal Engine (C ++, Blueprint).
+
+This is especially helpful when using raw TCP/IP or UDP communication. Depending on the situation, it’s also easy to switch the protocol from TCP/IP to UDP.
 
 It has the following features.
 
