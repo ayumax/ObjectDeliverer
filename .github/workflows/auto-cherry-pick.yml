@@ -70,13 +70,14 @@ jobs:
             # Remove special characters from branch name
             safe_branch=$(echo $branch | sed 's/[^a-zA-Z0-9_-]/_/g')
             cherry_branch="cherry-pick-${COMMIT_SHORT}-to-$safe_branch"
+            git checkout -b $cherry_branch
             
             # Attempt cherry-pick, skip if it fails
             git cherry-pick $COMMIT_ID || {
               echo "Cherry-pick failed for $branch, skipping..."
               git cherry-pick --abort
               git checkout master
-              continue
+             continue
             }
             
             # Push to remote
