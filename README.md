@@ -13,7 +13,11 @@ It has the following features.
 
 ## Relationship between branch and UE Engine version
 
-The master branch has been updated to be buildable with the latest UE5 version. If you need to build it with previous UE versions, some modifications may be required.
+The master branch is configured to be built with the latest version of Unreal Engine.
+
+If you want to use an older version of UE, please use the branch named after that version (for example, UE5.4 branch for v5.4).
+
+However, the older version branches may not have the latest updates applied. If you want to use the latest features on an older version of UE, you will need to obtain the master branch and then modify it so it can be built with the older UE.
 
 
 ## Communication protocol
