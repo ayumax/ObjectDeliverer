@@ -1,0 +1,21 @@
+name: Unreal Plugin Test
+
+on:
+  pull_request:
+    branches: [ master, UE5.3, UE5.4, UE5.5 ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: [self-hosted, spot, unreal]
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Run Plugin Tests
+        uses: ayumax/ci-cd-unreal-engine@main
+        with:
+          plugin_name: ObjectDeliverer
+          project_name: ObjectDelivererTest
