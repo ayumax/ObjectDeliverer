@@ -1,0 +1,50 @@
+name: Unreal Plugin Test
+
+on:
+  pull_request:
+    branches: [ main, UE5.3, UE5.4, UE5.5 ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: [self-hosted, spot, unreal]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set Unreal Engine version based on target branch
+        id: set-ue-version
+        run: |
+          if [[ "${{ github.base_ref }}" == "UE5.3" ]]; then
+            echo "UE_VERSION=dev-slim-5.3" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.base_ref }}" == "UE5.4" ]]; then
+            echo "UE_VERSION=dev-slim-5.4" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.base_ref }}" == "UE5.5" ]]; then
+            echo "UE_VERSION=dev-slim-5.5" >> $GITHUB_OUTPUT
+          else
+            # デフォルトバージョン (mainブランチなど他のブランチ向け)
+            echo "UE_VERSION=dev-slim-5.5" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Print selected Unreal Engine version
+        run: echo "Testing with Unreal Engine ${{ steps.set-ue-version.outputs.UE_VERSION }}"
+      
+      - name: Test Plugin with Unreal Engine
+        run: |
+          # Dockerを使用してUnreal Engineのテストを実行
+          docker run --rm \
+            -v ${{ github.workspace }}:/project \
+            ghcr.io/epicgames/unreal-engine:${{ steps.set-ue-version.outputs.UE_VERSION }} \
+            /bin/bash -c "cd /project && \
+            ./.github/RunPluginTests.sh || exit 1"
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results-${{ steps.set-ue-version.outputs.UE_VERSION }}
+          path: |
+            ./TestResults
+            ./Saved/Logs
+            
