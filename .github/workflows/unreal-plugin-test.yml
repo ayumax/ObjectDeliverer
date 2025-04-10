@@ -2,7 +2,7 @@ name: Unreal Plugin Test
 
 on:
   pull_request:
-    branches: [ main, UE5.3, UE5.4, UE5.5 ]
+    branches: [ master, UE5.3, UE5.4, UE5.5 ]
     types: [opened, synchronize, reopened]
 
 jobs:
