@@ -1,5 +1,11 @@
 # ObjectDeliverer
 
+![master](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=master)
+
+![5.5](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=UE5.5)
+![5.4](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=UE5.4)
+![5.3](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=UE5.3)
+
 ## UE Marketplace
 [https://www.fab.com/ja/listings/b6ffd7d7-80da-483f-a7fa-09cb46b72651](https://www.fab.com/ja/listings/b6ffd7d7-80da-483f-a7fa-09cb46b72651)
 
