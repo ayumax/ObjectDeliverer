@@ -19,21 +19,40 @@ else
     echo "Using project file: $PROJECT_FILE"
 fi
 
-# Use the Engine path from Docker image
-# Adjust UE_ENGINE_DIR to match Docker image structure
-UE_ENGINE_DIR="/Engine"
-if [ ! -d "$UE_ENGINE_DIR" ]; then
-    echo "Engine directory not found at $UE_ENGINE_DIR"
-    # Try alternate location
-    UE_ENGINE_DIR="/opt/unreal-engine/Engine"
-    if [ ! -d "$UE_ENGINE_DIR" ]; then
-        echo "Engine directory not found at alternate location $UE_ENGINE_DIR"
+# Try to find the UnrealEditor-Cmd executable in various possible locations
+UE_CMD=""
+POSSIBLE_PATHS=(
+    "/home/ue5/UnrealEngine/Engine/Binaries/Linux/UnrealEditor-Cmd"
+    "/opt/unreal/Engine/Binaries/Linux/UnrealEditor-Cmd"
+    "/UnrealEngine/Engine/Binaries/Linux/UnrealEditor-Cmd"
+    "/Engine/Binaries/Linux/UnrealEditor-Cmd"
+)
+
+for CMD_PATH in "${POSSIBLE_PATHS[@]}"; do
+    echo "Checking for UnrealEditor-Cmd at: $CMD_PATH"
+    if [ -f "$CMD_PATH" ]; then
+        UE_CMD="$CMD_PATH"
+        echo "Found UnrealEditor-Cmd at: $UE_CMD"
+        break
+    fi
+done
+
+# If we didn't find it in the known locations, try to search for it
+if [ -z "$UE_CMD" ]; then
+    echo "Searching for UnrealEditor-Cmd in the filesystem..."
+    UE_CMD=$(find / -name "UnrealEditor-Cmd" -type f 2>/dev/null | head -1)
+    
+    if [ -n "$UE_CMD" ]; then
+        echo "Found UnrealEditor-Cmd at: $UE_CMD"
+    else
+        echo "ERROR: Could not find UnrealEditor-Cmd executable. Please specify the correct path."
         exit 1
     fi
 fi
 
-# Run the test using the full path to UnrealEditor-Cmd
-"$UE_ENGINE_DIR/Binaries/Linux/UnrealEditor-Cmd" "$PROJECT_FILE" \
+# Run the test using the found UnrealEditor-Cmd path
+echo "Running tests with: $UE_CMD"
+"$UE_CMD" "$PROJECT_FILE" \
     -ExecCmds="Automation RunTests $PLUGIN_NAME" \
     -unattended \
     -NullRHI \
