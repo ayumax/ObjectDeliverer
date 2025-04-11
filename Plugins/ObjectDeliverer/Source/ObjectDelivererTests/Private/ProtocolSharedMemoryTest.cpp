@@ -9,7 +9,7 @@
 #include "ObjectDelivererManager.h"
 #include "ObjectDelivererManagerTestHelper.h"
 
-#if WITH_DEV_AUTOMATION_TESTS
+#if WITH_DEV_AUTOMATION_TESTS && PLATFORM_WINDOWS
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolSharedMemoryTest, "ObjectDeliverer.ProtocolTest.ProtocolSharedMemoryTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
@@ -66,4 +66,5 @@ bool FProtocolSharedMemoryTest::RunTest(const FString& Parameters)
 
 	return true;
 }
-#endif
+
+#endif // WITH_DEV_AUTOMATION_TESTS && PLATFORM_WINDOWS
