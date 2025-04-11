@@ -32,6 +32,7 @@ jobs:
       - name: Test Plugin with Unreal Engine
         run: |
           docker run --rm \
+            --network=host \
             -v ${{ github.workspace }}:/project \
             ghcr.io/epicgames/unreal-engine:${{ steps.set-ue-version.outputs.UE_VERSION }} \
             /bin/bash -c "cd /project && \
@@ -45,4 +46,3 @@ jobs:
           path: |
             ./TestResults
             ./Saved/Logs
-            
