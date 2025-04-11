@@ -45,7 +45,7 @@ BUILD_LOG="$PROJECT_DIR/TestResults/BuildLog.log"
 
 # ステップ1: プロジェクトのビルド（テスト実行なし）
 echo "Building project without running tests..."
-"$BUILD_SCRIPT" ObjectDelivererTestEditor Linux Development "$PROJECT_FILE" -notools -ModuleWithSuffix=$PLUGIN_NAME,$PLUGIN_NAME -log="$BUILD_LOG"
+"$BUILD_SCRIPT" ObjectDelivererTestEditor Linux Development "$PROJECT_FILE" -notools -log="$BUILD_LOG"
 
 # ビルド結果の確認
 BUILD_RESULT=$?
