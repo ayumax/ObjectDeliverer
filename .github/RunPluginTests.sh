@@ -9,32 +9,23 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 PLUGIN_NAME="ObjectDeliverer"
 echo "Starting $PLUGIN_NAME plugin tests with UE5..."
 
-# プラグインファイルのパスを指定
-PLUGIN_FILE="$PROJECT_DIR/Plugins/$PLUGIN_NAME/$PLUGIN_NAME.uplugin"
-if [ ! -f "$PLUGIN_FILE" ]; then
-    # 別の場所を確認
-    PLUGIN_FILE="$PROJECT_DIR/$PLUGIN_NAME.uplugin"
-    if [ ! -f "$PLUGIN_FILE" ]; then
-        echo "ERROR: Could not find plugin file at: $PLUGIN_FILE"
-        exit 1
-    fi
+# uprojectファイルのパスを明示的に指定
+PROJECT_FILE="$PROJECT_DIR/ObjectDelivererTest.uproject"
+
+if [ ! -f "$PROJECT_FILE" ]; then
+    echo "ERROR: Could not find ObjectDelivererTest.uproject at: $PROJECT_FILE"
+    ls -la "$PROJECT_DIR"
+    exit 1
 fi
 
-echo "Using plugin file: $PLUGIN_FILE"
+echo "Using project file: $PROJECT_FILE"
 
 # UnrealEditor-Cmd の場所を検索
 UE_CMD=$(find /home/ue4/UnrealEngine -name "UnrealEditor-Cmd" -type f | head -1)
 
 if [ -z "$UE_CMD" ]; then
-    # 見つからない場合は代替の場所を確認
-    UE_CMD=$(find / -name "UnrealEditor-Cmd" -type f 2>/dev/null | head -1)
-    
-    if [ -z "$UE_CMD" ]; then
-        echo "ERROR: Could not find UnrealEditor-Cmd executable in the container"
-        echo "Available executables in /home/ue4/UnrealEngine/Engine/Binaries/Linux:"
-        ls -la /home/ue4/UnrealEngine/Engine/Binaries/Linux/ || echo "Directory not found"
-        exit 1
-    fi
+    echo "ERROR: Could not find UnrealEditor-Cmd executable"
+    exit 1
 fi
 
 echo "Using UnrealEditor-Cmd at: $UE_CMD"
@@ -42,20 +33,21 @@ echo "Using UnrealEditor-Cmd at: $UE_CMD"
 # テスト結果のログディレクトリを作成
 mkdir -p "$PROJECT_DIR/TestResults"
 LOGFILE="$PROJECT_DIR/TestResults/AutomationTest.log"
+REPORT_PATH="$PROJECT_DIR/TestResults"
 
-# プラグインテスト実行
+# 公式ドキュメントに基づくテスト実行コマンド
+# RunTest (単数形) を使用し、終了するために ;Quit を追加
 "$UE_CMD" \
-    "$PLUGIN_FILE" \
-    -ExecCmds="Automation RunTests $PLUGIN_NAME" \
+    "$PROJECT_FILE" \
+    -ExecCmds="Automation RunTest $PLUGIN_NAME;Quit" \
     -unattended \
     -NullRHI \
     -nopause \
-    -waitfortest \
     -log \
     -stdout \
     -DDC-ForceMemoryCache \
     -abslog="$LOGFILE" \
-    -ReportExportPath="$PROJECT_DIR/TestResults"
+    -ReportExportPath="$REPORT_PATH"
 
 # テスト結果の終了コードを取得
 TEST_RESULT=$?
