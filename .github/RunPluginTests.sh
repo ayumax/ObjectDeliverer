@@ -9,7 +9,7 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 PLUGIN_NAME="ObjectDeliverer"
 echo "Starting $PLUGIN_NAME plugin tests with UE5..."
 
-# uprojectファイルのパスを明示的に指定
+# uprojectファイルのパスを指定
 PROJECT_FILE="$PROJECT_DIR/ObjectDelivererTest.uproject"
 
 if [ ! -f "$PROJECT_FILE" ]; then
@@ -20,23 +20,52 @@ fi
 
 echo "Using project file: $PROJECT_FILE"
 
-# UnrealEditor-Cmd の場所を検索
-UE_CMD=$(find /home/ue4/UnrealEngine -name "UnrealEditor-Cmd" -type f | head -1)
+# UnrealEngine関連のコマンドの場所を検索
+UE_DIR="/home/ue4/UnrealEngine"
+UE_CMD=$(find "$UE_DIR" -name "UnrealEditor-Cmd" -type f | head -1)
+BUILD_SCRIPT=$(find "$UE_DIR" -name "Build.sh" -type f | grep -i "Linux/Build.sh" | head -1)
 
 if [ -z "$UE_CMD" ]; then
     echo "ERROR: Could not find UnrealEditor-Cmd executable"
     exit 1
 fi
 
+if [ -z "$BUILD_SCRIPT" ]; then
+    echo "ERROR: Could not find Build.sh script"
+    exit 1
+fi
+
 echo "Using UnrealEditor-Cmd at: $UE_CMD"
+echo "Using Build.sh at: $BUILD_SCRIPT"
 
 # テスト結果のログディレクトリを作成
 mkdir -p "$PROJECT_DIR/TestResults"
 LOGFILE="$PROJECT_DIR/TestResults/AutomationTest.log"
-REPORT_PATH="$PROJECT_DIR/TestResults"
+BUILD_LOG="$PROJECT_DIR/TestResults/BuildLog.log"
 
-# 公式ドキュメントに基づくテスト実行コマンド
-# RunTest (単数形) を使用し、終了するために ;Quit を追加
+echo "=== Building project (including plugin) for Linux ==="
+# プロジェクトをビルド（プラグインも一緒にビルドされる）
+chmod +x "$BUILD_SCRIPT"
+
+PROJECT_NAME=$(basename "$PROJECT_FILE" .uproject)
+"$BUILD_SCRIPT" \
+    "${PROJECT_NAME}Editor" Linux Development \
+    -Project="$PROJECT_FILE" \
+    -TargetType=Editor > "$BUILD_LOG" 2>&1
+    
+BUILD_RESULT=$?
+
+if [ $BUILD_RESULT -ne 0 ]; then
+    echo "Build failed with code: $BUILD_RESULT"
+    echo "Last 30 lines of build log:"
+    tail -n 30 "$BUILD_LOG"
+    exit $BUILD_RESULT
+else
+    echo "Build completed successfully!"
+fi
+
+echo "=== Running plugin tests ==="
+# テスト実行
 "$UE_CMD" \
     "$PROJECT_FILE" \
     -ExecCmds="Automation RunTest $PLUGIN_NAME;Quit" \
@@ -47,7 +76,7 @@ REPORT_PATH="$PROJECT_DIR/TestResults"
     -stdout \
     -DDC-ForceMemoryCache \
     -abslog="$LOGFILE" \
-    -ReportExportPath="$REPORT_PATH"
+    -ReportExportPath="$PROJECT_DIR/TestResults"
 
 # テスト結果の終了コードを取得
 TEST_RESULT=$?
