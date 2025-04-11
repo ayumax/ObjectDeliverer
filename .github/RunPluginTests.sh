@@ -43,38 +43,29 @@ mkdir -p "$PROJECT_DIR/TestResults"
 LOGFILE="$PROJECT_DIR/TestResults/AutomationTest.log"
 BUILD_LOG="$PROJECT_DIR/TestResults/BuildLog.log"
 
-echo "=== Building project (including plugin) for Linux ==="
-# プロジェクトをビルド（プラグインも一緒にビルドされる）
-chmod +x "$BUILD_SCRIPT"
+# ステップ1: プロジェクトのビルド（テスト実行なし）
+echo "Building project without running tests..."
+"$BUILD_SCRIPT" ObjectDelivererTestEditor Linux Development "$PROJECT_FILE" -notools -ModuleWithSuffix=$PLUGIN_NAME,$PLUGIN_NAME -log="$BUILD_LOG"
 
-PROJECT_NAME=$(basename "$PROJECT_FILE" .uproject)
-"$BUILD_SCRIPT" \
-    "${PROJECT_NAME}Editor" Linux Development \
-    -Project="$PROJECT_FILE" \
-    -TargetType=Editor > "$BUILD_LOG" 2>&1
-    
+# ビルド結果の確認
 BUILD_RESULT=$?
-
 if [ $BUILD_RESULT -ne 0 ]; then
-    echo "Build failed with code: $BUILD_RESULT"
-    echo "Last 30 lines of build log:"
-    tail -n 30 "$BUILD_LOG"
+    echo "Build failed with exit code: $BUILD_RESULT"
+    cat "$BUILD_LOG"
     exit $BUILD_RESULT
-else
-    echo "Build completed successfully!"
 fi
 
-echo "=== Running plugin tests ==="
-# テスト実行
-"$UE_CMD" \
-    "$PROJECT_FILE" \
-    -ExecCmds="Automation RunTest $PLUGIN_NAME;Quit" \
+echo "Build completed successfully!"
+
+# ステップ2: ObjectDelivererプラグインのテストのみを実行
+echo "Running ObjectDeliverer plugin tests only..."
+"$UE_CMD" "$PROJECT_FILE" \
+    -ExecCmds="Automation RunTests $PLUGIN_NAME" \
     -unattended \
     -NullRHI \
     -nopause \
     -log \
     -stdout \
-    -DDC-ForceMemoryCache \
     -abslog="$LOGFILE" \
     -ReportExportPath="$PROJECT_DIR/TestResults"
 
@@ -86,12 +77,12 @@ if [ $TEST_RESULT -eq 0 ]; then
     echo "Tests completed successfully!"
 else
     echo "Tests failed with exit code: $TEST_RESULT"
-    
-    # エラーの詳細を表示
-    if [ -f "$LOGFILE" ]; then
-        echo "Last 30 lines of log:"
-        tail -n 30 "$LOGFILE"
-    fi
+fi
+
+# ログファイルを TestResults ディレクトリにコピー
+if [ -d "$PROJECT_DIR/Saved/Logs" ]; then
+    cp -r "$PROJECT_DIR/Saved/Logs"/* "$PROJECT_DIR/TestResults/"
+    echo "Log files copied to TestResults directory"
 fi
 
 exit $TEST_RESULT
