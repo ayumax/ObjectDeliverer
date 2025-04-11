@@ -26,6 +26,7 @@ POSSIBLE_PATHS=(
     "/opt/unreal/Engine/Binaries/Linux/UnrealEditor-Cmd"
     "/UnrealEngine/Engine/Binaries/Linux/UnrealEditor-Cmd"
     "/Engine/Binaries/Linux/UnrealEditor-Cmd"
+    "/home/ue4/UnrealEngine/Engine/Binaries/Linux/UnrealEditor-Cmd"
 )
 
 for CMD_PATH in "${POSSIBLE_PATHS[@]}"; do
@@ -50,7 +51,10 @@ if [ -z "$UE_CMD" ]; then
     fi
 fi
 
-# Run the test using the found UnrealEditor-Cmd path
+# Create directories if needed
+mkdir -p "$PROJECT_DIR/Saved/Logs"
+
+# Run the test using the found UnrealEditor-Cmd path with DDC-ForceMemoryCache option
 echo "Running tests with: $UE_CMD"
 "$UE_CMD" "$PROJECT_FILE" \
     -ExecCmds="Automation RunTests $PLUGIN_NAME" \
@@ -59,7 +63,9 @@ echo "Running tests with: $UE_CMD"
     -nopause \
     -waitfortest \
     -log \
-    -stdout
+    -stdout \
+    -DDC-ForceMemoryCache \
+    -abslog="$PROJECT_DIR/Saved/Logs/AutomationTest.log"
 
 # Get test result exit code
 TEST_RESULT=$?
@@ -69,6 +75,13 @@ if [ $TEST_RESULT -eq 0 ]; then
     echo "Tests completed successfully!"
 else
     echo "Tests failed with exit code: $TEST_RESULT"
+    echo "See logs for details at: $PROJECT_DIR/Saved/Logs/AutomationTest.log"
+    
+    # Display the end of the log file for quick diagnosis
+    if [ -f "$PROJECT_DIR/Saved/Logs/AutomationTest.log" ]; then
+        echo "Last 50 lines of log:"
+        tail -n 50 "$PROJECT_DIR/Saved/Logs/AutomationTest.log"
+    fi
 fi
 
 # Create test results directory

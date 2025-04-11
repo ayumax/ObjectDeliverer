@@ -23,7 +23,6 @@ jobs:
           elif [[ "${{ github.base_ref }}" == "UE5.5" ]]; then
             echo "UE_VERSION=dev-slim-5.5" >> $GITHUB_OUTPUT
           else
-            # デフォルトバージョン (mainブランチなど他のブランチ向け)
             echo "UE_VERSION=dev-slim-5.5" >> $GITHUB_OUTPUT
           fi
       
@@ -32,7 +31,6 @@ jobs:
       
       - name: Test Plugin with Unreal Engine
         run: |
-          # Dockerを使用してUnreal Engineのテストを実行
           docker run --rm \
             -v ${{ github.workspace }}:/project \
             ghcr.io/epicgames/unreal-engine:${{ steps.set-ue-version.outputs.UE_VERSION }} \
