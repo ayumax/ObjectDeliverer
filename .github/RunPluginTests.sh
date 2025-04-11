@@ -22,9 +22,22 @@ fi
 
 echo "Using plugin file: $PLUGIN_FILE"
 
-# UE5でテストを実行
-# -RunAutomationTest は特定のプラグインのテストを実行するために使用
-UE_CMD="UnrealEditor-Cmd"
+# UnrealEditor-Cmd の場所を検索
+UE_CMD=$(find /home/ue4/UnrealEngine -name "UnrealEditor-Cmd" -type f | head -1)
+
+if [ -z "$UE_CMD" ]; then
+    # 見つからない場合は代替の場所を確認
+    UE_CMD=$(find / -name "UnrealEditor-Cmd" -type f 2>/dev/null | head -1)
+    
+    if [ -z "$UE_CMD" ]; then
+        echo "ERROR: Could not find UnrealEditor-Cmd executable in the container"
+        echo "Available executables in /home/ue4/UnrealEngine/Engine/Binaries/Linux:"
+        ls -la /home/ue4/UnrealEngine/Engine/Binaries/Linux/ || echo "Directory not found"
+        exit 1
+    fi
+fi
+
+echo "Using UnrealEditor-Cmd at: $UE_CMD"
 
 # テスト結果のログディレクトリを作成
 mkdir -p "$PROJECT_DIR/TestResults"
