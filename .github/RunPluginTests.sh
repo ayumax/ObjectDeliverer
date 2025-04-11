@@ -1,27 +1,39 @@
 #!/bin/bash
-# プラグインテスト用スクリプト for Linux + UE5
+# Update the script to run with UE5.5 Docker image
 
-# スクリプトの実行場所を取得
+# Get script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
-# プラグイン名を設定
+# Set plugin name
 PLUGIN_NAME="ObjectDeliverer"
-echo "Starting $PLUGIN_NAME plugin tests with UE5..."
+echo "Starting $PLUGIN_NAME plugin tests with UE5.5..."
 
-# プラグイン名からプロジェクトファイル名を動的に生成
+# Generate project file name from plugin name
 PROJECT_FILE="$PROJECT_DIR/${PLUGIN_NAME}Test.uproject"
 if [ ! -f "$PROJECT_FILE" ]; then
-    # 対応するuprojectファイルがない場合はプラグインファイルを使用
+    # Use plugin file if uproject doesn't exist
     PROJECT_FILE="$PROJECT_DIR/$PLUGIN_NAME.uplugin"
     echo "No ${PLUGIN_NAME}Test.uproject file found, using plugin file: $PROJECT_FILE"
 else
     echo "Using project file: $PROJECT_FILE"
 fi
 
-# UE5でテストを実行
-# UE4の -testexit="Automation Test Queue Empty" はUE5では -waitfortest に変更
-UnrealEditor-Cmd "$PROJECT_FILE" \
+# Use the Engine path from Docker image
+# Adjust UE_ENGINE_DIR to match Docker image structure
+UE_ENGINE_DIR="/Engine"
+if [ ! -d "$UE_ENGINE_DIR" ]; then
+    echo "Engine directory not found at $UE_ENGINE_DIR"
+    # Try alternate location
+    UE_ENGINE_DIR="/opt/unreal-engine/Engine"
+    if [ ! -d "$UE_ENGINE_DIR" ]; then
+        echo "Engine directory not found at alternate location $UE_ENGINE_DIR"
+        exit 1
+    fi
+fi
+
+# Run the test using the full path to UnrealEditor-Cmd
+"$UE_ENGINE_DIR/Binaries/Linux/UnrealEditor-Cmd" "$PROJECT_FILE" \
     -ExecCmds="Automation RunTests $PLUGIN_NAME" \
     -unattended \
     -NullRHI \
@@ -30,20 +42,20 @@ UnrealEditor-Cmd "$PROJECT_FILE" \
     -log \
     -stdout
 
-# テスト結果の終了コードを取得
+# Get test result exit code
 TEST_RESULT=$?
 
-# 結果のサマリーを出力
+# Output result summary
 if [ $TEST_RESULT -eq 0 ]; then
     echo "Tests completed successfully!"
 else
     echo "Tests failed with exit code: $TEST_RESULT"
 fi
 
-# テスト結果のログディレクトリを作成
+# Create test results directory
 mkdir -p "$PROJECT_DIR/TestResults"
 
-# ログファイルを TestResults ディレクトリにコピー
+# Copy log files to TestResults directory
 if [ -d "$PROJECT_DIR/Saved/Logs" ]; then
     cp -r "$PROJECT_DIR/Saved/Logs"/* "$PROJECT_DIR/TestResults/"
     echo "Log files copied to TestResults directory"
