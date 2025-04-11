@@ -67,4 +67,4 @@ bool FProtocolSharedMemoryTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-#endif　// WITH_DEV_AUTOMATION_TESTS && PLATFORM_WINDOWS
+#endif // WITH_DEV_AUTOMATION_TESTS && PLATFORM_WINDOWS
