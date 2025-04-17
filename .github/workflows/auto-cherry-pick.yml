@@ -99,7 +99,10 @@ jobs:
             # Attempt cherry-pick, continue even if it fails
             if ! git cherry-pick $COMMIT_ID; then
               echo "::warning::Cherry-pick encountered conflicts for $branch, but continuing to create PR..."
-              # Don't abort the cherry-pick, let it stay in conflicted state
+              # Stage all files including conflicted ones
+              git add .
+              # Create a commit with the conflicts
+              git commit -m "Cherry-pick $COMMIT_SHORT with conflicts to be resolved"
             fi
             
             # Push to remote with force to handle cases where the branch already exists
