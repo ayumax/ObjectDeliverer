@@ -1,0 +1,76 @@
+name: UnrealPluginTest
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - 'UE5.3'
+      - 'UE5.4'
+      - 'UE5.5'
+      - 'main'
+      - 'master'
+    paths-ignore:
+      - '.github/workflows/auto-cherry-pick.yml' 
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  prepare:
+    name: Prepare Test Environment
+    runs-on: ubuntu-latest
+    outputs:
+      instance_id: ${{ steps.launch-ec2.outputs.instance-id }}
+      used_ue_version: ${{ steps.launch-ec2.outputs.used-ue-version }}
+    steps:
+      - name: Launch Test Environment
+        id: launch-ec2
+        uses: ayumax/ci-cd-unreal-engine@main
+        with:
+          mode: 'launch'
+          repo-name: ${{ github.repository }}
+          pr-number: ${{ github.event.pull_request.number }}-${{ github.run_id }}
+          base-branch: ${{ github.base_ref }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+
+  test:
+    name: Run Plugin Tests
+    needs: prepare
+    runs-on:
+      - self-hosted
+      - unreal-engine
+      - ue5
+      - Linux
+      - pr-${{ github.event.pull_request.number }}-${{ github.run_id }}
+    timeout-minutes: 30
+    steps:
+      - name: Run tests
+        uses: ayumax/ci-cd-unreal-engine@main
+        with:
+          mode: 'test'
+          plugin-name: 'ObjectDeliverer'
+          project-name: 'ObjectDelivererTest'
+          ue-version: ${{ needs.prepare.outputs.used_ue_version }}
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  cleanup:
+    name: Cleanup Resources
+    needs: [prepare, test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup Test Environment
+        uses: ayumax/ci-cd-unreal-engine@main
+        with:
+          mode: 'cleanup'
+          repo-name: ${{ github.repository }}
+          pr-number: ${{ github.event.pull_request.number }}-${{ github.run_id }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          
+      - name: Output test results location
+        run: |
+          echo "Using Unreal Engine version: ${{ needs.prepare.outputs.used_ue_version }}"
+          echo "EC2 Instance ID: ${{ needs.prepare.outputs.instance_id }}"
