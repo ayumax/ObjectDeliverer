@@ -113,12 +113,7 @@ jobs:
             
             # Set PR title and description (first line of commit message for title)
             PR_TITLE="[Cherry-pick][$branch] $(echo "$DECODED_COMMIT_MESSAGE" | head -n 1)"
-            PR_BODY="Cherry-pick of commit $COMMIT_ID from master to $branch.
-
-Original commit by: $COMMIT_AUTHOR
-Original commit message:
-
-$DECODED_COMMIT_MESSAGE"
+            PR_BODY="Cherry-pick of commit $COMMIT_ID from master to $branch.\n\nOriginal commit by: $COMMIT_AUTHOR\nOriginal commit message:\n\n$DECODED_COMMIT_MESSAGE"
             
             # Check if PR already exists
             PR_EXISTS=$(gh pr list --repo "$REPO_NAME" --base "$branch" --head "$cherry_branch" --json number --jq 'length')
