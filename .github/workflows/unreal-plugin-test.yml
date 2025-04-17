@@ -10,7 +10,6 @@ on:
       - 'main'
       - 'master'
     paths-ignore:
-      - '.github/cherry-pick-config.yml'
       - '.github/workflows/auto-cherry-pick.yml' 
 
 permissions:
