@@ -8,8 +8,8 @@ public class ObjectDelivererTestEditorTarget : TargetRules
     public ObjectDelivererTestEditorTarget(TargetInfo Target) : base(Target)
     {
         Type = TargetType.Editor;
-        DefaultBuildSettings = BuildSettingsVersion.V5;
-        IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_5;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
         CppStandard = CppStandardVersion.Cpp20;
         ExtraModuleNames.Add("ObjectDelivererTest");
     }

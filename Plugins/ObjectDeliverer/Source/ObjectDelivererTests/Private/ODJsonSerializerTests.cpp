@@ -5,7 +5,7 @@
 #include "Utils/JsonSerializer/ODJsonSerializer.h"
 #include "Utils/JsonSerializer/ODJsonDeserializer.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerBasicTest, "ObjectDeliverer.JsonSerializer.BasicTest", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerBasicTest, "ObjectDeliverer.JsonSerializer.BasicTest", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 // Helper method to serialize and deserialize an object
 UObject* SerializeAndDeserializeObject(const UObject* SourceObject, const EODJsonSerializeType SerializeType)
@@ -66,7 +66,7 @@ bool FJsonSerializerBasicTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerPropertyNameTest, "ObjectDeliverer.JsonSerializer.PropertyNameTest", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerPropertyNameTest, "ObjectDeliverer.JsonSerializer.PropertyNameTest", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool FJsonSerializerPropertyNameTest::RunTest(const FString& Parameters)
 {
@@ -88,7 +88,7 @@ bool FJsonSerializerPropertyNameTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerComplexTest, "ObjectDeliverer.JsonSerializer.ComplexTest", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerComplexTest, "ObjectDeliverer.JsonSerializer.ComplexTest", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool FJsonSerializerComplexTest::RunTest(const FString& Parameters)
 {
@@ -156,7 +156,7 @@ bool FJsonSerializerComplexTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerInheritanceTest, "ObjectDeliverer.JsonSerializer.InheritanceTest", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerInheritanceTest, "ObjectDeliverer.JsonSerializer.InheritanceTest", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool FJsonSerializerInheritanceTest::RunTest(const FString& Parameters)
 {
@@ -183,7 +183,7 @@ bool FJsonSerializerInheritanceTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerUE4TypesTest, "ObjectDeliverer.JsonSerializer.UE4TypesTest", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerUE4TypesTest, "ObjectDeliverer.JsonSerializer.UE4TypesTest", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool FJsonSerializerUE4TypesTest::RunTest(const FString& Parameters)
 {
@@ -233,7 +233,7 @@ bool FJsonSerializerUE4TypesTest::RunTest(const FString& Parameters)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerCircularReferenceTest, "ObjectDeliverer.JsonSerializer.CircularReferenceTest", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJsonSerializerCircularReferenceTest, "ObjectDeliverer.JsonSerializer.CircularReferenceTest", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool FJsonSerializerCircularReferenceTest::RunTest(const FString& Parameters)
 {
