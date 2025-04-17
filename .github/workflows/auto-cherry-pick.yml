@@ -109,8 +109,11 @@ jobs:
                 # Check if the cherry-pick resulted in an empty commit
                 if git status --porcelain | grep -q "^UU"; then
                   # There are actual conflicts to resolve
+                  # Remove workflow files from the cherry-pick
+                  git reset --hard HEAD
+                  git checkout $commit_id -- . ':!:.github/workflows/'
                   git add .
-                  git commit -m "Cherry-pick $commit_short with conflicts to be resolved"
+                  git commit -m "Cherry-pick $commit_short with conflicts to be resolved (excluding workflow files)"
                 else
                   # The cherry-pick resulted in an empty commit
                   git cherry-pick --skip
