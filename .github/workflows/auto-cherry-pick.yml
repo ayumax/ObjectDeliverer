@@ -96,12 +96,10 @@ jobs:
             # Create a new branch for cherry-picking
             git checkout -B $cherry_branch
             
-            # Attempt cherry-pick, skip if it fails
+            # Attempt cherry-pick, continue even if it fails
             if ! git cherry-pick $COMMIT_ID; then
-              echo "::warning::Cherry-pick failed for $branch due to conflicts, skipping..."
-              git cherry-pick --abort
-              git checkout -f master
-              continue
+              echo "::warning::Cherry-pick encountered conflicts for $branch, but continuing to create PR..."
+              # Don't abort the cherry-pick, let it stay in conflicted state
             fi
             
             # Push to remote with force to handle cases where the branch already exists
