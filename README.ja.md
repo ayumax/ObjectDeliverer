@@ -2,10 +2,11 @@
 
 | Branch | Status |
 |---------|-----------|
-| master  | ![workflow](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=main) |
-| UE5.5   | ![workflow](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=UE5.5)|
-| UE5.4   | ![workflow](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=UE5.4) |
-| UE5.3   | ![workflow](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=UE5.3) |
+| master  | [![UnrealPluginTest](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=master)](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml) |
+| UE5.5   | [![UnrealPluginTest](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=UE5.5)](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml) |
+| UE5.4   | [![UnrealPluginTest](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=UE5.4)](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml) |
+| UE5.3   | [![UnrealPluginTest](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml/badge.svg?branch=UE5.3)](https://github.com/ayumax/ObjectDeliverer/actions/workflows/unreal-plugin-test.yml) |
+
 
 ObjectDelivererは、Unreal Engine向けの柔軟なデータ通信ライブラリです。C++とBlueprintの両方で利用可能です。
 
