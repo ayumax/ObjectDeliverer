@@ -13,24 +13,32 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
+int32 GetAvailableUDPPort()
+{
+    static int32 BasePort = 9013;
+    return BasePort++;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolUdpTest1, "ObjectDeliverer.ProtocolTest.ProtocolUdpTest1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
 bool FProtocolUdpTest1::RunTest(const FString& Parameters)
 {
+	int port = GetAvailableUDPPort();
+
 	// send and receive.
 	auto serverHelper = NewObject<UObjectDelivererManagerTestHelper>();
 	auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
 	ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
 	ObjectDelivererServer->ReceiveData.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnReceive);
-	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(port), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
 
 	auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
 	ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolUdpSocketSender("localhost", 9099), UPacketRuleFactory::CreatePacketRuleSizeBody());
+	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolUdpSocketSender("localhost", port), UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	const int udpSendMaxSize = 65507 - 4;
 
@@ -81,20 +89,22 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FProtocolUdpTest2, "ObjectDeliverer.ProtocolTes
 
 bool FProtocolUdpTest2::RunTest(const FString& Parameters)
 {
+	int port = GetAvailableUDPPort();
+
 	// send and receive.
 	auto serverHelper = NewObject<UObjectDelivererManagerTestHelper>();
 	auto ObjectDelivererServer = NewObject<UObjectDelivererManager>();
 	ObjectDelivererServer->Connected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
 	ObjectDelivererServer->ReceiveData.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnReceive);
-	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(9099), UPacketRuleFactory::CreatePacketRuleNodivision());
+	ObjectDelivererServer->Start(UProtocolFactory::CreateProtocolUdpSocketReceiver(port), UPacketRuleFactory::CreatePacketRuleNodivision());
 
 	auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
 
 	auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
 	ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolUdpSocketSender("localhost", 9099), UPacketRuleFactory::CreatePacketRuleNodivision());
+	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolUdpSocketSender("localhost", port), UPacketRuleFactory::CreatePacketRuleNodivision());
 
 	const int udpSendMaxSize = 65507;
 
