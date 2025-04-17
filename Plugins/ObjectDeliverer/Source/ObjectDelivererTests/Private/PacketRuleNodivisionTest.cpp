@@ -4,7 +4,7 @@
 #include "PacketRule/PacketRuleFactory.h"
 #include "PacketRule/PacketRuleNodivision.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPacketRuleNodivisionTest_MakeSendPacket, "ObjectDeliverer.PacketRuleTests.PacketRuleNodivisionTest.MakeSendPacket", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPacketRuleNodivisionTest_MakeSendPacket, "ObjectDeliverer.PacketRuleTests.PacketRuleNodivisionTest.MakeSendPacket", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool FPacketRuleNodivisionTest_MakeSendPacket::RunTest(const FString& Parameters)
 {
@@ -37,7 +37,7 @@ bool FPacketRuleNodivisionTest_MakeSendPacket::RunTest(const FString& Parameters
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPacketRuleNodivisionTest_NotifyReceiveData, "ObjectDeliverer.PacketRuleTests.PacketRuleNodivisionTest.NotifyReceiveData", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPacketRuleNodivisionTest_NotifyReceiveData, "ObjectDeliverer.PacketRuleTests.PacketRuleNodivisionTest.NotifyReceiveData", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool FPacketRuleNodivisionTest_NotifyReceiveData::RunTest(const FString& Parameters)
 {
