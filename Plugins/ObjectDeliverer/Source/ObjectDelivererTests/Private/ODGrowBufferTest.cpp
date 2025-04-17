@@ -3,7 +3,7 @@
 #include "Misc/AutomationTest.h"
 #include "Utils/ODGrowBuffer.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(ODGrowBuffer_Tests, "ObjectDeliverer.GrowBuffer.Test", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(ODGrowBuffer_Tests, "ObjectDeliverer.GrowBuffer.Test", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::SmokeFilter)
 
 bool ODGrowBuffer_Tests::RunTest(const FString& Parameters)
 {
