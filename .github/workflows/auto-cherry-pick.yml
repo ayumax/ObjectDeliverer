@@ -20,6 +20,14 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0 
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
 
       - name: Read config file
         id: config
@@ -31,6 +39,7 @@ jobs:
             echo "EOF" >> $GITHUB_OUTPUT
           else
             echo "config_exists=false" >> $GITHUB_OUTPUT
+            echo "::warning::Config file not found at .github/cherry-pick-config.yml"
           fi
 
       - name: Set up Git
@@ -42,7 +51,7 @@ jobs:
         id: commit_info
         run: |
           echo "commit_id=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-          echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+          echo "commit_message=$(git log -1 --pretty=%B | base64 -w0)" >> $GITHUB_OUTPUT
           echo "commit_author=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
           echo "commit_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
@@ -55,6 +64,7 @@ jobs:
           COMMIT_MESSAGE: ${{ steps.commit_info.outputs.commit_message }}
           COMMIT_AUTHOR: ${{ steps.commit_info.outputs.commit_author }}
           COMMIT_SHORT: ${{ steps.commit_info.outputs.commit_short }}
+          REPO_NAME: ${{ github.repository }}
         run: |
           # Parse JSON array with JQ
           echo "$TARGET_BRANCHES" | jq -c '.[]' | while read -r branch; do
@@ -62,41 +72,69 @@ jobs:
             branch=$(echo $branch | tr -d '"')
             echo "Processing branch: $branch"
             
-            # Checkout target branch
-            git fetch origin
-            git checkout $branch || git checkout -b $branch origin/$branch
+            # Decode commit message
+            DECODED_COMMIT_MESSAGE=$(echo "$COMMIT_MESSAGE" | base64 -d)
             
             # Create a new branch for cherry-picking
             # Remove special characters from branch name
             safe_branch=$(echo $branch | sed 's/[^a-zA-Z0-9_-]/_/g')
             cherry_branch="cherry-pick-${COMMIT_SHORT}-to-$safe_branch"
-            git checkout -b $cherry_branch
+            
+            # Check if branch exists
+            if ! git ls-remote --heads origin $branch | grep -q $branch; then
+              echo "::warning::Branch $branch does not exist, skipping..."
+              continue
+            fi
+            
+            # Start fresh
+            git checkout -f master
+            
+            # Checkout target branch with clean state
+            git fetch origin $branch:refs/remotes/origin/$branch
+            git checkout -B $branch origin/$branch
+            
+            # Create a new branch for cherry-picking
+            git checkout -B $cherry_branch
             
             # Attempt cherry-pick, skip if it fails
-            git cherry-pick $COMMIT_ID || {
-              echo "Cherry-pick failed for $branch, skipping..."
+            if ! git cherry-pick $COMMIT_ID; then
+              echo "::warning::Cherry-pick failed for $branch due to conflicts, skipping..."
               git cherry-pick --abort
-              git checkout master
-             continue
-            }
+              git checkout -f master
+              continue
+            fi
             
-            # Push to remote
-            git push origin $cherry_branch
+            # Push to remote with force to handle cases where the branch already exists
+            if ! git push -f origin $cherry_branch; then
+              echo "::error::Failed to push to $cherry_branch"
+              git checkout -f master
+              continue
+            fi
             
-            # Set PR title and description
-            PR_TITLE="[Cherry-pick] $(echo "$COMMIT_MESSAGE" | head -n 1) to $branch"
+            # Set PR title and description (first line of commit message for title)
+            PR_TITLE="[Cherry-pick][$branch] $(echo "$DECODED_COMMIT_MESSAGE" | head -n 1)"
             PR_BODY="Cherry-pick of commit $COMMIT_ID from master to $branch.
 
-            Original commit by: $COMMIT_AUTHOR
-            Original commit message: 
+Original commit by: $COMMIT_AUTHOR
+Original commit message:
 
-            $COMMIT_MESSAGE"
+$DECODED_COMMIT_MESSAGE"
             
-            # Create PR using gh CLI
-            gh pr create --base $branch --head $cherry_branch --title "$PR_TITLE" --body "$PR_BODY"
-            echo "Successfully created PR to $branch"
+            # Check if PR already exists
+            PR_EXISTS=$(gh pr list --repo "$REPO_NAME" --base "$branch" --head "$cherry_branch" --json number --jq 'length')
+            
+            if [ "$PR_EXISTS" -eq "0" ]; then
+              # Create PR using gh CLI
+              if gh pr create --repo "$REPO_NAME" --base "$branch" --head "$cherry_branch" --title "$PR_TITLE" --body "$PR_BODY"; then
+                echo "Successfully created PR to $branch"
+              else
+                echo "::error::Failed to create PR for $branch"
+              fi
+            else
+              echo "PR already exists for $branch, skipping..."
+            fi
             
             # Return to master branch
-            git checkout master
+            git checkout -f master
           done
 
