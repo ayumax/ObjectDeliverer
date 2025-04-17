@@ -1,4 +1,4 @@
-name: Unreal Plugin Test
+name: UnrealPluginTest
 
 on:
   pull_request:
