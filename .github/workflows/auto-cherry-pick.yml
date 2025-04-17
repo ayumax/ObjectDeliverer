@@ -7,6 +7,12 @@ on:
     paths-ignore:
       - '.github/cherry-pick-config.yml'
       - '.github/workflows/auto-cherry-pick.yml' 
+  workflow_dispatch:
+    inputs:
+      commit_id:
+        description: 'Commit ID to cherry-pick (defaults to latest commit)'
+        required: false
+        type: string
 
 permissions:
   contents: write
