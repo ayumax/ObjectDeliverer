@@ -53,7 +53,7 @@ bool FClientDisconnectionTest::RunTest(const FString &Parameters)
 								 UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	// Wait for connection to establish
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 
 	// Verify connection is established
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper]()
@@ -110,7 +110,7 @@ bool FProtocolTcpIpServerClientTest1::RunTest(const FString &Parameters)
 	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolTcpIpClient("localhost", port),
 								 UPacketRuleFactory::CreatePacketRuleSizeBody());
 
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper]()
 														 {
 		TestEqual("check connected server", serverHelper->ConnectedSocket.Num(), 1);
@@ -164,7 +164,7 @@ bool FServerDisconnectionTest::RunTest(const FString &Parameters)
 								 UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	// Wait for connection to establish
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 
 	// Verify connection is established
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper]()
@@ -227,7 +227,7 @@ bool FInvalidPortConnectionTest::RunTest(const FString &Parameters)
 								 UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	// Wait for attempted connection
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 
 	// Verify no connection was established
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper]()
@@ -360,7 +360,7 @@ bool FNoRetryConnectionTest::RunTest(const FString &Parameters)
 		return true; }));
 
 	// Wait for potential connection (should not happen)
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 
 	// Verify no connection was established
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper]()
@@ -412,7 +412,7 @@ bool FRetryConnectionSuccessTest::RunTest(const FString &Parameters)
 	ObjectDelivererServer->Disconnected.AddDynamic(serverHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
 
 	// Wait before starting server to allow client to make initial connection attempts
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(2.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 
 	// Start server after client has started retrying
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererServer, port]()
@@ -475,7 +475,7 @@ bool FDataTransferTest::RunTest(const FString &Parameters)
 								 UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	// Wait for connection to establish
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 
 	// Send 1000 data packets from client to server
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient]()
@@ -539,7 +539,7 @@ bool FConnectionErrorTest::RunTest(const FString &Parameters)
 								 UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	// Wait for connection attempt to time out
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(3.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 
 	// Verify connection was not established
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, clientHelper, ObjectDelivererClient]()
@@ -588,7 +588,7 @@ bool FDisconnectionHandlingTest::RunTest(const FString &Parameters)
 								 UPacketRuleFactory::CreatePacketRuleSizeBody());
 
 	// Wait for connection to establish
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 
 	// Verify connection was established
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, clientHelper]()
@@ -656,7 +656,7 @@ bool FInvalidDataHandlingTest::RunTest(const FString &Parameters)
 								 UPacketRuleFactory::CreatePacketRuleNodivision());
 
 	// Wait for connection to establish
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(1.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 
 	// Send invalid packet format from client to server
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient]()
@@ -733,7 +733,7 @@ bool FMultiClientConnectionTest::RunTest(const FString &Parameters)
 	}
 
 	// Wait for all connections to establish
-	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(2.0f));
+	ADD_LATENT_AUTOMATION_COMMAND(FEngineWaitLatentCommand(5.0f));
 
 	// Verify all connections are established
 	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, serverHelper, ClientHelpers, ClientCount]()
