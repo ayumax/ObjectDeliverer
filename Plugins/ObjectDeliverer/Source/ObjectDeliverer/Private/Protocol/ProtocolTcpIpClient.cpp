@@ -57,7 +57,7 @@ void UProtocolTcpIpClient::Start()
 
 	ConnectEndPoint = endPoint.Get<1>();
 
-	if (InnerSocket)
+	if (!InnerSocket)
 	{
 		UE_LOG(LogTemp, Error, TEXT("TryConnect failed: InnerSocket is null"));
 		return;
