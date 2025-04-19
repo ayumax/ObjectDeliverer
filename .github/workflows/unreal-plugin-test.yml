@@ -26,7 +26,7 @@ jobs:
   prepare:
     name: Prepare Test Environment
     runs-on: ubuntu-latest
-    if: github.repository == 'ayumax/${{ env.REPO_NAME }}'
+    if: github.repository == 'ayumax/ObjectDeliverer'
     outputs:
       instance_id: ${{ steps.launch-ec2.outputs.instance-id }}
       used_ue_version: ${{ steps.launch-ec2.outputs.used-ue-version }}
@@ -44,7 +44,7 @@ jobs:
   test:
     name: Run Plugin Tests
     needs: prepare
-    if: github.repository == 'ayumax/${{ env.REPO_NAME }}'
+    if: github.repository == 'ayumax/ObjectDeliverer'
     runs-on:
       - self-hosted
       - unreal-engine
@@ -67,7 +67,7 @@ jobs:
   cleanup:
     name: Cleanup Resources
     needs: [prepare, test]
-    if: always() && github.repository == 'ayumax/${{ env.REPO_NAME }}'
+    if: always() && github.repository == 'ayumax/ObjectDeliverer'
     runs-on: ubuntu-latest
     steps:
       - name: Cleanup Test Environment
