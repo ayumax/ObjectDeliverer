@@ -35,6 +35,7 @@ public:
 
 private:
 	bool TryConnect();
+	void CreateSocket();
 
 protected:
 	virtual void DispatchDisconnected(const UObjectDelivererProtocol* DisconnectedObject) override;
