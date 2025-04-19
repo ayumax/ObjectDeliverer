@@ -4,22 +4,29 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - 'UE5.3'
-      - 'UE5.4'
-      - 'UE5.5'
-      - 'main'
-      - 'master'
+      - "UE5.3"
+      - "UE5.4"
+      - "UE5.5"
+      - "main"
+      - "master"
     paths-ignore:
-      - '.github/workflows/auto-cherry-pick.yml' 
+      - "**/*.md"
+      - "**/*.yml"
+      - "**/*.yaml"
 
 permissions:
   id-token: write
   contents: read
 
+env:
+  REPO_NAME: "ObjectDeliverer"
+  PROJECT_NAME: "ObjectDelivererTest"
+
 jobs:
   prepare:
     name: Prepare Test Environment
     runs-on: ubuntu-latest
+    if: github.repository == 'ayumax/${{ env.REPO_NAME }}'
     outputs:
       instance_id: ${{ steps.launch-ec2.outputs.instance-id }}
       used_ue_version: ${{ steps.launch-ec2.outputs.used-ue-version }}
@@ -28,7 +35,7 @@ jobs:
         id: launch-ec2
         uses: ayumax/ci-cd-unreal-engine@main
         with:
-          mode: 'launch'
+          mode: "launch"
           repo-name: ${{ github.repository }}
           pr-number: ${{ github.event.pull_request.number }}-${{ github.run_id }}
           base-branch: ${{ github.base_ref }}
@@ -37,6 +44,7 @@ jobs:
   test:
     name: Run Plugin Tests
     needs: prepare
+    if: github.repository == 'ayumax/${{ env.REPO_NAME }}'
     runs-on:
       - self-hosted
       - unreal-engine
@@ -48,9 +56,9 @@ jobs:
       - name: Run tests
         uses: ayumax/ci-cd-unreal-engine@main
         with:
-          mode: 'test'
-          plugin-name: 'ObjectDeliverer'
-          project-name: 'ObjectDelivererTest'
+          mode: "test"
+          plugin-name: "${{ env.REPO_NAME }}"
+          project-name: "${{ env.PROJECT_NAME }}"
           ue-version: ${{ needs.prepare.outputs.used_ue_version }}
           repository: ${{ github.repository }}
           ref: ${{ github.event.pull_request.head.ref }}
@@ -59,17 +67,17 @@ jobs:
   cleanup:
     name: Cleanup Resources
     needs: [prepare, test]
-    if: always()
+    if: always() && github.repository == 'ayumax/${{ env.REPO_NAME }}'
     runs-on: ubuntu-latest
     steps:
       - name: Cleanup Test Environment
         uses: ayumax/ci-cd-unreal-engine@main
         with:
-          mode: 'cleanup'
+          mode: "cleanup"
           repo-name: ${{ github.repository }}
           pr-number: ${{ github.event.pull_request.number }}-${{ github.run_id }}
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          
+
       - name: Output test results location
         run: |
           echo "Using Unreal Engine version: ${{ needs.prepare.outputs.used_ue_version }}"
