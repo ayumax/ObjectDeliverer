@@ -16,7 +16,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FUtf8StringDeliveryBoxTest, "ObjectDeliverer.De
 
 bool FUtf8StringDeliveryBoxTest::RunTest(const FString &Parameters)
 {
-    TArray<const TArray<uint8>> stringBuffer;
+    TArray<TArray<uint8>> stringBuffer;
 
     UUtf8StringDeliveryBox *sut = NewObject<UUtf8StringDeliveryBox>();
 
