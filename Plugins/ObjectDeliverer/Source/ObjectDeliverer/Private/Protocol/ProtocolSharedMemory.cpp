@@ -117,9 +117,6 @@ bool UProtocolSharedMemory::ReceivedData()
 			const auto NextSharedMemoryData{SharedMemoryData + uint8size};
 			const auto uint32size{sizeof(uint32)};
 			FMemory::Memcpy(&Size, NextSharedMemoryData, uint32size);
-<<<<<<< HEAD
-			TempBuffer.SetNum(Size, false);
-=======
 
 			// Validate size to prevent buffer overflow or invalid memory allocation
 			// Check if size is within reasonable limits
@@ -132,8 +129,8 @@ bool UProtocolSharedMemory::ReceivedData()
 				return;
 			}
 
-			TempBuffer.SetNum(Size, EAllowShrinking::No);
->>>>>>> de297c8 (Adding better tests (#148))
+			TempBuffer.SetNum(Size, false);
+
 			FMemory::Memcpy(TempBuffer.GetData(), NextSharedMemoryData + uint32size, FMath::Min(StaticCast<decltype(Size)>(SharedMemorySize), Size));
 		});
 
@@ -150,10 +147,7 @@ bool UProtocolSharedMemory::ReceivedData()
 	while (Size > 0u)
 	{
 		wantSize = PacketRule->GetWantSize();
-<<<<<<< HEAD
-		const auto receiveSize{ wantSize == 0 ? Size : wantSize };
-		ReceiveBuffer.SetNum(receiveSize, false);
-=======
+
 		const auto receiveSize{wantSize == 0 ? Size : wantSize};
 
 		// Additional check to prevent overflow
@@ -164,8 +158,8 @@ bool UProtocolSharedMemory::ReceivedData()
 			break;
 		}
 
-		ReceiveBuffer.SetNum(receiveSize, EAllowShrinking::No);
->>>>>>> de297c8 (Adding better tests (#148))
+		ReceiveBuffer.SetNum(receiveSize, false);
+
 		FMemory::Memcpy(ReceiveBuffer.GetData(), TempBuffer.GetData() + Offset, receiveSize);
 		Offset += receiveSize;
 		Size -= receiveSize;
