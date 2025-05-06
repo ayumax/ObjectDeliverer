@@ -52,6 +52,7 @@ void UProtocolTcpIpClient::Start()
 
 	CreateSocket();
 
+	
 	auto endPoint = GetIP4EndPoint(ServerIpAddress, ServerPort);
 	if (!endPoint.Get<0>()) return;
 
@@ -80,7 +81,7 @@ bool UProtocolTcpIpClient::TryConnect()
 	// Check socket state
 	ESocketConnectionState ConnectionState = InnerSocket->GetConnectionState();
 	UE_LOG(LogTemp, Log, TEXT("Socket Connection State before connect: %d"), (int32)ConnectionState);
-	
+
 	// Recreate socket if in error or connected state
 	if (ConnectionState == ESocketConnectionState::SCS_ConnectionError || 
 		ConnectionState == ESocketConnectionState::SCS_Connected)
@@ -91,7 +92,11 @@ bool UProtocolTcpIpClient::TryConnect()
 		
 		CreateSocket();
 	}
-	
+
+	// -------------------------------------------------------------------------------------
+	// Skip state check on Linux due to bug where GetConnectionState() returns Connected immediately after socket creation
+	// -------------------------------------------------------------------------------------
+#if PLATFORM_WINDOWS || PLATFORM_MAC
 	// Recheck socket state before attempting connection
 	ConnectionState = InnerSocket->GetConnectionState();
 	if (ConnectionState != ESocketConnectionState::SCS_NotConnected)
@@ -99,6 +104,7 @@ bool UProtocolTcpIpClient::TryConnect()
 		UE_LOG(LogTemp, Log, TEXT("Socket is not in NotConnected state, skipping connect attempt"));
 		return RetryConnect;
 	}
+#endif
 	
 	if (InnerSocket->Connect(ConnectEndPoint.ToInternetAddr().Get()))
 	{
