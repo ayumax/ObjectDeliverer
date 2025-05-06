@@ -96,16 +96,12 @@ jobs:
             
             # Attempt cherry-pick
             if ! git cherry-pick $commit_id; then
-              echo "::warning::Cherry-pick encountered conflicts for $TARGET_BRANCH, attempting to resolve..."
-              
-              # Check if the cherry-pick resulted in an empty commit
+              echo "::warning::Cherry-pick encountered conflicts for $TARGET_BRANCH. Committing conflicted state as-is for manual resolution."
+  
+              # Check if there are actual conflicts (unmerged files)
               if git status --porcelain | grep -q "^UU"; then
-                # There are actual conflicts to resolve
-                # Remove workflow files from the cherry-pick
-                git reset --hard HEAD
-                git checkout $commit_id -- . ':!:.github/workflows/'
                 git add .
-                git commit -m "Cherry-pick $commit_short with conflicts to be resolved (excluding workflow files)"
+                git commit -m "Cherry-pick $commit_short with conflicts (manual resolution required)"
               else
                 # The cherry-pick resulted in an empty commit
                 git cherry-pick --skip
