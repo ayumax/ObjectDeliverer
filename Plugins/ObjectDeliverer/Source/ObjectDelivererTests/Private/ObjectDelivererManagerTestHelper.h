@@ -15,22 +15,22 @@ class OBJECTDELIVERERTESTS_API UObjectDelivererManagerTestHelper : public UObjec
 
 public:
 	UFUNCTION()
-	void OnConnect(const UObjectDelivererProtocol* ClientSocket);
+	void OnConnect(const UObjectDelivererProtocol *ClientSocket);
 	UFUNCTION()
-	void OnDisConnect(const UObjectDelivererProtocol* ClientSocket);
+	void OnDisConnect(const UObjectDelivererProtocol *ClientSocket);
 	UFUNCTION()
-	void OnReceive(const UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer);
+	void OnReceive(const UObjectDelivererProtocol *ClientSocket, const TArray<uint8> &Buffer);
 	UFUNCTION()
-	void OnReceiveString(const FString& StringValue, const UObjectDelivererProtocol* FromObject);
+	void OnReceiveString(const FString &StringValue, const UObjectDelivererProtocol *FromObject);
 
 	UPROPERTY()
-	TArray<const UObjectDelivererProtocol*> ConnectedSocket;
+	TArray<const UObjectDelivererProtocol *> ConnectedSocket;
 
 	UPROPERTY()
-	TArray<const UObjectDelivererProtocol*> DisconnectedSocket;
+	TArray<const UObjectDelivererProtocol *> DisconnectedSocket;
 
 	UPROPERTY()
-	const UObjectDelivererProtocol* ReceiveSocket;
+	const UObjectDelivererProtocol *ReceiveSocket;
 
 	TArray<TArray<uint8>> ReceiveBuffers;
 	TArray<FString> ReceiveStrings;
@@ -44,7 +44,6 @@ class OBJECTDELIVERERTESTS_API UJsonSerializerTestArrayElementObject1 : public U
 public:
 	UPROPERTY()
 	int32 IntProperty;
-
 };
 
 UCLASS()
@@ -85,7 +84,7 @@ public:
 	FRotator RotateProperty;
 
 	UPROPERTY()
-	TArray<UJsonSerializerTestArrayElementObject1*> ArrayProperty;
+	TArray<UJsonSerializerTestArrayElementObject1 *> ArrayProperty;
 };
 
 UCLASS()
@@ -103,7 +102,7 @@ public:
 	UPROPERTY()
 	uint8 Uint8Property;
 
-	FString ConvertFPropertyName_Implementation(const FName& PropertyName) const override
+	FString ConvertFPropertyName_Implementation(const FName &PropertyName) const override
 	{
 		if (PropertyName == FName(TEXT("IntProperty")))
 		{
@@ -120,7 +119,6 @@ public:
 
 		return TEXT("");
 	}
-
 };
 
 UCLASS()
@@ -149,12 +147,11 @@ public:
 	TSet<FString> SetProperty;
 
 	UPROPERTY()
-	UJsonSerializerNestedObject* NestedObject;
+	UJsonSerializerNestedObject *NestedObject;
 
 	UPROPERTY()
-	TArray<UJsonSerializerNestedObject*> NestedObjectArray;
+	TArray<UJsonSerializerNestedObject *> NestedObjectArray;
 };
-
 
 // Class for testing inheritance relationships
 UCLASS()
@@ -165,7 +162,7 @@ class OBJECTDELIVERERTESTS_API UJsonSerializerBaseClass : public UObject
 public:
 	UPROPERTY()
 	int32 BaseValue;
-    
+
 	UPROPERTY()
 	FString BaseName;
 };
@@ -178,11 +175,10 @@ class OBJECTDELIVERERTESTS_API UJsonSerializerDerivedClass : public UJsonSeriali
 public:
 	UPROPERTY()
 	float DerivedValue;
-    
+
 	UPROPERTY()
 	bool DerivedFlag;
 };
-
 
 // Class for testing UE4 basic types
 UCLASS()
@@ -193,17 +189,16 @@ class OBJECTDELIVERERTESTS_API UJsonSerializerUE4TypesObject : public UObject
 public:
 	UPROPERTY()
 	FTransform TransformProperty;
-    
+
 	UPROPERTY()
 	FColor ColorProperty;
-    
+
 	UPROPERTY()
 	FDateTime DateTimeProperty;
-    
+
 	UPROPERTY()
 	FGuid GuidProperty;
 };
-
 
 // Class for objects with circular references
 UCLASS()
@@ -214,7 +209,37 @@ class OBJECTDELIVERERTESTS_API UJsonSerializerCircularObject : public UObject
 public:
 	UPROPERTY()
 	FString Name;
-    
+
 	UPROPERTY()
-	UJsonSerializerCircularObject* Reference;
+	UJsonSerializerCircularObject *Reference;
+};
+
+UCLASS()
+class UUtf8StringDeliveryBoxTestHelper : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION()
+	void OnReceiveString(const FString &StringValue, const UObjectDelivererProtocol *FromObject)
+	{
+		ReceivedStrings.Add(StringValue);
+	}
+
+	TArray<FString> ReceivedStrings;
+};
+
+UCLASS()
+class UObjectDeliveryBoxUsingJsonTestHelper : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION()
+	void OnReceiveObject(UObject* ReceivedObject, const FString& ReceivedJsonString, const UObjectDelivererProtocol* FromObject)
+	{
+		ReceivedObjects.Add(ReceivedObject);
+	}
+
+	TArray<UObject*> ReceivedObjects;
 };
