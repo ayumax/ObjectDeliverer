@@ -46,6 +46,7 @@ Plugins/Developer/
 *.sdf
 *.VC.db
 *.VC.opendb
+*.code-workspace
 
 # Precompiled Assets
 SourceArt/**/*.png
@@ -79,3 +80,13 @@ Plugins/*/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 /ObjectDelivererTest.sln.DotSettings.user
+
+.vsconfig
+.vscode/*
+Config/DefaultEditorSettings.ini
+
+ObjectDelivererTest.uproject.DotSettings.user
+
+.DS_Store
+
+Froola/results/*
