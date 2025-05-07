@@ -1,2 +1,2 @@
 cd /d %~dp0
-Froola.exe plugin -n ObjectDeliverer -p ObjectDelivererTest -l ..\ -t -o %~dp0results -e Linux
+Froola.exe plugin -n ObjectDeliverer -p ObjectDelivererTest -l ..\ -t -o results -e Linux
