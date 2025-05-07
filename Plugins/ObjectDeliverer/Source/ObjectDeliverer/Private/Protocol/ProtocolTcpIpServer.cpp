@@ -55,11 +55,16 @@ void UProtocolTcpIpServer::Start()
 
 void UProtocolTcpIpServer::Close()
 {
-	for (auto clientSocket : ConnectedSockets)
+	// Iterate backwards to allow safe removal of elements during the loop
+	for (int32 i = ConnectedSockets.Num() - 1; i >= 0; --i)
 	{
-		clientSocket->Disconnected.Unbind();
-		clientSocket->ReceiveData.Unbind();
-		clientSocket->Close();
+		UProtocolTcpIpSocket* clientSocket = ConnectedSockets[i];
+		if (clientSocket)
+		{
+			clientSocket->Disconnected.Unbind();
+			clientSocket->ReceiveData.Unbind();
+			clientSocket->Close();
+		}
 	}
 
 	ConnectedSockets.Reset();
