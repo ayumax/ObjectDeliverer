@@ -63,4 +63,6 @@ protected:
 	class FRunnableThread* ListenThread = nullptr;
 
 	TArray<UProtocolTcpIpSocket*> ConnectedSockets;
+
+	bool IsClosing = false;
 };
