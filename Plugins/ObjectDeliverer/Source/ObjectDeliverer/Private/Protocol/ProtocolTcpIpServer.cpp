@@ -39,6 +39,8 @@ void UProtocolTcpIpServer::Start()
 {
 	Close();
 
+	IsClosing = false;
+
 	auto socket = FTcpSocketBuilder(TEXT("ObjectDeliverer TcpIpServer"))
 		.AsBlocking()
 		.BoundToPort(ListenPort)
@@ -55,6 +57,8 @@ void UProtocolTcpIpServer::Start()
 
 void UProtocolTcpIpServer::Close()
 {
+	IsClosing = true;
+
 	// Iterate backwards to allow safe removal of elements during the loop
 	for (int32 i = ConnectedSockets.Num() - 1; i >= 0; --i)
 	{
@@ -98,6 +102,8 @@ bool UProtocolTcpIpServer::OnListen()
 {
 	if (!ListenerSocket) return false;
 
+	if (IsClosing) return false;	
+
 	TSharedRef<FInternetAddr> RemoteAddress = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
 	bool Pending = false;
 
@@ -130,6 +136,8 @@ bool UProtocolTcpIpServer::OnListen()
 
 void UProtocolTcpIpServer::DisconnectedClient(const UObjectDelivererProtocol* ClientSocket)
 {
+	if (IsClosing) return;
+
 	auto _clientSocket = (UProtocolTcpIpSocket*)(ClientSocket);
 	if (!IsValid(_clientSocket)) return;
 
@@ -147,5 +155,7 @@ void UProtocolTcpIpServer::DisconnectedClient(const UObjectDelivererProtocol* Cl
 
 void UProtocolTcpIpServer::ReceiveDataFromClient(const UObjectDelivererProtocol* ClientSocket, const TArray<uint8>& Buffer)
 {
+	if (IsClosing) return;
+
 	DispatchReceiveData(ClientSocket, Buffer);
 }
