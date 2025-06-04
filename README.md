@@ -32,11 +32,14 @@ It simplifies network communication logic, allowing you to focus on application 
 
 ## Supported UE Versions
 
+> **Note**: This plugin is updated and maintained only for the latest 3 versions of Unreal Engine.
+
 | UE Version | Support Status | Branch Name |
 |------------|---------------|------------|
+| UE 5.6     | ✅ Supported  | UE5.6      |
 | UE 5.5     | ✅ Supported  | UE5.5      |
 | UE 5.4     | ✅ Supported  | UE5.4      |
-| UE 5.3     | ✅ Supported  | UE5.3      |
+| UE 5.3     | ❌ End of Support (v1.6.1+) | UE5.3      |
 | Others     | 🔄 Check docs | master     |
 
 ### Branch Structure
