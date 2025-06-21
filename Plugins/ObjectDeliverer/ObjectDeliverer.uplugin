@@ -23,12 +23,11 @@
         "IOS",
         "Linux"
       ]
-    },
-    {
+    },    {
       "Name": "ObjectDelivererTests",
       "Type": "DeveloperTool",
       "LoadingPhase": "Default",
-      "WhitelistPlatforms": [
+      "PlatformAllowList": [
         "Win64",
         "Mac",
         "Linux"

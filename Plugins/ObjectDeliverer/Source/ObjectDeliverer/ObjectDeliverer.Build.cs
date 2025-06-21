@@ -23,18 +23,6 @@ namespace UnrealBuildTool.Rules
                     "JsonUtilities"
                 }
 				);
-
-			PrivateDependencyModuleNames.AddRange(
-				new string[]
-				{
-				}
-				);
-
-			DynamicallyLoadedModuleNames.AddRange(
-				new string[]
-				{
-				}
-				);
 		}
 	}
 }
