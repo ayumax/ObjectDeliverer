@@ -8,6 +8,7 @@
 #include "Protocol/ProtocolLogReader.h"
 #include "Protocol/ProtocolLogWriter.h"
 #include "Protocol/ProtocolReflection.h"
+#include "Protocol/ProtocolWebSocketClient.h"
 
 UProtocolTcpIpClient *UProtocolFactory::CreateProtocolTcpIpClient(const FString &IpAddress /*="localhost"*/, int32 Port /*= 8000*/, bool Retry /*= false*/, bool AutoConnectAfterDisconnect /*= false*/)
 {
@@ -70,3 +71,25 @@ UProtocolReflection *UProtocolFactory::CreateProtocolReflection()
 {
 	return NewObject<UProtocolReflection>();
 }
+
+UProtocolWebSocketClient *UProtocolFactory::CreateProtocolWebSocketClient(const FString &Url)
+{
+	auto protocol = NewObject<UProtocolWebSocketClient>();
+	protocol->Initialize(Url);
+	return protocol;
+}
+
+UProtocolWebSocketClient *UProtocolFactory::CreateProtocolWebSocketClientWithProtocols(const FString &Url, const TArray<FString> &Protocols)
+{
+	auto protocol = NewObject<UProtocolWebSocketClient>();
+	protocol->InitializeWithProtocols(Url, Protocols);
+	return protocol;
+}
+
+UProtocolWebSocketClient *UProtocolFactory::CreateProtocolWebSocketClientWithHeaders(const FString &Url, const TArray<FString> &Protocols, const TMap<FString, FString> &Headers)
+{
+	auto protocol = NewObject<UProtocolWebSocketClient>();
+	protocol->InitializeWithHeaders(Url, Protocols, Headers);
+	return protocol;
+}
+

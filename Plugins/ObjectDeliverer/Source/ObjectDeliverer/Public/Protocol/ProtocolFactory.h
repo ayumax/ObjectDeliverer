@@ -77,4 +77,29 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|Protocol")
 	static class UProtocolReflection *CreateProtocolReflection();
+
+	/**
+	 * create protocol (WebSocket client)
+	 * @param Url - WebSocket URL to connect to
+	 */
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|Protocol")
+	static class UProtocolWebSocketClient *CreateProtocolWebSocketClient(const FString &Url = "ws://localhost:8080");
+
+	/**
+	 * create protocol (WebSocket client with protocols)
+	 * @param Url - WebSocket URL to connect to
+	 * @param Protocols - Sub-protocols to use
+	 */
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|Protocol")
+	static class UProtocolWebSocketClient *CreateProtocolWebSocketClientWithProtocols(const FString &Url, const TArray<FString> &Protocols);
+
+	/**
+	 * create protocol (WebSocket client with headers)
+	 * @param Url - WebSocket URL to connect to
+	 * @param Protocols - Sub-protocols to use
+	 * @param Headers - Connection headers
+	 */
+	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|Protocol")
+	static class UProtocolWebSocketClient *CreateProtocolWebSocketClientWithHeaders(const FString &Url, const TArray<FString> &Protocols, const TMap<FString, FString> &Headers);
+
 };
