@@ -8,7 +8,7 @@ public class ObjectDelivererTests : ModuleRules
 	public ObjectDelivererTests(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-		CppCompileWarningSettings.ShadowVariableWarningLevel = WarningLevel.Warning;
+		ShadowVariableWarningLevel = WarningLevel.Warning;
 		
 		PublicDependencyModuleNames.AddRange(
 			new string[]
