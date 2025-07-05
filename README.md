@@ -103,6 +103,7 @@ The following protocols are available by default (you can also add your own):
 
 - **TCP/IP Server** - Connects to multiple clients
 - **TCP/IP Client** - Connects to a server
+- **WebSocket Client** - Connects to a WebSocket server
 - **UDP (Sender)** - Sends UDP data
 - **UDP (Receiver)** - Receives UDP data
 - **Shared Memory** - Process-to-process communication in Windows
