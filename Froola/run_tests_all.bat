@@ -1,2 +1,2 @@
 cd /d %~dp0
-Froola.exe plugin -n ObjectDeliverer -p ObjectDelivererTest -l ../ -t -o results
+Froola.exe plugin -n ObjectDeliverer -p ObjectDelivererTest -l ../ -t -o results -i OBJECTDELIVERER_TEST_WS_URL=%OBJECTDELIVERER_TEST_WS_URL%,OBJECTDELIVERER_TEST_WS_TOKEN=%OBJECTDELIVERER_TEST_WS_TOKEN%
