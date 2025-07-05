@@ -11,6 +11,7 @@
 #include "ObjectDelivererManagerTestHelper.h"
 #include "Engine/World.h"
 #include "Tests/AutomationCommon.h"
+#include "DeliveryBox/Utf8StringDeliveryBox.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 
@@ -186,29 +187,32 @@ bool FWebSocketClientEchoTest::RunTest(const FString &Parameters)
 	auto clientHelper = NewObject<UObjectDelivererManagerTestHelper>();
 	auto ObjectDelivererClient = NewObject<UObjectDelivererManager>();
 	
+	// Create Utf8StringDeliveryBox and its helper
+	auto StringDeliveryBox = NewObject<UUtf8StringDeliveryBox>();
+	auto stringHelper = NewObject<UUtf8StringDeliveryBoxTestHelper>();
+	
 	// Setup callbacks
 	ObjectDelivererClient->Connected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnConnect);
 	ObjectDelivererClient->Disconnected.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnDisConnect);
-	ObjectDelivererClient->ReceiveData.AddDynamic(clientHelper, &UObjectDelivererManagerTestHelper::OnReceive);
 	
-	// Start client
+	// Setup string delivery box callback
+	StringDeliveryBox->Received.AddDynamic(stringHelper, &UUtf8StringDeliveryBoxTestHelper::OnReceiveString);
+	
+	// Start client with Utf8StringDeliveryBox
 	ObjectDelivererClient->Start(UProtocolFactory::CreateProtocolWebSocketClient(baseUrl),
-								 UPacketRuleFactory::CreatePacketRuleNodivision());
+								 UPacketRuleFactory::CreatePacketRuleNodivision(), StringDeliveryBox);
 
 	// Wait for connection
 	ADD_LATENT_AUTOMATION_COMMAND(FWaitLatentCommand(2.0f));
 
 
-	// Send test message
+	// Send test message using Utf8StringDeliveryBox
 	FString testMessage = TEXT("Hello WebSocket Echo Server!");
-	TArray<uint8> messageData;
-	FTCHARToUTF8 UTF8String(*testMessage);
-	messageData.Append((uint8*)UTF8String.Get(), UTF8String.Length());
 	
-	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient, messageData]()
+	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient, StringDeliveryBox, testMessage]()
 	{
 		TestTrue("Client should be connected before sending", ObjectDelivererClient->IsConnected());
-		ObjectDelivererClient->Send(messageData);
+		StringDeliveryBox->Send(testMessage);
 		return true;
 	}));
 
@@ -216,33 +220,27 @@ bool FWebSocketClientEchoTest::RunTest(const FString &Parameters)
 	ADD_LATENT_AUTOMATION_COMMAND(FWaitLatentCommand(2.0f));
 
 	// Verify echo response
-	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, clientHelper, testMessage]()
+	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, stringHelper, testMessage]()
 	{
-		TestTrue("Should receive echo response", clientHelper->ReceiveBuffers.Num() > 0);
+		TestTrue("Should receive echo response", stringHelper->ReceivedStrings.Num() > 0);
 		
-		if (clientHelper->ReceiveBuffers.Num() > 0)
+		if (stringHelper->ReceivedStrings.Num() > 0)
 		{
-			// Convert received data to string
-			const TArray<uint8>& receivedData = clientHelper->ReceiveBuffers[0];
-			FString receivedMessage = FString(FUTF8ToTCHAR((const ANSICHAR*)receivedData.GetData(), receivedData.Num()).Get());
-			TestEqual("Echo message should match sent message", receivedMessage, testMessage);
+			TestEqual("Echo message should match sent message", stringHelper->ReceivedStrings[0], testMessage);
 		}
 		return true;
 	}));
 
 	// Send multiple messages
-	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, ObjectDelivererClient, clientHelper]()
+	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, StringDeliveryBox, stringHelper]()
 	{
-		clientHelper->ReceiveBuffers.Empty(); // Clear previous messages
+		stringHelper->ReceivedStrings.Empty(); // Clear previous messages
 		
 		// Send multiple messages
 		for (int32 i = 0; i < 5; i++)
 		{
 			FString msg = FString::Printf(TEXT("Test Message #%d"), i);
-			TArray<uint8> data;
-			FTCHARToUTF8 UTF8Msg(*msg);
-			data.Append((uint8*)UTF8Msg.Get(), UTF8Msg.Length());
-			ObjectDelivererClient->Send(data);
+			StringDeliveryBox->Send(msg);
 		}
 		return true;
 	}));
@@ -251,17 +249,15 @@ bool FWebSocketClientEchoTest::RunTest(const FString &Parameters)
  	ADD_LATENT_AUTOMATION_COMMAND(FWaitLatentCommand(2.0f));
 
 	// Verify all messages were echoed back
-	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, clientHelper]()
+	ADD_LATENT_AUTOMATION_COMMAND(FFunctionLatentCommand([this, stringHelper]()
 	{
-		TestEqual("Should receive all 5 echo responses", clientHelper->ReceiveBuffers.Num(), 5);
+		TestEqual("Should receive all 5 echo responses", stringHelper->ReceivedStrings.Num(), 5);
 		
 		// Verify each message
-		for (int32 i = 0; i < clientHelper->ReceiveBuffers.Num(); i++)
+		for (int32 i = 0; i < stringHelper->ReceivedStrings.Num(); i++)
 		{
-			const TArray<uint8>& receivedData = clientHelper->ReceiveBuffers[i];
-			FString receivedMessage = FString(FUTF8ToTCHAR((const ANSICHAR*)receivedData.GetData(), receivedData.Num()).Get());
 			FString expectedMessage = FString::Printf(TEXT("Test Message #%d"), i);
-			TestEqual(FString::Printf(TEXT("Echo message #%d should match"), i), receivedMessage, expectedMessage);
+			TestEqual(FString::Printf(TEXT("Echo message #%d should match"), i), stringHelper->ReceivedStrings[i], expectedMessage);
 		}
 		return true;
 	}));
