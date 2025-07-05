@@ -206,6 +206,42 @@ We welcome contributions from everyone who wants to improve ObjectDeliverer!
 - Follow the code style of the existing codebase
 - Add or update tests when possible
 
+### Testing
+
+ObjectDeliverer includes automated tests for WebSocket functionality. To run tests with a real WebSocket server:
+
+#### Environment Variables for Testing
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `OBJECTDELIVERER_TEST_WS_URL` | WebSocket server URL for testing | `wss://your-websocket-server.com` |
+| `OBJECTDELIVERER_TEST_WS_TOKEN` | Authentication token for WebSocket server | `your-secure-token` |
+
+#### Running Tests Locally
+
+1. **Without WebSocket server** (default):
+   ```bash
+   # Tests will use ws://localhost:8080 as mock server
+   /path/to/UnrealEditor-Cmd YourProject.uproject -ExecCmds="Automation RunTests ObjectDeliverer.ProtocolWebSocket; quit"
+   ```
+
+2. **With WebSocket server**:
+   ```bash
+   export OBJECTDELIVERER_TEST_WS_URL="wss://your-server.com"
+   export OBJECTDELIVERER_TEST_WS_TOKEN="your-token"
+   /path/to/UnrealEditor-Cmd YourProject.uproject -ExecCmds="Automation RunTests ObjectDeliverer.ProtocolWebSocket; quit"
+   ```
+
+#### CI/CD Configuration
+
+For GitHub Actions or other CI systems, set the environment variables as secrets:
+
+```yaml
+env:
+  OBJECTDELIVERER_TEST_WS_URL: ${{ secrets.WEBSOCKET_TEST_URL }}
+  OBJECTDELIVERER_TEST_WS_TOKEN: ${{ secrets.WEBSOCKET_TEST_TOKEN }}
+```
+
 ### UE Version Support
 
 When adding new features, please try to make them work across multiple UE versions when possible. If a feature is specific to a particular UE version, please note this clearly.

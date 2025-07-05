@@ -116,7 +116,7 @@ void UProtocolWebSocketClient::OnWebSocketConnected()
 
 void UProtocolWebSocketClient::OnWebSocketConnectionError(const FString& Error)
 {
-	UE_LOG(LogTemp, Error, TEXT("WebSocket connection error: %s"), *Error);
+	UE_LOG(LogTemp, Warning, TEXT("WebSocket connection error: %s"), *Error);
 	
 	if (bAutoReconnect && !bIsManualClose && !bIsReconnecting)
 	{

@@ -138,6 +138,8 @@ void UObjectDelivererManager::Close()
 	CurrentProtocol->Close();
 
 	CurrentProtocol = nullptr;
+
+	ConnectedList.SetNum(0);
 }
 
 void UObjectDelivererManager::Send(const TArray<uint8>& DataBuffer)
