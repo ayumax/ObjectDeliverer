@@ -60,12 +60,12 @@ void UProtocolUdpSocketSender::Close()
 	CloseInnerSocket();
 }
 
-void UProtocolUdpSocketSender::Send(const TArray<uint8> &DataBuffer) const
+void UProtocolUdpSocketSender::Send(const TArray<uint8> &DataBuffer, const FDeliveryDataType& KindOfData) const
 {
-	PacketRule->MakeSendPacket(DataBuffer);
+	PacketRule->MakeSendPacket(DataBuffer, KindOfData);
 }
 
-void UProtocolUdpSocketSender::RequestSend(const TArray<uint8> &DataBuffer)
+void UProtocolUdpSocketSender::RequestSend(const TArray<uint8> &DataBuffer, const FDeliveryDataType& DataType)
 {
 	SendTo(DataBuffer, DestinationEndpoint);
 }

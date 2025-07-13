@@ -12,7 +12,7 @@ bool FPacketRuleTerminateTest_MakeSendPacket::RunTest(const FString& Parameters)
 	{
 		auto packetRule = UPacketRuleFactory::CreatePacketRuleTerminate({ TEXT('\r'), TEXT('\n') });
 
-		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer, const FDeliveryDataType& DataType)
 		{
 			TestEqual(TEXT("MakeSendPacket check size"), Buffer.Num(), 10);
 
@@ -35,14 +35,14 @@ bool FPacketRuleTerminateTest_MakeSendPacket::RunTest(const FString& Parameters)
 			buffer[i] = i;
 		}
 
-		packetRule->MakeSendPacket(buffer);
+		packetRule->MakeSendPacket(buffer, FDeliveryDataType::Default());
 	}
 
 	// terminater : 0xff
 	{
 		auto packetRule = UPacketRuleFactory::CreatePacketRuleTerminate({ 0xFF });
 
-		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer, const FDeliveryDataType& DataType)
 		{
 			TestEqual(TEXT("MakeSendPacket check size"), Buffer.Num(), 9);
 
@@ -64,7 +64,7 @@ bool FPacketRuleTerminateTest_MakeSendPacket::RunTest(const FString& Parameters)
 			buffer[i] = i;
 		}
 
-		packetRule->MakeSendPacket(buffer);
+		packetRule->MakeSendPacket(buffer, FDeliveryDataType::Default());
 	}
 
 	return true;

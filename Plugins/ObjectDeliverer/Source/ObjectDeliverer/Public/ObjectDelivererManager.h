@@ -104,7 +104,7 @@ public:
 
 private:
 	void DispatchEvent(TFunction<void()> EventAction);
-
+	void SendToInternal(const TArray<uint8>& DataBuffer, const UObjectDelivererProtocol* Target, const FDeliveryDataType& DataType);
 private:
 	UPROPERTY(Transient)
 	UObjectDelivererProtocol* CurrentProtocol;

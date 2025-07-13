@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DeliveryDataType.h"
 #include "Utils/ODGrowBuffer.h"
 #include "PacketRule.generated.h"
 
@@ -14,7 +15,7 @@ enum class ECNBufferEndian : uint8
 	Little
 };
 
-DECLARE_DELEGATE_OneParam(FCNPacketRuleMadeSendBuffer, const TArray<uint8>&);
+DECLARE_DELEGATE_TwoParams(FCNPacketRuleMadeSendBuffer, const TArray<uint8>&, const FDeliveryDataType&);
 DECLARE_DELEGATE_OneParam(FCNPacketRuleMadeReceiveBuffer, const TArray<uint8>&);
 
 UCLASS(BlueprintType, Blueprintable)
@@ -27,7 +28,7 @@ public:
 	~UPacketRule();
 
 	virtual void Initialize();
-	virtual void MakeSendPacket(const TArray<uint8>& BodyBuffer);
+	virtual void MakeSendPacket(const TArray<uint8>& BodyBuffer, const FDeliveryDataType& DataType);
 	virtual void NotifyReceiveData(const TArray<uint8>& DataBuffer);
 	virtual int32 GetWantSize();
 	virtual UPacketRule* Clone();
@@ -36,6 +37,6 @@ public:
 	FCNPacketRuleMadeReceiveBuffer MadeReceiveBuffer;
 
 protected:
-	void DispatchMadeSendBuffer(const TArray<uint8>& SendBuffer);
+	void DispatchMadeSendBuffer(const TArray<uint8>& SendBuffer, const FDeliveryDataType& DataType);
 	void DispatchMadeReceiveBuffer(const TArray<uint8>& ReceiveBuffer);
 };
