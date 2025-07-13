@@ -44,7 +44,7 @@ void UObjectDeliveryBoxUsingJson::SendTo(const UObject* message, const UObjectDe
 	TArray<uint8> buffer;
 	UODStringUtil::StringToBuffer(OutputString, buffer);
 
-	RequestSend.ExecuteIfBound(Destination, buffer);
+	RequestSend.ExecuteIfBound(Destination, buffer, FDeliveryDataType(FDeliveryDataType::EMainType::String, "Json"));
 }
 
 void UObjectDeliveryBoxUsingJson::NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer)

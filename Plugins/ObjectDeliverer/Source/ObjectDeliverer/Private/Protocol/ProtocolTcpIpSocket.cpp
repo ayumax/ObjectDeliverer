@@ -45,11 +45,11 @@ void UProtocolTcpIpSocket::CloseSocket()
 	InnerSocket = nullptr;
 }
 
-void UProtocolTcpIpSocket::Send(const TArray<uint8>& DataBuffer) const
+void UProtocolTcpIpSocket::Send(const TArray<uint8>& DataBuffer, const FDeliveryDataType& KindOfData) const
 {
 	if (!InnerSocket) return;
 
-	PacketRule->MakeSendPacket(DataBuffer);
+	PacketRule->MakeSendPacket(DataBuffer, KindOfData);
 }
 
 void UProtocolTcpIpSocket::OnConnected(FSocket* ConnectionSocket)
@@ -146,7 +146,7 @@ bool UProtocolTcpIpSocket::ReceivedData()
 	return true;
 }
 
-void UProtocolTcpIpSocket::RequestSend(const TArray<uint8>& DataBuffer)
+void UProtocolTcpIpSocket::RequestSend(const TArray<uint8>& DataBuffer, const FDeliveryDataType& DataType)
 {
 	SendToConnected(DataBuffer);
 }

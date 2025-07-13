@@ -21,7 +21,7 @@ void UUtf8StringDeliveryBox::SendTo(const FString& message, const UObjectDeliver
 	TArray<uint8> buffer;
 	UODStringUtil::StringToBuffer(message, buffer);
 
-	RequestSend.ExecuteIfBound(Destination, buffer);
+	RequestSend.ExecuteIfBound(Destination, buffer, FDeliveryDataType(FDeliveryDataType::EMainType::String, "Plane"));
 }
 
 void UUtf8StringDeliveryBox::NotifyReceiveBuffer(const UObjectDelivererProtocol* FromObject, const TArray<uint8>& buffer)
