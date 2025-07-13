@@ -11,7 +11,7 @@ bool FPacketRuleSizeBodyTest_MakeSendPacket::RunTest(const FString& Parameters)
 	// size buffer endian is big
 	{
 		auto packetRule = UPacketRuleFactory::CreatePacketRuleSizeBody(4, ECNBufferEndian::Big);
-		packetRule->MadeSendBuffer.BindLambda([this, &packetRule](const TArray<uint8>& Buffer)
+		packetRule->MadeSendBuffer.BindLambda([this, &packetRule](const TArray<uint8>& Buffer, const FDeliveryDataType& DataType)
 		{
 			TestEqual(TEXT("MakeSendPacket check size"), Buffer.Num(), packetRule->SizeLength + 8);
 
@@ -36,14 +36,14 @@ bool FPacketRuleSizeBodyTest_MakeSendPacket::RunTest(const FString& Parameters)
 			buffer[i] = i;
 		}
 
-		packetRule->MakeSendPacket(buffer);
+		packetRule->MakeSendPacket(buffer, FDeliveryDataType::Default());
 	}
 
 	// size buffer endian is little
 	{
 		auto packetRule = UPacketRuleFactory::CreatePacketRuleSizeBody(4, ECNBufferEndian::Little);
 
-		packetRule->MadeSendBuffer.BindLambda([this, &packetRule](const TArray<uint8>& Buffer)
+		packetRule->MadeSendBuffer.BindLambda([this, &packetRule](const TArray<uint8>& Buffer, const FDeliveryDataType& DataType)
 		{
 			TestEqual(TEXT("MakeSendPacket check size"), Buffer.Num(), packetRule->SizeLength + 8);
 
@@ -68,7 +68,7 @@ bool FPacketRuleSizeBodyTest_MakeSendPacket::RunTest(const FString& Parameters)
 			buffer[i] = i;
 		}
 
-		packetRule->MakeSendPacket(buffer);
+		packetRule->MakeSendPacket(buffer, FDeliveryDataType::Default());
 	}
 
 

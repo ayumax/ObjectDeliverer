@@ -73,7 +73,7 @@ void UProtocolWebSocketClient::Close()
 	}
 }
 
-void UProtocolWebSocketClient::Send(const TArray<uint8>& DataBuffer) const
+void UProtocolWebSocketClient::Send(const TArray<uint8>& DataBuffer, const FDeliveryDataType& KindOfData) const
 {
 	if (!WebSocket.IsValid() || !WebSocket->IsConnected())
 	{
@@ -81,7 +81,19 @@ void UProtocolWebSocketClient::Send(const TArray<uint8>& DataBuffer) const
 		return;
 	}
 
-	WebSocket->Send(DataBuffer.GetData(), DataBuffer.Num(), true);
+	PacketRule->MakeSendPacket(DataBuffer, KindOfData);
+}
+
+
+void UProtocolWebSocketClient::RequestSend(const TArray<uint8>& DataBuffer, const FDeliveryDataType& DataType)
+{
+	if (!WebSocket.IsValid() || !WebSocket->IsConnected())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("WebSocket is not connected"));
+		return;
+	}
+	
+	WebSocket->Send(DataBuffer.GetData(), DataBuffer.Num(), DataType.MainType == FDeliveryDataType::EMainType::Binary);
 }
 
 void UProtocolWebSocketClient::CreateWebSocket()

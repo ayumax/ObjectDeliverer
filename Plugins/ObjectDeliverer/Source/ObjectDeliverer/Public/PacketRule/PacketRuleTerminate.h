@@ -16,7 +16,7 @@ public:
 	~UPacketRuleTerminate();
 
 	virtual void Initialize() override;
-	virtual void MakeSendPacket(const TArray<uint8>& BodyBuffer) override;
+	virtual void MakeSendPacket(const TArray<uint8>& BodyBuffer, const FDeliveryDataType& DataType) override;
 	virtual void NotifyReceiveData(const TArray<uint8>& DataBuffer) override;
 	virtual int32 GetWantSize() override;
 	virtual UPacketRule* Clone() override;

@@ -2,11 +2,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DeliveryDataType.h"
 #include "DeliveryBox.generated.h"
 
 class UObjectDelivererProtocol;
 
-DECLARE_DELEGATE_TwoParams(FUDeliveryBoxRequestSend, const UObjectDelivererProtocol*, const TArray<uint8>&);
+/**
+ * const UObjectDelivererProtocol* : Destination protocol
+ * const TArray<uint8>& : Data
+ * const FDeliveryDataType& : Data type
+ */
+DECLARE_DELEGATE_ThreeParams(FUDeliveryBoxRequestSend, const UObjectDelivererProtocol*, const TArray<uint8>&, const FDeliveryDataType&);
 
 UCLASS(BlueprintType, Blueprintable)
 class OBJECTDELIVERER_API UDeliveryBox : public UObject

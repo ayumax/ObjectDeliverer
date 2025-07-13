@@ -20,7 +20,7 @@ void UObjectDelivererProtocol::Close()
 
 }
 
-void UObjectDelivererProtocol::Send(const TArray<uint8>& DataBuffer) const
+void UObjectDelivererProtocol::Send(const TArray<uint8>& DataBuffer, const FDeliveryDataType& KindOfData) const
 {
 
 }
@@ -52,9 +52,9 @@ void UObjectDelivererProtocol::SetPacketRule(UPacketRule* _PacketRule)
 	PacketRule = _PacketRule;
 	PacketRule->Initialize();
 
-	PacketRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+	PacketRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer, const FDeliveryDataType& DataType)
 	{
-		RequestSend(Buffer);
+		RequestSend(Buffer, DataType);
 	});
 
 	PacketRule->MadeReceiveBuffer.BindLambda([this](const TArray<uint8>& Buffer)
@@ -63,7 +63,7 @@ void UObjectDelivererProtocol::SetPacketRule(UPacketRule* _PacketRule)
 	});
 }
 
-void UObjectDelivererProtocol::RequestSend(const TArray<uint8>& DataBuffer)
+void UObjectDelivererProtocol::RequestSend(const TArray<uint8>& DataBuffer, const FDeliveryDataType& DataType)
 {
 
 }

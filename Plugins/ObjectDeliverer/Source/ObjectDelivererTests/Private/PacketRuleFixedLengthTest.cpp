@@ -12,7 +12,7 @@ bool FCNPacketRuleFixedLengthTest_MakeSendPacket::RunTest(const FString& Paramet
 	{
 		auto packetRule = UPacketRuleFactory::CreatePacketRuleFixedLength(8);
 
-		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer, const FDeliveryDataType& DataType)
 		{
 			TestEqual(TEXT("MakeSendPacket check size"), Buffer.Num(), 8);
 
@@ -32,14 +32,14 @@ bool FCNPacketRuleFixedLengthTest_MakeSendPacket::RunTest(const FString& Paramet
 			buffer[i] = i;
 		}
 
-		packetRule->MakeSendPacket(buffer);
+		packetRule->MakeSendPacket(buffer, FDeliveryDataType::Default());
 	}
 
 	// over size
 	{
 		auto packetRule = UPacketRuleFactory::CreatePacketRuleFixedLength(8);
 
-		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer, const FDeliveryDataType& DataType)
 		{
 			TestEqual(TEXT("MakeSendPacket check size"), Buffer.Num(), 8);
 
@@ -59,14 +59,14 @@ bool FCNPacketRuleFixedLengthTest_MakeSendPacket::RunTest(const FString& Paramet
 			buffer[i] = i;
 		}
 
-		packetRule->MakeSendPacket(buffer);
+		packetRule->MakeSendPacket(buffer, FDeliveryDataType::Default());
 	}
 	
 	// under size
 	{
 		auto packetRule = UPacketRuleFactory::CreatePacketRuleFixedLength(8);
 
-		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer, const FDeliveryDataType& DataType)
 		{
 			TestEqual(TEXT("MakeSendPacket check size"), Buffer.Num(), 8);
 
@@ -91,7 +91,7 @@ bool FCNPacketRuleFixedLengthTest_MakeSendPacket::RunTest(const FString& Paramet
 			buffer[i] = i;
 		}
 
-		packetRule->MakeSendPacket(buffer);
+		packetRule->MakeSendPacket(buffer, FDeliveryDataType::Default());
 	}
 
 

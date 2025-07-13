@@ -15,7 +15,7 @@ void UPacketRule::Initialize()
 
 }
 
-void UPacketRule::MakeSendPacket(const TArray<uint8>& BodyBuffer)
+void UPacketRule::MakeSendPacket(const TArray<uint8>& BodyBuffer, const FDeliveryDataType& DataType)
 {
 }
 
@@ -34,9 +34,9 @@ UPacketRule* UPacketRule::Clone()
 	return nullptr;
 }
 
-void UPacketRule::DispatchMadeSendBuffer(const TArray<uint8>& SendBuffer)
+void UPacketRule::DispatchMadeSendBuffer(const TArray<uint8>& SendBuffer, const FDeliveryDataType& DataType)
 {
-	MadeSendBuffer.ExecuteIfBound(SendBuffer);
+	MadeSendBuffer.ExecuteIfBound(SendBuffer, DataType);
 }
 
 void UPacketRule::DispatchMadeReceiveBuffer(const TArray<uint8>& ReceiveBuffer)

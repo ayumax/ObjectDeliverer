@@ -20,7 +20,7 @@ bool FUtf8StringDeliveryBoxTest::RunTest(const FString &Parameters)
 
     UUtf8StringDeliveryBox *sut = NewObject<UUtf8StringDeliveryBox>();
 
-    sut->RequestSend.BindLambda([&stringBuffer](const UObjectDelivererProtocol *protocol, const TArray<uint8> &Buffer)
+    sut->RequestSend.BindLambda([&stringBuffer](const UObjectDelivererProtocol *protocol, const TArray<uint8> &Buffer, const FDeliveryDataType& DataType)
                                 { stringBuffer.Add(Buffer); });
 
     auto TestHelper = NewObject<UUtf8StringDeliveryBoxTestHelper>();
@@ -81,7 +81,7 @@ bool FObjectDeliveryBoxTest::RunTest(const FString &Parameters)
 
         // Set up the event that will be executed when sending
         deliveryBoxe->RequestSend.BindLambda(
-            [&sendBuffers](const UObjectDelivererProtocol *protocol, const TArray<uint8> &Buffer)
+            [&sendBuffers](const UObjectDelivererProtocol *protocol, const TArray<uint8> &Buffer, const FDeliveryDataType& DataType)
             {
                 sendBuffers.Add(Buffer);
             });
@@ -153,7 +153,7 @@ bool FPropertyNameConversionTest::RunTest(const FString &Parameters)
     sut->Initialize(UJsonSerializeConvertNameTestObject::StaticClass());
 
     // Set up the event that will be executed when sending
-    sut->RequestSend.BindLambda([&sendBuffers](const UObjectDelivererProtocol *protocol, const TArray<uint8> &Buffer)
+    sut->RequestSend.BindLambda([&sendBuffers](const UObjectDelivererProtocol *protocol, const TArray<uint8> &Buffer, const FDeliveryDataType& DataType)
                                 { sendBuffers.Add(Buffer); });
 
     // Set up the event that will be executed when receiving
