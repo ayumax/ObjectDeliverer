@@ -16,12 +16,12 @@ void UPacketRuleFixedLength::Initialize()
 	BufferForSend.SetNum(FixedSize);
 }
 
-void UPacketRuleFixedLength::MakeSendPacket(const TArray<uint8>& BodyBuffer)
+void UPacketRuleFixedLength::MakeSendPacket(const TArray<uint8>& BodyBuffer, const FDeliveryDataType& DataType)
 {
 	FMemory::Memzero(BufferForSend.GetData(), BufferForSend.Num());
 	FMemory::Memcpy(BufferForSend.GetData(), BodyBuffer.GetData(), FMath::Min(BodyBuffer.Num(), FixedSize));
 
-	DispatchMadeSendBuffer(BufferForSend);
+	DispatchMadeSendBuffer(BufferForSend, DataType);
 }
 
 void UPacketRuleFixedLength::NotifyReceiveData(const TArray<uint8>& DataBuffer)

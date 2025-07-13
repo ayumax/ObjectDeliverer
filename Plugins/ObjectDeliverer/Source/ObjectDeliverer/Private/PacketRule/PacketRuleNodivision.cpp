@@ -14,9 +14,9 @@ void UPacketRuleNodivision::Initialize()
 {
 }
 
-void UPacketRuleNodivision::MakeSendPacket(const TArray<uint8>& BodyBuffer)
+void UPacketRuleNodivision::MakeSendPacket(const TArray<uint8>& BodyBuffer, const FDeliveryDataType& DataType)
 {
-	DispatchMadeSendBuffer(BodyBuffer);
+	DispatchMadeSendBuffer(BodyBuffer, DataType);
 }
 
 void UPacketRuleNodivision::NotifyReceiveData(const TArray<uint8>& DataBuffer)

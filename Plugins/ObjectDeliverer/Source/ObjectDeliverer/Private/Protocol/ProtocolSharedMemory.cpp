@@ -172,17 +172,17 @@ bool UProtocolSharedMemory::ReceivedData()
 #endif
 }
 
-void UProtocolSharedMemory::Send(const TArray<uint8> &DataBuffer) const
+void UProtocolSharedMemory::Send(const TArray<uint8> &DataBuffer, const FDeliveryDataType& KindOfData) const
 {
 #if PLATFORM_WINDOWS
 	if (!SharedMemoryHandle)
 		return;
 
-	PacketRule->MakeSendPacket(DataBuffer);
+	PacketRule->MakeSendPacket(DataBuffer, KindOfData);
 #endif
 }
 
-void UProtocolSharedMemory::RequestSend(const TArray<uint8> &DataBuffer)
+void UProtocolSharedMemory::RequestSend(const TArray<uint8> &DataBuffer, const FDeliveryDataType& DataType)
 {
 #if PLATFORM_WINDOWS
 	if (DataBuffer.Num() > SharedMemorySize)

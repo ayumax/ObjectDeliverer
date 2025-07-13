@@ -90,11 +90,11 @@ void UProtocolTcpIpServer::Close()
 
 }
 
-void UProtocolTcpIpServer::Send(const TArray<uint8>& DataBuffer) const
+void UProtocolTcpIpServer::Send(const TArray<uint8>& DataBuffer, const FDeliveryDataType& KindOfData) const
 {
 	for (auto clientSocket : ConnectedSockets)
 	{
-		clientSocket->Send(DataBuffer);
+		clientSocket->Send(DataBuffer, KindOfData);
 	}
 }
 

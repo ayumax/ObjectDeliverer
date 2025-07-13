@@ -18,7 +18,7 @@ void UPacketRuleSizeBody::Initialize()
 	BodySize = 0;
 }
 
-void UPacketRuleSizeBody::MakeSendPacket(const TArray<uint8>& BodyBuffer)
+void UPacketRuleSizeBody::MakeSendPacket(const TArray<uint8>& BodyBuffer, const FDeliveryDataType& DataType)
 {
 	const auto BodyBufferNum{ BodyBuffer.Num() };
 	BufferForSend.SetNum(BodyBufferNum + SizeLength, EAllowShrinking::No);
@@ -28,7 +28,7 @@ void UPacketRuleSizeBody::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 			BufferForSend[i] = (BodyBufferNum >> (SizeBufferEndian == ECNBufferEndian::Big ? 8 * (SizeLength - i - 1) : 8 * i)) & 0xFF;
 
 	FMemory::Memcpy(BufferForSend.GetData() + SizeLength, BodyBuffer.GetData(), BodyBufferNum);
-	DispatchMadeSendBuffer(BufferForSend);
+	DispatchMadeSendBuffer(BufferForSend, DataType);
 }
 
 void UPacketRuleSizeBody::NotifyReceiveData(const TArray<uint8>& DataBuffer)

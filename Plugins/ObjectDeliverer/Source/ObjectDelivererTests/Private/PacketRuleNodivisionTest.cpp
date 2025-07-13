@@ -11,7 +11,7 @@ bool FPacketRuleNodivisionTest_MakeSendPacket::RunTest(const FString& Parameters
 	{
 		auto packetRule = UPacketRuleFactory::CreatePacketRuleNodivision();
 
-		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer)
+		packetRule->MadeSendBuffer.BindLambda([this](const TArray<uint8>& Buffer, const FDeliveryDataType& DataType)
 		{
 			TestEqual(TEXT("MakeSendPacket check size"), Buffer.Num(), 8);
 
@@ -30,7 +30,7 @@ bool FPacketRuleNodivisionTest_MakeSendPacket::RunTest(const FString& Parameters
 			buffer[i] = i;
 		}
 
-		packetRule->MakeSendPacket(buffer);
+		packetRule->MakeSendPacket(buffer, FDeliveryDataType::Default());
 	}
 
 
