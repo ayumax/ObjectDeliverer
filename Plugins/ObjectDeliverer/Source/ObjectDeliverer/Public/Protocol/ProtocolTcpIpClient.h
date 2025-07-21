@@ -59,4 +59,7 @@ protected:
 	class FRunnableThread* ConnectThread = nullptr;
 
 	FIPv4Endpoint ConnectEndPoint;
+
+private:
+	bool IsClosing = false;
 };

@@ -48,6 +48,8 @@ UProtocolTcpIpClient* UProtocolTcpIpClient::WithSendBufferSize(int32 SizeInBytes
 
 void UProtocolTcpIpClient::Start()
 {
+	IsClosing = false;
+	
 	CloseSocket();
 
 	CreateSocket();
@@ -93,6 +95,11 @@ bool UProtocolTcpIpClient::TryConnect()
 		CreateSocket();
 	}
 
+	if (!InnerSocket)
+	{
+		return false;
+	}
+	
 	// -------------------------------------------------------------------------------------
 	// Skip state check on Linux due to bug where GetConnectionState() returns Connected immediately after socket creation
 	// -------------------------------------------------------------------------------------
@@ -138,6 +145,8 @@ void UProtocolTcpIpClient::Close()
 {
 	Super::Close();
 
+	IsClosing = true;
+
 	if (!ConnectThread) return;
 	ConnectThread->Kill(true);
 
@@ -154,7 +163,7 @@ void UProtocolTcpIpClient::DispatchDisconnected(const UObjectDelivererProtocol* 
 {
 	Super::DispatchDisconnected(DisconnectedObject);
 
-	if (AutoConnectAfterDisconnect)
+	if (AutoConnectAfterDisconnect && !IsClosing)
 	{
 		Start();
 	}

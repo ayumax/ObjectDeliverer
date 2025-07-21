@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DeliveryDataType.h"
 #include "ObjectDelivererProtocol.generated.h"
 
 class UObjectDelivererProtocol;
@@ -34,12 +35,13 @@ public:
 	/**
 	 * send the data to the connection destination.
 	 * @param DataBuffer - databuffer
+	 * @param KindOfData - kind of data
 	 */
-	virtual void Send(const TArray<uint8>& DataBuffer) const;
+	virtual void Send(const TArray<uint8>& DataBuffer, const FDeliveryDataType& KindOfData) const;
 
 	virtual void BeginDestroy() override;
 	void SetPacketRule(UPacketRule* PacketRule);
-	virtual void RequestSend(const TArray<uint8>& DataBuffer);
+	virtual void RequestSend(const TArray<uint8>& DataBuffer, const FDeliveryDataType& DataType);
 
 protected:
 	virtual void DispatchConnected(const UObjectDelivererProtocol* ConnectedObject);

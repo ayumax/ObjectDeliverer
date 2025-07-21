@@ -19,7 +19,7 @@ void UPacketRuleTerminate::Initialize()
 	BufferForReceive.Reset(1024);
 }
 
-void UPacketRuleTerminate::MakeSendPacket(const TArray<uint8>& BodyBuffer)
+void UPacketRuleTerminate::MakeSendPacket(const TArray<uint8>& BodyBuffer, const FDeliveryDataType& DataType)
 {
 	const auto BodyCount{ BodyBuffer.Num() };
 	const auto TerminateCount{ Terminate.Num() };
@@ -27,7 +27,7 @@ void UPacketRuleTerminate::MakeSendPacket(const TArray<uint8>& BodyBuffer)
 	const auto BufferForSendData{ BufferForSend.GetData() };
 	FMemory::Memcpy(BufferForSendData, BodyBuffer.GetData(), BodyCount);
 	FMemory::Memcpy(BufferForSendData + BodyCount, Terminate.GetData(), TerminateCount);
-	DispatchMadeSendBuffer(BufferForSend);
+	DispatchMadeSendBuffer(BufferForSend, DataType);
 }
 
 void UPacketRuleTerminate::NotifyReceiveData(const TArray<uint8>& DataBuffer)

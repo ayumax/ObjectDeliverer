@@ -15,7 +15,7 @@ public:
 	UProtocolReflection();
 	~UProtocolReflection();
 
-	virtual void Send(const TArray<uint8>& DataBuffer) const override;
+	virtual void Send(const TArray<uint8>& DataBuffer, const FDeliveryDataType& KindOfData) const override;
 
-	virtual void RequestSend(const TArray<uint8>& DataBuffer) override;
+	virtual void RequestSend(const TArray<uint8>& DataBuffer, const FDeliveryDataType& DataType) override;
 };

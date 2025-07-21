@@ -48,12 +48,12 @@ void UProtocolLogWriter::Close()
 	Writer = nullptr;
 }
 
-void UProtocolLogWriter::Send(const TArray<uint8>& DataBuffer) const
+void UProtocolLogWriter::Send(const TArray<uint8>& DataBuffer, const FDeliveryDataType& KindOfData) const
 {
-	PacketRule->MakeSendPacket(DataBuffer);
+	PacketRule->MakeSendPacket(DataBuffer, KindOfData);
 }
 
-void UProtocolLogWriter::RequestSend(const TArray<uint8>& DataBuffer)
+void UProtocolLogWriter::RequestSend(const TArray<uint8>& DataBuffer, const FDeliveryDataType& DataType)
 {
 	if (!Writer) return;
 

@@ -17,10 +17,10 @@ public:
 
 	/**
 	 * Initialize WebSocket client.
-	 * @param Url - The WebSocket URL to connect to (e.g., ws://localhost:8080 or wss://example.com)
+	 * @param Url - The WebSocket URL to connect to (e.g., ws://127.0.0.1:8080 or wss://example.com)
 	 */
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
-	void Initialize(const FString& Url = "ws://localhost:8080");
+	void Initialize(const FString& Url = "ws://127.0.0.1:8080");
 
 	/**
 	 * Initialize WebSocket client with protocols.
@@ -55,7 +55,8 @@ public:
 
 	virtual void Start() override;
 	virtual void Close() override;
-	virtual void Send(const TArray<uint8>& DataBuffer) const override;
+	virtual void Send(const TArray<uint8>& DataBuffer, const FDeliveryDataType& KindOfData) const override;
+	virtual void RequestSend(const TArray<uint8> &DataBuffer, const FDeliveryDataType& DataType) override;
 
 private:
 	void OnWebSocketConnected();

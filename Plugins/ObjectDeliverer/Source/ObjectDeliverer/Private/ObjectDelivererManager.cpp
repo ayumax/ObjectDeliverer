@@ -36,17 +36,16 @@ void UObjectDelivererManager::Start(UObjectDelivererProtocol* Protocol, UPacketR
 	DeliveryBox = _DeliveryBox;
 	if (DeliveryBox)
 	{
-		DeliveryBox->RequestSend.BindLambda([this](const UObjectDelivererProtocol* Destination, const TArray<uint8>& Buffer)
+		DeliveryBox->RequestSend.BindLambda([this](const UObjectDelivererProtocol* Destination, const TArray<uint8>& Buffer, const FDeliveryDataType& DataType)
 		{
 			if (Destination)
 			{
-				SendTo(Buffer, Destination);
+				SendToInternal(Buffer, Destination, DataType);
 			}
 			else
 			{
-				Send(Buffer);
+				SendToInternal(Buffer, CurrentProtocol, DataType);
 			}
-			
 		});
 	}
 
@@ -144,18 +143,21 @@ void UObjectDelivererManager::Close()
 
 void UObjectDelivererManager::Send(const TArray<uint8>& DataBuffer)
 {
-	if (!CurrentProtocol) return;
-	if (IsDestorying) return;
-
-	CurrentProtocol->Send(DataBuffer);
+	SendToInternal(DataBuffer, CurrentProtocol, FDeliveryDataType::Default());
 }
 
 void UObjectDelivererManager::SendTo(const TArray<uint8>& DataBuffer, const UObjectDelivererProtocol* Target)
 {
+	SendToInternal(DataBuffer, Target, FDeliveryDataType::Default());
+}
+
+void UObjectDelivererManager::SendToInternal(const TArray<uint8>& DataBuffer, const UObjectDelivererProtocol* Target, const FDeliveryDataType& DataType)
+{
 	if (!CurrentProtocol) return;
+	if (!Target) return;
 	if (IsDestorying) return;
 
-	Target->Send(DataBuffer);
+	Target->Send(DataBuffer, DataType);
 }
 
 bool UObjectDelivererManager::IsConnected()
