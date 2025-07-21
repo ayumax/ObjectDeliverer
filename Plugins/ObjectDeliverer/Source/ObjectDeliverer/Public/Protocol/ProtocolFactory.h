@@ -83,7 +83,7 @@ public:
 	 * @param Url - WebSocket URL to connect to
 	 */
 	UFUNCTION(BlueprintPure, Category = "ObjectDeliverer|Protocol")
-	static class UProtocolWebSocketClient *CreateProtocolWebSocketClient(const FString &Url = "ws://localhost:8080");
+	static class UProtocolWebSocketClient *CreateProtocolWebSocketClient(const FString &Url = "ws://127.0.0.1:8080");
 
 	/**
 	 * create protocol (WebSocket client with protocols)
