@@ -19,6 +19,6 @@ struct FDeliveryDataType
 
 	static FDeliveryDataType Default()
 	{
-		return FDeliveryDataType(EMainType::Binary, _TEXT(""));
+		return FDeliveryDataType(EMainType::Binary, FString());
 	}
 };
