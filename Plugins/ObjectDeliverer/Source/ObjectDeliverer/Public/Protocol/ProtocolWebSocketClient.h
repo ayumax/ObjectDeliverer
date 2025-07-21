@@ -17,10 +17,10 @@ public:
 
 	/**
 	 * Initialize WebSocket client.
-	 * @param Url - The WebSocket URL to connect to (e.g., ws://localhost:8080 or wss://example.com)
+	 * @param Url - The WebSocket URL to connect to (e.g., ws://127.0.0.1:8080 or wss://example.com)
 	 */
 	UFUNCTION(BlueprintCallable, Category = "ObjectDeliverer|Protocol")
-	void Initialize(const FString& Url = "ws://localhost:8080");
+	void Initialize(const FString& Url = "ws://127.0.0.1:8080");
 
 	/**
 	 * Initialize WebSocket client with protocols.
